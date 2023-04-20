@@ -1,0 +1,29 @@
+ <p id="totalScore" hidden>{{totalScore}}</p>
+
+<ul>
+{{#each allSubmission}}
+<li>
+    <p>Student Id: {{studentId}}</p>
+    <p>File address: {{submitFile}}</p>
+    {{#if scoreGet}}
+     <p>{{scoreGet}}</p>
+     {{!-- <form onsubmit="return confirm('Confirm?');" action="/grade/{{_id}}" method="post">
+        <input name="method" value="patch" hidden>
+        <button type="submit">Change score</button>
+     </form> --}}
+    {{else}}
+    <form id="grade" onsubmit="return confirm('Confirm?');" action="/grade/{{_id}}" method="post">
+        <label for="grade"></label>
+        <input name="assignmentId" value="{{../assignmentId}}"hidden>
+        <input name="submissionId" value="{{_id}}" hidden>
+        <input id="score" type="number" name="score">
+        <button type="submit">Grade</button>
+        <div id="error" hidden>Score should be in range of 0~{{../totalScore}} </div>
+    </form>
+
+    {{/if}}
+</li>
+{{/each}}
+</ul>
+
+<script src="../../public/js/gradeCheck.js"></script>

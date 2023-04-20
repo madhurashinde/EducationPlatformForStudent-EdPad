@@ -1,0 +1,16 @@
+<h1>Assignment List</h1>
+{{#if faculty}}
+<button onclick="location.href='/course/{{courseId}}/newAssignment';"> New Assignment</button>
+{{/if}}
+
+{{#if assignmentList.length}}
+<div>
+    {{#each assignmentList}}
+    <div class="assignment" onclick="location.href='/assignment/{{_id}}';">
+        <h2>{{title}}</h2>
+        <p>{{dueDate}}</p>
+        <p>{{score}}</p>
+    </div>
+    {{/each}}
+</div>
+{{/if}}

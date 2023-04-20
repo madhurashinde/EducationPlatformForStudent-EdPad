@@ -1,0 +1,15 @@
+<form id="form" onsubmit="return confirm('Confirm?');" action="/course/{{courseId}}/newAssignment" method="post">
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title"><br>
+    <label for="dueDate">Due Date:</label>
+    <input type="datetime" id="dueDate" name="dueDate"><br>
+    <label for="content">Assignment Instruction:</label>
+    <input type="text" id="content" name="content"><br>
+    <label for="file">File Website:</label>
+    <input type="text" id="file" name="file"><br>
+    <label for="score">Total Score:</label>
+    <input type="number" id="score" name="score"><br>
+    <button type="submit">Submit</button>
+</form>
+<div id="error" hidden>Please enter valid input</div>
+<script src="../../public/js/createCheck.js"></script>

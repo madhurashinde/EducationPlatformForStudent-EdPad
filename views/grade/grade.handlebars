@@ -1,0 +1,10 @@
+<ul>
+{{#each allGrade}}
+<li> {{title}}
+    {{#if scoreGet}}
+        Grade:{{scoreGet}}/{{score}}
+    {{else}}
+        Grade:To be Graded/{{score}}
+    {{/if}}
+{{/each}}
+</ul>

@@ -1,0 +1,10 @@
+<form id="form" action="/assignment/{{assignmentId}}/newSubmission" method="post">
+    <label>File:</label>
+    <input type="text" id="submitFile" name="submitFile"/>
+    <label>Comment</label>
+    <input type="text" id="comment" name="comment"/>
+    <button type="submit">Submit</button>
+</form>
+
+<div id="error" hidden>Please enter valid input</div>
+<script src="../../public/js/submitCheck.js"></script>
