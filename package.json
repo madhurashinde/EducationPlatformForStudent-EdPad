@@ -14,5 +14,8 @@
     "express-handlebars": "^7.0.7",
     "moment": "^2.29.4",
     "mongodb": "^5.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.21"
   }
 }
