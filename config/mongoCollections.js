@@ -14,3 +14,4 @@ const getCollectionFn = (collection) => {
 };
 
 export const assignment = getCollectionFn("assignment");
+export const courses_func = getCollectionFn("courses");

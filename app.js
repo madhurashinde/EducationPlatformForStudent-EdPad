@@ -7,6 +7,8 @@ import exphbs from "express-handlebars";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const staticDir = express.static(__dirname + "/public");
+import { dbConnection, closeConnection } from "./config/mongoConnection.js";
+import { createCourse } from "./data/courses.js"
 
 app.use("/public", staticDir);
 app.use(express.urlencoded({ extended: true }));
@@ -44,3 +46,32 @@ app.listen(3000, () => {
   console.log("We've now got a server!");
   console.log("Your routes will be running on http://localhost:3000");
 });
+
+
+
+//test for the courses
+async function main() {
+  const db = await dbConnection();
+
+
+  let courseTitle = "Introduction to JavaScript3";
+  let courseId = "JS101";
+  let description = "Learn the basics of JavaScript programming language";
+  let professorId = "PROF001";
+  let professorName = "John Smith";
+
+  try {
+    const newCourse = await createCourse(courseTitle, courseId, description, professorId, professorName);
+    console.log(newCourse);
+  } catch (e) {
+    console.log(e)
+  }
+  // console.log(newCourse);
+
+
+
+  await closeConnection()
+  console.log("over")
+};
+
+// main()
