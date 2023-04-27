@@ -2,6 +2,7 @@ import { Router } from "express";
 const router = Router();
 import path from "path";
 import { assignmentFunc } from "../data/index.js";
+import { validStr, validWeblink, nonNegInt, validDueTime } from "../helper.js";
 
 router.get("/:id/assignment", async (req, res) => {
   try {
@@ -43,14 +44,28 @@ router
     const courseId = req.params.id;
     const title = req.body.title.trim();
     const dueDate = req.body.dueDate.trim();
+    const dueTime = req.body.dueTime.trim();
     const content = req.body.content.trim();
     const file = req.body.file.trim();
     const score = req.body.score.trim();
+
+    if (
+      !validStr(title) ||
+      !validStr(dueDate) ||
+      !validStr(dueTime) ||
+      (!validStr(content) && !validWeblink(file)) ||
+      !nonNegInt(score) ||
+      !validDueTime(dueDate, dueTime)
+    ) {
+      return res.json({ error: "Invalid Input" });
+    }
+
     try {
       await assignmentFunc.createAssignment(
         title,
         courseId,
         dueDate,
+        dueTime,
         content,
         file,
         score
