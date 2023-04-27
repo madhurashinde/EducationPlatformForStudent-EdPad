@@ -1,15 +1,27 @@
+<button onClick="location.href='course//{{courseId}}';">Back</button>
 <form id="form" onsubmit="return confirm('Confirm?');" action="/course/{{courseId}}/newAssignment" method="post">
     <label for="title">Title:</label>
     <input type="text" id="title" name="title"><br>
     <label for="dueDate">Due Date:</label>
-    <input type="datetime" id="dueDate" name="dueDate"><br>
+    <input type="date" id="dueDate" name="dueDate"><br>
+    <label for="dueTime">Due Time:</label>
+    <input type="time" id="dueTime" name="dueTime" value="00:00:00"><br>
     <label for="content">Assignment Instruction:</label>
     <input type="text" id="content" name="content"><br>
-    <label for="file">File Website:</label>
+    <label for="file">Instruction File:</label>
     <input type="text" id="file" name="file"><br>
     <label for="score">Total Score:</label>
     <input type="number" id="score" name="score"><br>
     <button type="submit">Submit</button>
 </form>
-<div id="error" hidden>Please enter valid input</div>
+<div id="error" hidden>
+    <p>Please enter valid input:</p>
+    <ul>
+        <li>Title is required</li>
+        <li>Due Time can not be earlier than current time</li>
+        <li>You must provide either Assignment Instruction or an Instruction File</li>
+        <li>Instruction File should be a web link to your uploaded file: www.example.com</li>
+        <li>Total Score shoule be a non-negative integer</li>
+    </ul>
+</div>
 <script src="../../public/js/createCheck.js"></script>
