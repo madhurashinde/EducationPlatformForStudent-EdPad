@@ -15,3 +15,6 @@ const getCollectionFn = (collection) => {
 
 export const assignment = getCollectionFn("assignment");
 export const courses_func = getCollectionFn("courses");
+export const students = getCollectionFn('students');
+export const faculty = getCollectionFn('faculty');
+export const admin = getCollectionFn('admin')
