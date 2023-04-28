@@ -6,10 +6,11 @@
 {{#if assignmentList.length}}
 <div>
     {{#each assignmentList}}
-    <div class="assignment" onclick="location.href='/assignment/{{_id}}';">
+    <div class="assignment">
         <h2>{{title}}</h2>
-        <p>{{dueDate}}</p>
+        <p>{{dueDate}} at {{dueTime}}</p>
         <p>{{score}}</p>
+        <button  onclick="location.href='/assignment/{{_id}}';">Details</button>
     </div>
     {{/each}}
 </div>

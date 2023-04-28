@@ -1,47 +1,49 @@
 import { assignment } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import moment from "moment";
-import { validStr } from "../helper.js";
+import { validStr, validWeblink, nonNegInt, validDueTime } from "../helper.js";
 
 const createAssignment = async (
   title,
   courseId,
   dueDate,
+  dueTime,
   content,
   file,
   score
 ) => {
-  if (
-    !validStr(title) ||
-    !validStr(courseId) ||
-    !validStr(dueDate) ||
-    !validStr(score)
-  ) {
-    throw "please provide title, courseID, dueDate and score";
-  }
+  if (!validStr(courseId)) throw "CourseID is missing";
   courseId = courseId.trim();
   if (!ObjectId.isValid(courseId)) throw "invalid courseID";
   const newCourseId = new ObjectId(courseId);
-
-  if (moment(dueDate, "YYYY-MM-DD", true).format() === "Invalid date") {
+  if (!validStr(title) || !validStr(dueDate) || !validStr(dueTime)) {
+    throw "please provide Title, courseID, Due Date, Due Time and Score";
+  }
+  if (moment(dueDate.trim(), "YYYY-MM-DD", true).format() === "Invalid date") {
+    throw "invalid dueDate";
+  }
+  if (!validDueTime(dueDate.trim(), dueTime.trim())) {
     throw "invalid dueDate";
   }
   if (!validStr(content) && !validStr(file))
     throw "must provide instruction of the assignment by text or file";
-  score = score.trim();
-  score = parseInt(score);
-  if (!score || score === NaN || typeof score !== "number" || score < 0)
-    throw "score must be valid number";
+  if (validStr(file) && !validWeblink(file)) {
+    throw "the link of file is not valid";
+  }
+  if (!nonNegInt(score)) throw "score must be valid number";
+
   let newAssignment = {
     title: title.trim(),
     courseId: newCourseId,
-    dueDate: new Date(dueDate.trim()),
+    dueDate: dueDate.trim(),
+    dueTime: dueTime.trim(),
     content: content.trim(),
     file: file.trim(),
-    score: score,
+    score: parseInt(score),
     submission: [],
   };
-
+  console.log(dueDate.trim());
+  console.log(dueTime.trim());
   const assignmentCollection = await assignment();
   const insertInfo = await assignmentCollection.insertOne(newAssignment);
   if (!insertInfo.acknowledged || !insertInfo.insertedId)
@@ -77,7 +79,7 @@ const getAllAssignment = async (courseId) => {
   let assignmentList = await assignmentCollection
     .find(
       { courseId: newCourseId },
-      { projection: { _id: 1, title: 1, dueDate: 1, score: 1 } }
+      { projection: { _id: 1, title: 1, dueDate: 1, dueTime: 1, score: 1 } }
     )
     .toArray();
   if (!assignmentList) throw "Could not get all assignment";
@@ -108,6 +110,7 @@ const updateAssignment = async (
   assignmentId,
   title,
   dueDate,
+  dueTime,
   content,
   file,
   score
@@ -116,6 +119,7 @@ const updateAssignment = async (
     !validStr(assignmentId) ||
     !validStr(title) ||
     !validStr(dueDate) ||
+    !validStr(dueTime) ||
     !validStr(score)
   )
     throw "please provide assignmentId, title, courseID, dueDate and score";
@@ -124,30 +128,32 @@ const updateAssignment = async (
   if (moment(dueDate, "YYYY-MM-DD", true).format() === "Invalid date") {
     throw "invalid dueDate";
   }
-  if (!validStr(content) && !validStr(file))
+  if (!validDueTime(dueDate.trim(), dueTime.trim())) {
+    throw "invalid dueDate";
+  }
+  if (!validStr(content) && !validWeblink(file))
     throw "must provide instruction of the assignment by text or file";
-  score = score.trim();
-  score = parseInt(score);
-  if (!score || score === NaN || typeof score !== "number" || score < 0)
-    throw "score must be valid number";
+  if (!nonNegInt(score)) throw "score must be valid number";
 
   const assignmentDetail = await getAssignment(assignmentId);
   if (
-    title === assignmentDetail.title &&
-    new Date(dueDate.trim()).getTime() === assignmentDetail.dueDate.getTime() &&
-    content === assignmentDetail.content &&
-    file === assignmentDetail.file &&
-    score === assignmentDetail.score
+    title.trim() === assignmentDetail.title &&
+    dueDate.trim() === assignmentDetail.dueDate &&
+    dueTime.trim() === assignmentDetail.dueTime &&
+    content.trim() === assignmentDetail.content &&
+    file.trim() === assignmentDetail.file &&
+    score.trim() === assignmentDetail.score
   )
     throw "No updated info";
   const courseId = new ObjectId(assignmentDetail.courseId);
   let updatedAssignment = {
     title: title.trim(),
     courseId: courseId,
-    dueDate: new Date(dueDate.trim()),
+    dueDate: dueDate.trim(),
+    dueTime: dueTime.trim(),
     content: content.trim(),
     file: file.trim(),
-    score: score,
+    score: parseInt(score),
     submission: assignmentDetail.submission,
   };
 
