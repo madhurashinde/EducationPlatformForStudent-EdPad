@@ -1,0 +1,18 @@
+<form class="newAnnForm" id="new-ann" method="post" action="/newAnnouncement">
+    <div>
+        <label for="ann_title">Enter title</label>
+        <textarea name="ann_title" id="ann_title"></textarea>
+    </div>
+    <div class="error" id="no-title" hidden>Please provide a title</div>
+    <div>
+        <label for="ann_description">Enter Description</label>
+        <textarea id="ann_description" name="ann_description"></textarea>
+    </div>
+    <div class="error" id="no-desc" hidden>Please provide a description</div>
+    </br>
+    <button class="submit" type="submit">Create Announcement</button>
+    </br>
+
+</form>
+</br>
+<a href="/announcement">Cancel</a>
