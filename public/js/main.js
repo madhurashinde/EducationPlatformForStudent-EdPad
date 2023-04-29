@@ -179,3 +179,55 @@ if (Form) {
     }
   });
 }
+
+
+
+//I dont know where to add this code part
+
+
+// let annForm = document.getElementById('new-ann');
+// let annTitleError = document.getElementById('no-desc');
+// let annDescError = document.getElementById('no-desc')
+// if(annForm){
+//     annForm.addEventListener('submit',(event)=>{
+//         event.preventDefault();
+//         if(annTitleError && annDescError){
+//             annDescError.hidden = true;
+//             annTitleError.hidden = true;
+//             annForm.submit();
+//         }else if(!annTitleError && annDescError){
+//             annTitleError.hidden = false;
+//             annDescError.hidden = true;
+//         }else if(annTitleError && !annDescError){
+//             annTitleError.hidden = true;
+//             annDescError.hidden = false;    
+//         }else{
+//             annTitleError.hidden = false;
+//             annDescError.hidden = false;
+//         }
+//     })
+// }
+
+
+// let modForm = document.getElementById('new-mod');
+// let modTitleError = document.getElementById('no-desc-mod');
+// let modDescError = document.getElementById('no-desc-mod')
+// if(modForm){
+//     modForm.addEventListener('submit',(event)=>{
+//         event.preventDefault();
+//         if(modTitleError && modDescError){
+//             modDescError.hidden = true;
+//             modTitleError.hidden = true;
+//             modForm.submit();
+//         }else if(!modTitleError && modDescError){
+//             modTitleError.hidden = false;
+//             modDescError.hidden = true;
+//         }else if(modTitleError && !modDescError){
+//             modTitleError.hidden = true;
+//             modDescError.hidden = false;    
+//         }else{
+//             modTitleError.hidden = false;
+//             modDescError.hidden = false;
+//         }
+//     })
+// }

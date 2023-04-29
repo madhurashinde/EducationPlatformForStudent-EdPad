@@ -1,0 +1,16 @@
+{{#if faculty}}
+<button onclick="location.href='/newModule'"> New Module</button>
+{{!-- <a href='/newModule'>New Module</a> --}}
+{{message}}
+{{/if}}
+{{#if modList.length}}
+{{#each  modList}}
+<div><a href='/module/{{_id}}'>{{title}}</a></div>    
+
+<div>{{user}}</div>
+<div>{{description}}</div>
+<button onclick="location.href='/module/delete/{{_id}}'">Delete</button>
+{{!-- <a href='/module/{{_id}}?_method=DELETE'>delete</a> --}}
+<div>===================================================================</div>
+{{/each}}
+{{/if}}
