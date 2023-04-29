@@ -8,6 +8,7 @@ const assignment1 = await assignmentFunc.createAssignment(
   "Assignment 1",
   "643895a8b3ee41b54432b77b",
   "2023-05-01",
+  "00:00:00",
   "please read the instruction",
   "www.file.com",
   "50"
@@ -17,6 +18,7 @@ const assignment2 = await assignmentFunc.createAssignment(
   "Assignment 2",
   "643895a8b3ee41b54432b77b",
   "2023-06-01",
+  "00:00:00",
   "please read the instruction",
   "www.file2.com",
   "50"
@@ -26,6 +28,7 @@ const assignment3 = await assignmentFunc.createAssignment(
   "Assignment 3",
   "643895a8b3ee41b54432b77b",
   "2023-07-01",
+  "00:00:00",
   "this is instruction",
   "www.file2.com",
   "50"
@@ -43,6 +46,7 @@ console.log(
     assignment2._id.toString(),
     "Assignment 2",
     "2023-06-02",
+    "00:00:00",
     "please read the instruction",
     "www.google.com",
     "50"
