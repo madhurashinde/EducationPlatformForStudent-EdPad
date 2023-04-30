@@ -1,4 +1,4 @@
-<form class="newAnnForm" id="new-ann" method="post" action="/newAnnouncement">
+<form class="newAnnForm" id="new-ann" method="post" action="/{{course}}/newAnnouncement">
     <div>
         <label for="ann_title">Enter title</label>
         <textarea name="ann_title" id="ann_title"></textarea>
@@ -15,4 +15,4 @@
 
 </form>
 </br>
-<a href="/announcement">Cancel</a>
+<a href="/announcement/{{course}}">Cancel</a>
