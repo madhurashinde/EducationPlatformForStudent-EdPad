@@ -8,9 +8,8 @@ const grade = async (submissionId, grade) => {
   submissionId = submissionId.trim();
   if (!ObjectId.isValid(submissionId)) throw "invalid object Id";
   grade = grade.trim();
-  grade = parseInt(grade);
-  if (!grade || grade === NaN || typeof grade !== "number" || grade < 0)
-    throw "invalid grade";
+  grade = Number(grade);
+  if (!grade || grade === NaN || grade < 0) throw "invalid grade";
 
   const assignmentDetail = await assignment();
   const newSubmissionId = new ObjectId(submissionId);
@@ -21,6 +20,7 @@ const grade = async (submissionId, grade) => {
     { projection: { score: 1, "submission.$": 1 } }
   );
   if (grade > submissionDetail.score) throw "grade cannot exceed total score";
+
   const updateSubmission = await assignmentDetail.updateOne(
     { "submission._id": newSubmissionId },
     { $set: { "submission.$.scoreGet": grade } }
@@ -53,7 +53,7 @@ const getAllGrade = async (courseId, studentId) => {
     res.push({
       _id: allGrade[i]._id,
       title: allGrade[i].title,
-      score: allGrade[i].score,
+      score: allGrade[i].score.toFixed(2),
       scoreGet: allGrade[i].submission.scoreGet,
     });
   }

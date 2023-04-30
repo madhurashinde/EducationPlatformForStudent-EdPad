@@ -8,8 +8,8 @@
     {{#each assignmentList}}
     <div class="assignment">
         <h2>{{title}}</h2>
-        <p>{{dueDate}} at {{dueTime}}</p>
-        <p>{{score}}</p>
+        <p>Due Date: {{dueDate}} at {{dueTime}}</p>
+        <p>Total score: {{score}}</p>
         <button  onclick="location.href='/assignment/{{_id}}';">Details</button>
     </div>
     {{/each}}
