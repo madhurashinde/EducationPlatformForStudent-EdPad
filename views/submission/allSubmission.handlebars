@@ -1,4 +1,6 @@
- <p id="totalScore" hidden>{{totalScore}}</p>
+<h2>All Submissions</h2>
+
+<p id="totalScore" hidden>{{totalScore}}</p>
 
 <ul>
 {{#each allSubmission}}
@@ -6,27 +8,37 @@
     <p>Student Id: {{studentId}}</p>
     <p>File address:</p>
     <a href="{{submitFile}}" target="_blank"> {{submitFile}}</a>
+    {{#if comment}}
+        {{#each comment}}
+            <p>{{this.[1]}}: {{this.[0]}} </p>
+        {{/each}}
+    {{/if}}
     {{#if scoreGet}}
-     <p>{{scoreGet}}</p>
-     {{!-- <form onsubmit="return confirm('Confirm?');" action="/grade/{{_id}}" method="post">
+     <p>Score: {{scoreGet}}</p>
+     <form class="grade" onsubmit="return confirm('Confirm?');" action="/grade/{{_id}}" method="post">
         <input name="method" value="patch" hidden>
-        <button type="submit">Change score</button>
-     </form> --}}
+        <label for="score"></label>
+        <input class="score" type="number" name="score">
+        <button type="submit">Change Score</button>
+     </form>
+     <div class="error" hidden>Score should be in range of 0~{{../totalScore}} </div>
     {{else}}
+    <p>Score: Not Yet Graded</p>
     <form class="grade" onsubmit="return confirm('Confirm?');" action="/grade/{{_id}}" method="post">
         <label for="assignmentId" hidden>Assignment Id: </label>
         <input name="assignmentId" value="{{../assignmentId}}"hidden>
         <label for="submissionId" hidden>Submission Id: </label>
         <input name="submissionId" value="{{_id}}" hidden>
-        <label for="score">Score: </label>
+        <label for="score"></label>
         <input class="score" type="number" name="score">
         <button type="submit">Grade</button>
-        <div class="error" hidden>Score should be in range of 0~{{../totalScore}} </div>
     </form>
+    <div class="error" hidden>Score should be in range of 0~{{../totalScore}} </div>
 
     {{/if}}
+   
 </li>
 {{/each}}
 </ul>
-
+ 
 <script src="../../public/js/gradeCheck.js"></script>

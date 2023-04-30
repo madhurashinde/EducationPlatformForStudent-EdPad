@@ -1,22 +1,24 @@
-let form = document.getElementById("grade");
-let score = document.getElementById("score");
-let errorDiv = document.getElementById("error");
+let forms = document.getElementsByClassName("grade");
+let scores = document.getElementsByClassName("score");
+let errorDivs = document.getElementsByClassName("error");
 let totalScore = document.getElementById("totalScore");
 totalScore = totalScore.innerHTML.trim();
 totalScore = parseInt(totalScore);
 
-if (form) {
-  form.addEventListener("submit", async (event) => {
-    score.classList.remove("inputClass");
-    errorDiv.hidden = true;
+for (let i = 0; i < forms.length; i++) {
+  forms[i].addEventListener("submit", async (event) => {
+    for (let j = 0; j < forms.length; j++) {
+      scores[j].classList.remove("inputClass");
+      errorDivs[j].hidden = true;
+    }
 
-    let scoreNum = score.value;
+    let scoreNum = scores[i].value;
     if (!scoreNum) {
       event.preventDefault();
-      errorDiv.hidden = false;
-      score.classList.add("inputClass");
-      score.value = "";
-      score.focus();
+      errorDivs[i].hidden = false;
+      scores[i].classList.add("inputClass");
+      scores[i].value = "";
+      scores[i].focus();
     } else {
       scoreNum = scoreNum.trim();
       scoreNum = parseInt(scoreNum);
@@ -24,10 +26,10 @@ if (form) {
       console.log(scoreNum > totalScore);
       if (scoreNum === NaN || scoreNum < 0 || scoreNum > totalScore) {
         event.preventDefault();
-        errorDiv.hidden = false;
-        score.classList.add("inputClass");
-        score.value = "";
-        score.focus();
+        errorDivs[i].hidden = false;
+        scores[i].classList.add("inputClass");
+        scores[i].value = "";
+        scores[i].focus();
       }
     }
   });
