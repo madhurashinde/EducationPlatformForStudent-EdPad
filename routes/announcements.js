@@ -3,7 +3,7 @@ const router = Router();
 import {annsData} from '../data/index.js';
 import validation from '../helper.js';
 router
-  .route('/:courseId/announcement')
+  .route('/:courseId')
   .get(async (req, res) => {
     try {
       if(!req.session.user){
@@ -39,8 +39,9 @@ router
       if(req.session.user.role=="student"){
         return res.render('error');
       }
+      let courseId=req.params.courseId;
       if(req.session.user.role=="feculty"){
-        return res.render('announcements/newAnnouncement');
+        return res.render('announcements/newAnnouncement',{course:courseId});
       }
       // if(req.session.user.role=="admin"){
       //   return res.render('announcements/newAnnouncement');
@@ -84,7 +85,7 @@ router
   });
 
 router
-  .route('/announcement/:id')
+  .route('/:courseId/:id')
   .get(async (req, res) => {
     try {
       req.params.id = validation.checkId(req.params.id, 'Id URL Param');
@@ -133,7 +134,7 @@ router
   //   }
   // })
   router
-  .route('announcement/delete/:id')
+  .route(':courseId/delete/:id')
   .get(async (req, res) => {
     //code here for DELETE
     try {

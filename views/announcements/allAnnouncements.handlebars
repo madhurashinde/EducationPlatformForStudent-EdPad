@@ -1,17 +1,17 @@
 {{#if faculty}}
-<button onclick="location.href='/newAnnouncement'"> New Announcement</button>
+<button onclick="location.href='/announcement/{{course}}/newAnnouncement'"> New Announcement</button>
 {{!-- <a href='/newAnnouncement'>New Announcement</a> --}}
 {{message}}
 {{/if}}
 {{#if annList.length}}
 {{#each  annList}}
-<div><a href='/announcement/{{_id}}'>{{title}}</a></div>    
+<div><a href='/announcement/{{course}}/{{_id}}'>{{title}}</a></div>    
    
   
 <div>{{createdAt}}</div>
 <div>{{user}}</div>
 <div>{{description}}</div>
-<button onclick="location.href='/announcement/delete/{{_id}}'">Delete</button>
+<button onclick="location.href='/announcement/{{course}}/delete/{{_id}}'">Delete</button>
 {{!-- <a href='/announcement/{{_id}}?_method=DELETE'>delete</a> --}}
 <div>===================================================================</div>
 {{/each}}
