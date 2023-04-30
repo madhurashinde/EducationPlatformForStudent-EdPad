@@ -1,7 +1,7 @@
 import { assignment } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import { assignmentFunc } from "./index.js";
-import { validStr } from "../helper.js";
+import { validStr, validWeblink } from "../helper.js";
 
 const createSubmission = async (
   assignmentId,
@@ -9,7 +9,11 @@ const createSubmission = async (
   submitFile,
   comment
 ) => {
-  if (!validStr(assignmentId) || !validStr(studentId) || !validStr(submitFile))
+  if (
+    !validStr(assignmentId) ||
+    !validStr(studentId) ||
+    !validWeblink(submitFile)
+  )
     throw "assignmentId, student or submitFile invalid";
   assignmentId = assignmentId.trim();
   if (!ObjectId.isValid(assignmentId)) throw "invalid assignmentId";
@@ -99,6 +103,8 @@ const resubmitSubmission = async (
 ) => {
   if (!validStr(assignmentId) || !validStr(studentId))
     throw "invalid object Id";
+  if (validStr(submitFile) && !validWeblink(submitFile))
+    throw "invalid file link";
   assignmentId = assignmentId.trim();
   studentId = studentId.trim();
   if (!ObjectId.isValid(assignmentId) || !ObjectId.isValid(studentId))
@@ -116,7 +122,7 @@ const resubmitSubmission = async (
     },
     { projection: { "submission.$": 1 } }
   );
-
+  if (submissionDetail === null) throw "No submission yet";
   if (
     submitFile.trim() === submissionDetail.submission.submitFile &&
     !validStr(comment)
@@ -124,10 +130,6 @@ const resubmitSubmission = async (
     throw "the file is not updated";
 
   let submissionFile = submitFile.trim();
-  let commentList = [];
-  if (validStr(comment)) {
-    commentList.push([comment.trim(), studentId]);
-  }
 
   const createAssignmentId = submissionDetail._id.toString();
   const createStudentId = submissionDetail.submission[0].studentId.toString();
@@ -141,7 +143,7 @@ const resubmitSubmission = async (
     throw "could not update submission successfully";
   }
 
-  const newSubmission = await createSubmission(
+  await createSubmission(
     createAssignmentId,
     createStudentId,
     submissionFile,

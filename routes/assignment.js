@@ -1,7 +1,9 @@
 import { Router } from "express";
 const router = Router();
 import path from "path";
+import { ObjectId } from "mongodb";
 import { assignmentFunc, submissionFunc } from "../data/index.js";
+import { validWeblink } from "../helper.js";
 
 router
   .route("/:id")
@@ -64,9 +66,15 @@ router
     // }
     const id = req.params.id;
     // const studentId = req.session.id;
-    const submitFile = req.body.submitFile;
-    const comment = req.body.comment;
-    const submit = submissionFunc.getSubmission(id, "643895a8b3ee41b54432b776");
+    const submitFile = req.body.submitFile.trim();
+    const comment = req.body.comment.trim();
+    if (!submitFile || !validWeblink(submitFile)) {
+      return res.json({ error: "Not a valid file link" });
+    }
+    const submit = await submissionFunc.getSubmission(
+      id,
+      "643895a8b3ee41b54432b776"
+    );
     if (submit === null) {
       await submissionFunc.createSubmission(
         id,

@@ -16,7 +16,10 @@
     {{#if scoreGet}}
      <p>Score: {{scoreGet}}</p>
      <form class="grade" onsubmit="return confirm('Confirm?');" action="/grade/{{_id}}" method="post">
-        <input name="method" value="patch" hidden>
+        <label for="assignmentId" hidden>Assignment Id: </label>
+        <input name="assignmentId" value="{{../assignmentId}}"hidden>
+        <label for="submissionId" hidden>Submission Id: </label>
+        <input name="submissionId" value="{{_id}}" hidden>
         <label for="score"></label>
         <input class="score" type="number" name="score">
         <button type="submit">Change Score</button>

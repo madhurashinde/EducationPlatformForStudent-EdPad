@@ -7,7 +7,12 @@ if (form) {
     submitFile.classList.remove("inputClass");
     errorDiv.hidden = true;
 
-    if (!submitFile || !submitFile.value.trim()) {
+    const web = /^www\..+\.com$/;
+    if (
+      !submitFile ||
+      !submitFile.value.trim() ||
+      !web.test(submitFile.value.trim())
+    ) {
       event.preventDefault();
       errorDiv.hidden = false;
       submitFile.classList.add("inputClass");
