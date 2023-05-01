@@ -3,6 +3,54 @@ const router = Router();
 import path from "path";
 import { assignmentFunc } from "../data/index.js";
 import { validStr, validWeblink, nonNegInt, validDueTime } from "../helper.js";
+import { coursesFunc } from "../data/index.js";
+
+
+router
+  .route('/')
+  .get(async (req, res) => {
+    //code here for GET
+    try {
+      const allCourses = await coursesFunc.getAll()
+      let coursesList = [];
+      let coursesObj = {};
+      for (let i of allCourses) {
+        i._id = i._id.toString();
+        coursesObj = {
+          // "_id": i._id,
+          // "name": i.name, 
+          "courseTitle": i.courseTitle,
+          "courseId": i.courseId,
+          "description": i.description,
+          "professorId": i.professorId,
+          "professorName": i.professorName,
+        };
+        // coursesObj = {};
+        // coursesObj._id = i._id;
+        // coursesObj.name = i.name;
+        coursesList.push(coursesObj);
+      }
+      // res.json(bandsList);
+      return res.render("courses/courses", {
+        title: "All courses",
+        allCourses: JSON.stringify(coursesList)
+      })
+    } catch (e) {
+      res.status(500).json({ error: e });
+    }
+  })
+
+
+
+
+
+
+
+
+
+
+
+
 
 router.get("/:id/assignment", async (req, res) => {
   try {
