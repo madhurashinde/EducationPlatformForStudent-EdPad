@@ -24,6 +24,25 @@ const createCourse = async (
         announcement: [],
     };
 
+    if (!courseTitle || !courseId || !description || !professorId || !professorName) {
+        throw 'All fields need to have valid values';
+    }
+    if (typeof courseTitle !== 'string') throw 'courseTitle must be a string';
+    if (courseTitle.trim().length === 0) throw 'courseTitle cannot be an empty string or just spaces';
+
+    if (typeof courseId !== 'string') throw 'courseId must be a string';
+    if (courseId.trim().length === 0) throw 'courseId cannot be an empty string or just spaces';
+
+    if (typeof description !== 'string') throw 'description must be a string';
+    if (coursedescriptionTitle.trim().length === 0) throw 'description cannot be an empty string or just spaces';
+
+    if (typeof professorId !== 'string') throw 'professorId must be a string';
+    if (professorId.trim().length === 0) throw 'professorId cannot be an empty string or just spaces';
+
+    if (typeof professorName !== 'string') throw 'professorName must be a string';
+    if (professorName.trim().length === 0) throw 'professorName cannot be an empty string or just spaces';
+
+
     const courseCollection = await courses_func();
     const insertInfo = await courseCollection.insertOne(newCourse);
     if (!insertInfo.acknowledged || !insertInfo.insertedId)
@@ -35,5 +54,36 @@ const createCourse = async (
 
 }
 
+const getAll = async () => {
+    const courseCollection = await courses_func();
+    const allCourse = await courseCollection.find().toArray();
+    for (let i of allCourse) {
+        i._id = i._id.toString();
+    }
 
-export { createCourse }
+    return allCourse;
+};
+
+
+const getCourseByCID = async (id) => {
+    if (!id) throw 'Must provide an id to search for';
+    if (typeof id !== 'string') throw 'Id must be a string';
+    if (id.trim().length === 0)
+        throw 'Id cannot be an empty string or just spaces';
+    id = id.trim();
+    id = id.toUpperCase();
+    // if (!ObjectId.isValid(id)) throw 'invalid object ID';
+
+
+    const courseCollection = await courses_func();
+    const course = await courseCollection.findOne({ courseId: id });
+    if (!course) {
+        throw "course not found";
+    }
+    course._id = course._id.toString();
+    return course
+};
+
+
+
+export default { createCourse, getAll, getCourseByCID }
