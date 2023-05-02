@@ -4,6 +4,9 @@ import path from "path";
 import { ObjectId } from "mongodb";
 import { assignmentFunc, submissionFunc } from "../data/index.js";
 import { validWeblink } from "../helper.js";
+import submission from "../data/submission.js";
+
+const sid = "643895a8b3ee41b54432b778";
 
 router
   .route("/:id")
@@ -12,12 +15,9 @@ router
       const id = req.params.id;
       const assignmentDetail = await assignmentFunc.getAssignment(id);
 
-      let faculty = true;
+      let faculty = false;
       // let submission = null;
-      let submission = await submissionFunc.getSubmission(
-        id,
-        "643895a8b3ee41b54432b774"
-      );
+      let submission = await submissionFunc.getSubmission(id, sid);
       // const role = req.session.role;
       // const userId = req.session.id;
       // if (role === "student") {
@@ -49,51 +49,38 @@ router
     }
   });
 
-router
-  .route("/:id/newSubmission")
-  .get((req, res) => {
-    // const role = req.session.role;
-    // if (role !== "student") {
-    //   return res.redirect("/:id");
-    // }
-    const id = req.params.id;
-    return res.render("submission/newSubmission", { assignmentId: id });
-  })
-  .post(async (req, res) => {
-    // const role = req.session.role;
-    // if (role !== "student") {
-    //   return res.redirect("/:id");
-    // }
-    const id = req.params.id;
-    // const studentId = req.session.id;
-    const submitFile = req.body.submitFile.trim();
-    const comment = req.body.comment.trim();
-    if (!submitFile || !validWeblink(submitFile)) {
-      return res.json({ error: "Not a valid file link" });
-    }
-    const submit = await submissionFunc.getSubmission(
+router.route("/:id/newSubmission").post(async (req, res) => {
+  // const role = req.session.role;
+  // if (role !== "student") {
+  //   return res.redirect("/:id");
+  // }
+  // const studentId = req.session.id;
+  const id = req.params.id;
+  const submitFile = req.body.file.trim();
+  const comment = req.body.comment.trim();
+  if (!submitFile || !validWeblink(submitFile)) {
+    return res.json({ error: "Not a valid file link" });
+  }
+  const submit = await submissionFunc.getSubmission(id, sid);
+  if (submit === null) {
+    var submission = await submissionFunc.createSubmission(
       id,
-      "643895a8b3ee41b54432b776"
+      // studentId,
+      sid,
+      submitFile,
+      comment
     );
-    if (submit === null) {
-      await submissionFunc.createSubmission(
-        id,
-        // studentId,
-        "643895a8b3ee41b54432b776",
-        submitFile,
-        comment
-      );
-    } else {
-      await submissionFunc.resubmitSubmission(
-        id,
-        // studentId,
-        "643895a8b3ee41b54432b776",
-        submitFile,
-        comment
-      );
-    }
-    return res.redirect(`/assignment/${id}`);
-  });
+  } else {
+    var submission = await submissionFunc.resubmitSubmission(
+      id,
+      // studentId,
+      sid,
+      submitFile,
+      comment
+    );
+  }
+  return res.json({ submission: submission });
+});
 
 router.route("/:id/allSubmission").get(async (req, res) => {
   const id = req.params.id;
