@@ -16,22 +16,19 @@ router.route("/student/:id").get(async (req, res) => {
     );
     // get course name by id
     const course = "Web Programming";
-    const totalScoreGet = 0;
-    const totalScore = 0;
-    const afterCalTotalScoreGet = 0;
+    let totalScoreGet = 0;
+    let totalScore = 0;
+    let afterCalTotalScoreGet = 0;
     for (let i = 0; i < allGrade.length; i++) {
-      if (allGrade[i].scoreGet !== undefined) {
-        console.log(allGrade[i].scoreGet);
+      if (allGrade[i].scoreGet !== null) {
         totalScoreGet += Number(allGrade[i].scoreGet);
         totalScore += Number(allGrade[i].score);
       }
     }
     if (totalScore > 0) {
-      afterCalTotalScoreGet = Math.round(
-        ((totalScoreGet / totalScore) * 100) / 100
-      );
+      afterCalTotalScoreGet =
+        Math.round((totalScoreGet / totalScore) * 10000) / 100;
     }
-
     return res.render("grade/grade", {
       course: course,
       allGrade: allGrade,

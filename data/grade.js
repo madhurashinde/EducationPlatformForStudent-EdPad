@@ -50,12 +50,21 @@ const getAllGrade = async (courseId, studentId) => {
   if (allGrade.length === 0) return null;
   let res = [];
   for (let i = 0; i < allGrade.length; i++) {
-    res.push({
-      _id: allGrade[i]._id,
-      title: allGrade[i].title,
-      score: allGrade[i].score.toFixed(2),
-      scoreGet: allGrade[i].submission.scoreGet,
-    });
+    if (allGrade[i].submission[0].scoreGet) {
+      res.push({
+        _id: allGrade[i]._id,
+        title: allGrade[i].title,
+        score: allGrade[i].score.toFixed(2),
+        scoreGet: allGrade[i].submission[0].scoreGet.toFixed(2),
+      });
+    } else {
+      res.push({
+        _id: allGrade[i]._id,
+        title: allGrade[i].title,
+        score: allGrade[i].score.toFixed(2),
+        scoreGet: null,
+      });
+    }
   }
   return res;
 };
