@@ -2,14 +2,25 @@
     <h1> {{title}}</h1>
 </header>
 <main>
-    <div>
+    {{!-- <div>
         <h2>{{name}}</h2>
 
-    </div>
+    </div> --}}
     <div>
 
-        {{allCourses}}
-
+        <ol>
+            {{#each allCourses}}
+            <div>
+                <li>
+                    <h3>{{courseTitle}}</h3>
+                    <p>{{courseId}}</p>
+                    <p>{{description}}</p>
+                    <p>{{professorId}}</p>
+                    <p>{{professorName}}</p>
+                </li>
+            </div>
+            {{/each}}
+        </ol>
     </div>
 
 </main>

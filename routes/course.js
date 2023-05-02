@@ -31,9 +31,34 @@ router
         coursesList.push(coursesObj);
       }
       // res.json(bandsList);
+      // const source = document.querySelector('#course-template').innerHTML;
+      // const template = Handlebars.compile(source);
+      // const context = { allCourses };
+      // const html = template(context);
+      // document.querySelector('#course-list').innerHTML = html;
+      const allCourses2 = [
+        {
+          courseTitle: "Introduction to JavaScript",
+          courseId: "JS101",
+          description: "Learn the basics of JavaScript programming language",
+          professorId: "PROF001",
+          professorName: "John Smith",
+        },
+        {
+          courseTitle: "Introduction to HTML",
+          courseId: "HTML101",
+          description: "Learn the basics of HTML markup language",
+          professorId: "PROF002",
+          professorName: "Jane Doe",
+        }
+      ];
+
+
       return res.render("courses/courses", {
         title: "All courses",
-        allCourses: JSON.stringify(coursesList)
+        // name: "haha",
+        // allCourses: JSON.stringify(coursesList)
+        allCourses: coursesList
       })
     } catch (e) {
       res.status(500).json({ error: e });
