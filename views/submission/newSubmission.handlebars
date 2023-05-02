@@ -1,15 +1,18 @@
-<form id="form" onsubmit="return confirm('Confirm?');" action="/assignment/{{assignmentId}}/newSubmission" method="post">
-    <label for="submitFile">File:</label>
-    <input type="text" id="submitFile" name="submitFile"/>
-    <br>
-    <label for="comment">Comment (Optional)</label>
-    <textarea id="comment" name="comment"></textarea>
-    <br>
-    <button type="submit">Submit</button>
-</form>
+{{!-- <button onclick="location.href='/assignment/{{assignmentId}}';">Back</button>
+<h1>{{assignment.title}}</h1>
+Due Date: {{assignment.dueDate}} at {{assignment.dueTime}}
+Total Score: {{assignment.score}}
+<br>
+<p>{{assignment.content}}</p>
+Instruction File: <a target="_blank" href="//{{assignment.file}}">{{assignment.file}}</a>
 
-<div id="error" hidden>
-    <p>Please enter valid input</p>
-    <p>File is the link to your uploaded file: www.example.com</p>
-</div>
-<script src="../../public/js/submitCheck.js"></script>
+<br></br>
+
+<button id="start-submission">Start Submission</button>
+<div id="form-container"></div>
+<div id="error-container" hidden></div>
+
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+    crossorigin="anonymous"></script>
+    
+<script src="../../public/js/submitCheck.js"></script> --}}

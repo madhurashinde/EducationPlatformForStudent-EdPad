@@ -1,5 +1,5 @@
 <button onclick="location.href='/course/{{assignment.courseId}}/assignment';">Back</button>
-<p>{{assignmentDetail.courseId}}</p>
+<p id="assignment-id" hidden>{{assignment._id}}</p>
 <h1>{{assignment.title}}</h1>
 Due Date: {{assignment.dueDate}} at {{assignment.dueTime}}
 Total Score: {{assignment.score}}
@@ -15,12 +15,23 @@ Instruction File: <a target="_blank" href="//{{assignment.file}}">{{assignment.f
 <a href="/assignment/{{assignment._id}}/allSubmission">To grade all submission</a>
 
 {{else}} {{#if submission}}
-        <p>Submitted</p>
-        <a target="_blank" href="//{{submission.submitFile}}">{{{submission.submitFile}}}</a>
-        <button onclick="location.href='/assignment/{{assignment._id}}/newSubmission';">New Attempt</button>
+            <div id="start-submission-container">
+                <p>Submitted</p>
+                <p>Your File Link:</p>
+                <a target="_blank" href="//{{submission.submitFile}}">{{{submission.submitFile}}}</a>
+                <button id="start-submission">New Attempt</button>
+                <div id="form-container"></div>
+                <div id="error-container" hidden></div>
+            </div>
     {{else}}
-        <form action="/assignment/{{assignment._id}}/newSubmission" method="get">
-            <button type="submit">Start Submission</button>
-        </form>
+        <div id="start-submission-container">
+            <button id="start-submission">Start Submission</button>
+            <div id="form-container"></div>
+            <div id="error-container" hidden></div>
+        </div>
     {{/if}}
 {{/if }}
+
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+    crossorigin="anonymous"></script>
+<script src="../../public/js/submitCheck.js"></script>
