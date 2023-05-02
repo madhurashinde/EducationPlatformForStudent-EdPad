@@ -1,23 +1,84 @@
-let form = document.getElementById("form");
-let submitFile = document.getElementById("submitFile");
-let errorDiv = document.getElementById("error");
+const startSubmission = document.getElementById("start-submission");
+const formContainer = document.getElementById("form-container");
+const errorContainer = document.getElementById("error-container");
 
-if (form) {
-  form.addEventListener("submit", async (event) => {
-    submitFile.classList.remove("inputClass");
-    errorDiv.hidden = true;
+if (startSubmission) {
+  startSubmission.addEventListener("click", function () {
+    $("#start-submission").prop("disabled", true);
+    const form = $("<form></form>");
+    form.attr("id", "form");
+    const fileLabel = $("<label></label>");
+    fileLabel.html("File:");
+    fileLabel.attr("for", "submitFile");
+    const fileInput = $("<input></input>");
+    fileInput.attr("type", "text");
+    fileInput.attr("id", "submitFile");
+    fileInput.attr("name", "submitFile");
+    const commentLabel = $("<label></label>");
+    commentLabel.html("Comment (Optional):");
+    commentLabel.attr("for", "comment");
+    const commentInput = $("<textarea></textarea>");
+    commentInput.attr("id", "comment");
+    commentInput.attr("name", "comment");
+    const submitButton = $("<button></button>");
+    submitButton.attr("type", "submit");
+    submitButton.text("Submit");
 
-    const web = /^www\..+\.com$/;
-    if (
-      !submitFile ||
-      !submitFile.value.trim() ||
-      !web.test(submitFile.value.trim())
-    ) {
+    form.append(fileLabel);
+    form.append(fileInput);
+    form.append(commentLabel);
+    form.append(commentInput);
+    form.append(submitButton);
+    formContainer.append($(form).get(0));
+
+    const error =
+      "<p>Please enter valid input. File is the link to your uploaded file: www.example.com</p>";
+    errorContainer.append($(error).get(0));
+
+    // add form submit event listener
+    $("form").on("submit", function (event) {
+      event.stopPropagation();
       event.preventDefault();
-      errorDiv.hidden = false;
-      submitFile.classList.add("inputClass");
-      submitFile.value = "";
-      submitFile.focus();
-    }
+      $("#submitFile").removeClass("inputClass");
+      $("#error-container").hide();
+
+      const web = /^www\..+\.com$/;
+      if (
+        $("#submitFile").val().trim() &&
+        web.test($("#submitFile").val().trim())
+      ) {
+        // set up AJAX request config
+        let requestConfig = {
+          method: "POST",
+          url: `/assignment/${$("#assignment-id").html().trim()}/newSubmission`,
+          contentType: "application/json",
+          data: JSON.stringify({
+            file: $("#submitFile").val(),
+            comment: $("#comment").val(),
+          }),
+        };
+
+        $.ajax(requestConfig).then(function (responseMessage) {
+          console.log(responseMessage);
+
+          let element = $(`<div id="start-submission-container">
+                <p>Submitted</p>
+                <p>Your File Link:</p>
+                <a target="_blank" href="//${responseMessage.submission.submitFile}"> ${responseMessage.submission.submitFile}</a>
+                <button id="start-submission">New Attempt</button>
+                <div id="form-container"></div>
+                <div id="error-container" hidden></div>
+            </div>`);
+
+          $("#start-submission-container").replaceWith(element);
+        });
+      } else {
+        $("#error-container").show();
+        $("#submitFile").addClass("inputClass");
+        $("#submitFile").val("");
+        $("#submitFile").focus();
+      }
+    });
   });
 }
+window.jQuery;

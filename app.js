@@ -8,7 +8,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const staticDir = express.static(__dirname + "/public");
 import { dbConnection, closeConnection } from "./config/mongoConnection.js";
+
 import { coursesFunc } from "./data/index.js";
+
 
 app.use("/public", staticDir);
 app.use(express.urlencoded({ extended: true }));

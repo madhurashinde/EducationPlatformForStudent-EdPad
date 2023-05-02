@@ -129,6 +129,10 @@ const resubmitSubmission = async (
   )
     throw "the file is not updated";
 
+  let commentList = [];
+  if (validStr(comment)) {
+    commentList.push([comment.trim(), studentId]);
+  }
   let submissionFile = submitFile.trim();
 
   const createAssignmentId = submissionDetail._id.toString();
