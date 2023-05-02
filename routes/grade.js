@@ -14,7 +14,29 @@ router.route("/student/:id").get(async (req, res) => {
       courseId,
       "643895a8b3ee41b54432b774"
     );
-    return res.render("grade/grade", { allGrade: allGrade });
+    // get course name by id
+    const course = "Web Programming";
+    const totalScoreGet = 0;
+    const totalScore = 0;
+    const afterCalTotalScoreGet = 0;
+    for (let i = 0; i < allGrade.length; i++) {
+      if (allGrade[i].scoreGet !== undefined) {
+        console.log(allGrade[i].scoreGet);
+        totalScoreGet += Number(allGrade[i].scoreGet);
+        totalScore += Number(allGrade[i].score);
+      }
+    }
+    if (totalScore > 0) {
+      afterCalTotalScoreGet = Math.round(
+        ((totalScoreGet / totalScore) * 100) / 100
+      );
+    }
+
+    return res.render("grade/grade", {
+      course: course,
+      allGrade: allGrade,
+      totalScore: afterCalTotalScoreGet,
+    });
   } catch (e) {
     return res.json({ error: e });
   }
