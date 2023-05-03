@@ -7,6 +7,8 @@ import {
   checkEmailAddress,
   validPassword,
   validRole,
+  checkValidStr,
+  checkValidArray,
 } from "../helper.js";
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
@@ -31,33 +33,37 @@ const createFaculty = async (
   if (
     !gender ||
     typeof gender !== "string" ||
-    gender.trim().toLowerCase() !== "male" ||
-    gender.trim().toLowerCase() !== "female"
+    (gender.trim().toLowerCase() !== "male" &&
+      gender.trim().toLowerCase() !== "female")
   )
     throw "Gender is not valid";
+
   birthDate = checkBirthDateFormat(birthDate);
   password = validPassword(password);
-  role = validRole(role);
   major = checkValidStr(major);
-  courseTaught = checkValidStr(courseTaught);
-  courseInProgress = checkValidStr(courseInProgress);
+  // courseTaught = checkValidStr(courseTaught);
+  // courseInProgress = checkValidStr(courseInProgress);
+  if (!checkValidArray(courseTaught) || !checkValidArray(courseInProgress))
+    throw "You must provide a valid course list";
+  role = validRole(role);
 
   const facCollection = await faculty();
-  const facList = await facCollection.find({}).toArray();
-  if (!facList) throw "Could not get all the students";
+  // facList.forEach((element) => {
+  //   if ((element["emailAddress"] = emailAddress)) {
+  //     throw `Error: Email Addrress already taken`;
+  //   }
+  // });
+  const facList = await facCollection.findOne({ emailAddress: emailAddress });
+  if (facList) throw "This email address has an associated account";
 
   const hash = await bcrypt.hash(password, saltRounds);
-  facList.forEach((element) => {
-    if ((element["emailAddress"] = emailAddress)) {
-      throw `Error: Email Addrress already taken`;
-    }
-  });
+
   let newFaculty = {
     firstName: firstName,
     lastName: lastName,
     facultyCWID: facultyCWID,
     emailAddress: emailAddress,
-    gender: gender,
+    gender: gender.trim().toLowerCase(),
     birthDate: birthDate,
     password: hash,
     major: major,
