@@ -5,10 +5,34 @@ import {
   adminFunc,
   assignmentFunc,
   submissionFunc,
+  coursesFunc
 } from "./data/index.js";
 
 const db = await dbConnection();
 await db.dropDatabase();
+
+let courseTitle = "Introduction to JavaScript3";
+let courseId = "JS101";
+let description = "Learn the basics of JavaScript programming language";
+let professorId = "PROF001";
+let professorName = "John Smith";
+
+try {
+  let newCourse = await coursesFunc.createCourse(
+    "Introduction to JavaScript3",
+    courseId,
+    "Learn the basics of JavaScript programming language",
+    professorId,
+    professorName
+  );
+  // console.log(newCourse);
+} catch (e) {
+  console.log(e);
+}
+// console.log(newCourse);
+
+
+
 
 const faculty1 = await facultyFunc.createFaculty(
   "Lori",
@@ -38,6 +62,20 @@ const student1 = await studFunc.createStudent(
   "student"
 );
 
+// const student_new = await studFunc.createStudent(
+//   "John",
+//   "Doe",
+//   "123456",
+//   "madhura23@gmail.com",
+//   "Male",
+//   "05/20/1998",
+//   "Password@123",
+//   "Computer Science",
+//   ["JS101", "HTML101"],
+//   ["JS101"],
+//   "student"
+// );
+// console.log(student_new)
 const assignment1 = await assignmentFunc.createAssignment(
   "Assignment 1",
   "643895a8b3ee41b54432b77b",

@@ -7,7 +7,7 @@ import { coursesFunc } from "../data/index.js";
 
 
 router
-  .route('/')
+  .route('/admin')
   .get(async (req, res) => {
     //code here for GET
     try {
@@ -45,40 +45,50 @@ router
 
 
 
-router.get("/:id/", async (req, res) => {
-  let id_got = req.params.id
-  id_got = id_got.trim()
-
-
+router.get("/", async (req, res) => {
+  // let id_got = req.params.id
+  // id_got = id_got.trim()
 
 
   try {
-    // if (req.session.user) {
-    //   if (req.session.user.role === 'admin') {
+    console.log(req.session.user.emailAddress)
+    console.log(req.session.user.role)
+    if (req.session.user) {
+      if (req.session.user.role === 'admin') {
 
-    //     return res.redirect('/admin');
-    //   } else if (req.session.user.role === 'student') {
-    //     let getStudCourses = await coursesFunc.getCourseByCWID(id_got);
-    //     return res.render("courses/courses", {
-    //       title: "Student courses",
-    //       // name: "haha",
-    //       // allCourses: JSON.stringify(coursesList)
-    //       allCourses: getStudCourses
-    //     })
+        return res.redirect('/admin');
+      } else if (req.session.user.role === 'student') {
 
-    //   } else if (req.session.user.role === 'faculty') {
-    //     return res.redirect('/faculty');
-    //   }
-    // } else {
-    //   res.redirect('/login');
+        let getStudCourses = await coursesFunc.getCourseByStudentEmail(req.session.user.emailAddress);
+        return res.render("courses/courses", {
+          title: "Student courses",
+          // name: "haha",
+          // allCourses: JSON.stringify(coursesList)
+          allCourses: getStudCourses
+        })
 
-    // }
-    // console.log(req.session.user.role)
-    let getStudCourses = await coursesFunc.getCourseByCWID(id_got);
-    return res.render("courses/courses", {
-      title: "Student courses",
-      allCourses: getStudCourses
-    })
+      } else if (req.session.user.role === 'faculty') {
+        return res.redirect('/faculty');
+      }
+    } else {
+      res.redirect('/login');
+
+    }
+    console.log(req.session.user.role)
+
+
+    // if no role
+    // let getStudCourses = await coursesFunc.getCourseByCWID(id_got);
+    // return res.render("courses/courses", {
+    //   title: "Student courses",
+    //   allCourses: getStudCourses
+    // })
+
+
+
+
+
+
 
   } catch (e) {
     return res.status(400).json({ error: e });

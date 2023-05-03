@@ -84,8 +84,6 @@ const checkAdmin = async (emailAddress, password) => {
     } else {
       throw `5Either the emailAddress or password is invalid`;
     }
-  } else {
-    throw `6Either the emailAddress or password is invalid`;
   }
   return result;
 };

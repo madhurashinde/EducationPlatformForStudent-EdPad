@@ -46,8 +46,9 @@ router
           emailAddress: result_stud.emailAddress,
           courseInProgress: result_stud.courseInProgress,
           courseCompleted: result_stud.courseCompleted,
+          role: result_stud.role,
         };
-        return res.redirect("/student");
+        return res.redirect("/course");
       }
 
       // admin login
@@ -60,6 +61,7 @@ router
         req.session.user = {
           firstName: result_admin.firstName,
           lastName: result_admin.lastName,
+          role: result_admin.role
         };
         return res.redirect("/admin");
       } else {
