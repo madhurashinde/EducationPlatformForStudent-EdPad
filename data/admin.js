@@ -33,11 +33,8 @@ const createAdmin = async (
   if (!adminList) throw "Could not get all the students";
 
   const hash = await bcrypt.hash(password, saltRounds);
-  adminList.forEach((element) => {
-    if ((element["emailAddress"] = emailAddress)) {
-      throw `Error: Email Addrress already taken`;
-    }
-  });
+  const adminEmail = await adminCollection.findOne({ emailAddress: emailAddress });
+  if (adminEmail) throw "This admin email address has an associated account";
   let newAdmin = {
     firstName: firstName,
     lastName: lastName,
