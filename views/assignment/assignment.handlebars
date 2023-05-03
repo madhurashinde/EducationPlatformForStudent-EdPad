@@ -1,6 +1,6 @@
 <h1>Assignment List</h1>
 {{#if faculty}}
-<button onclick="location.href='/course/{{courseId}}/newAssignment';"> New Assignment</button>
+<button onclick="location.href='/assignment/{{courseId}}/newAssignment';"> New Assignment</button>
 {{/if}}
 
 {{#if assignmentList.length}}
@@ -10,7 +10,7 @@
         <h2>{{title}}</h2>
         <p>Due Date: {{dueDate}} at {{dueTime}}</p>
         <p>Total score: {{score}}</p>
-        <button  onclick="location.href='/assignment/{{_id}}';">Details</button>
+        <button  onclick="location.href='/assignment/detail/{{_id}}';">Details</button>
     </div>
     {{/each}}
 </div>

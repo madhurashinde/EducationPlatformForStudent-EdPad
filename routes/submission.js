@@ -6,14 +6,14 @@ import { submissionFunc } from "../data/index.js";
 
 router
   .route("/:id")
-  .get(async (req, res) => {
-    try {
-      const id = req.params.id;
-      return res.render("submission/submissionDetail", { assignmentId: id });
-    } catch (e) {
-      return res.json({ error: e });
-    }
-  })
+  // .get(async (req, res) => {
+  //   try {
+  //     const id = req.params.id;
+  //     return res.render("submission/submissionDetail", { assignmentId: id });
+  //   } catch (e) {
+  //     return res.json({ error: e });
+  //   }
+  // })
   .post(async (req, res) => {
     try {
       const id = req.params.id;
