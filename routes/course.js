@@ -30,28 +30,6 @@ router
         // coursesObj.name = i.name;
         coursesList.push(coursesObj);
       }
-      // res.json(bandsList);
-      // const source = document.querySelector('#course-template').innerHTML;
-      // const template = Handlebars.compile(source);
-      // const context = { allCourses };
-      // const html = template(context);
-      // document.querySelector('#course-list').innerHTML = html;
-      const allCourses2 = [
-        {
-          courseTitle: "Introduction to JavaScript",
-          courseId: "JS101",
-          description: "Learn the basics of JavaScript programming language",
-          professorId: "PROF001",
-          professorName: "John Smith",
-        },
-        {
-          courseTitle: "Introduction to HTML",
-          courseId: "HTML101",
-          description: "Learn the basics of HTML markup language",
-          professorId: "PROF002",
-          professorName: "Jane Doe",
-        }
-      ];
 
 
       return res.render("courses/courses", {
@@ -67,7 +45,45 @@ router
 
 
 
+router.get("/:id/", async (req, res) => {
+  let id_got = req.params.id
+  id_got = id_got.trim()
 
+
+
+
+  try {
+    // if (req.session.user) {
+    //   if (req.session.user.role === 'admin') {
+
+    //     return res.redirect('/admin');
+    //   } else if (req.session.user.role === 'student') {
+    //     let getStudCourses = await coursesFunc.getCourseByCWID(id_got);
+    //     return res.render("courses/courses", {
+    //       title: "Student courses",
+    //       // name: "haha",
+    //       // allCourses: JSON.stringify(coursesList)
+    //       allCourses: getStudCourses
+    //     })
+
+    //   } else if (req.session.user.role === 'faculty') {
+    //     return res.redirect('/faculty');
+    //   }
+    // } else {
+    //   res.redirect('/login');
+
+    // }
+    // console.log(req.session.user.role)
+    let getStudCourses = await coursesFunc.getCourseByCWID(id_got);
+    return res.render("courses/courses", {
+      title: "Student courses",
+      allCourses: getStudCourses
+    })
+
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+});
 
 
 

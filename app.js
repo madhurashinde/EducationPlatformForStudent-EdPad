@@ -1,5 +1,6 @@
 import express from "express";
 const app = express();
+import session from 'express-session';
 import configRoutes from "./routes/index.js";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
@@ -9,7 +10,7 @@ const __dirname = dirname(__filename);
 const staticDir = express.static(__dirname + "/public");
 import { dbConnection, closeConnection } from "./config/mongoConnection.js";
 
-import { coursesFunc } from "./data/index.js";
+import { coursesFunc, studFunc } from "./data/index.js";
 
 
 app.use("/public", staticDir);
@@ -20,6 +21,18 @@ app.set("view engine", "handlebars");
 
 // Middleware
 // if the course is not in the faculty/students' registered list, don't pass
+
+app.use(
+  session({
+    name: 'AuthCookie',
+    secret: "This is a secret.. shhh don't tell anyone",
+    saveUninitialized: false,
+    resave: false
+  })
+);
+
+
+
 
 app.use("/assignment/:id", async (req, res, next) => {
   if (req.method == "POST") {
@@ -47,19 +60,47 @@ async function main() {
   let professorId = "PROF001";
   let professorName = "John Smith";
 
-  try {
-    const newCourse = await coursesFunc.createCourse(
-      courseTitle,
-      courseId,
-      description,
-      professorId,
-      professorName
-    );
-    console.log(newCourse);
-  } catch (e) {
-    console.log(e);
-  }
+  // try {
+  //   const newCourse = await coursesFunc.createCourse(
+  //     courseTitle,
+  //     courseId,
+  //     description,
+  //     professorId,
+  //     professorName
+  //   );
+  //   console.log(newCourse);
+  // } catch (e) {
+  //   console.log(e);
+  // }
   // console.log(newCourse);
+
+  // try {
+  //   const student1 = await studFunc.createStudent(
+  //     "John",
+  //     "Doe",
+  //     "1234567",
+  //     "jo@example.com",
+  //     "Male",
+  //     "10/28/1900",
+  //     "Password123@",
+  //     "Computer Science",
+  //     ["JS101", "HTML101"],
+  //     ["JS123"],
+  //     "student"
+
+  //   );
+  //   console.log(student1)
+  // } catch (e) {
+  //   console.log(e)
+  // }
+  // 
+
+  try {
+    let getCourse = await coursesFunc.getCourseByCWID("1234567")
+    console.log(getCourse)
+  } catch (e) {
+    console.log(e)
+  }
 
   await closeConnection();
   console.log("over");
