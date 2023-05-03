@@ -1,7 +1,14 @@
 import { students } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
-import { checkNumberFormat, checkBirthDateFormat, checkNameFormat, checkEmailAddress, validPassword, validRole } from "../helper.js";
-import bcrypt from 'bcryptjs';
+import {
+  checkNumberFormat,
+  checkBirthDateFormat,
+  checkNameFormat,
+  checkEmailAddress,
+  validPassword,
+  validRole,
+} from "../helper.js";
+import bcrypt from "bcryptjs";
 const saltRounds = 10;
 
 const createStudent = async (
@@ -21,7 +28,14 @@ const createStudent = async (
   lastName = checkNameFormat(lastName);
   // studentCWID = checkNumberFormat(studentCWID);
   emailAddress = checkEmailAddress(emailAddress);
-  gender = checkNameFormat(gender);
+  // gender = checkNameFormat(gender);
+  if (
+    !gender ||
+    typeof gender !== "string" ||
+    gender.trim().toLowerCase() !== "male" ||
+    gender.trim().toLowerCase() !== "female"
+  )
+    throw "Gender is not valid";
   birthDate = checkBirthDateFormat(birthDate);
   password = validPassword(password);
   role = validRole(role);
@@ -31,12 +45,12 @@ const createStudent = async (
 
   const studCollection = await students();
   const studList = await studCollection.find({}).toArray();
-  if (!studList) throw 'Could not get all the students';
+  if (!studList) throw "Could not get all the students";
 
   const hash = await bcrypt.hash(password, saltRounds);
-  studList.forEach(element => {
-    if (element["emailAddress"] = emailAddress) {
-      throw `Error: Email Addrress already taken`
+  studList.forEach((element) => {
+    if ((element["emailAddress"] = emailAddress)) {
+      throw `Error: Email Addrress already taken`;
     }
   });
   let newStud = {
@@ -50,29 +64,27 @@ const createStudent = async (
     major: major,
     courseCompleted: courseCompleted,
     courseInProgress: courseInProgress,
-    role: role
+    role: role,
   };
 
   const insertInfo = await studCollection.insertOne(newStud);
-  if (!insertInfo.acknowledged || !insertInfo.insertedId) throw 'Could not add a student';
+  if (!insertInfo.acknowledged || !insertInfo.insertedId)
+    throw "Could not add a student";
 
-  return { insertedStud: true }
+  return { insertedStud: true };
+};
 
-}
-
-const checkStudent = async (
-  emailAddress,
-  password) => {
+const checkStudent = async (emailAddress, password) => {
   emailAddress = checkEmailAddress(emailAddress);
   password = validPassword(password);
   const compare = async (password, hash) => {
     return await bcrypt.compare(password, hash);
-  }
+  };
   const studCollection = await students();
   const studList = await studCollection.find({}).toArray();
-  if (!studList) throw 'Could not get all the students';
-  let result = {}
-  const stud = studList.find(element => {
+  if (!studList) throw "Could not get all the students";
+  let result = {};
+  const stud = studList.find((element) => {
     if (element["emailAddress"] === emailAddress) {
       return element;
     }
@@ -90,19 +102,18 @@ const checkStudent = async (
         birthDate: stud.birthDate,
         major: stud.major,
         courseCompleted: stud.courseCompleted,
-        courseInProgress: stud.courseInProgress
+        courseInProgress: stud.courseInProgress,
       };
-    }
-    else {
-      throw `Either the emailAddress or password is invalid`
+    } else {
+      throw `Either the emailAddress or password is invalid`;
     }
   } else {
-    throw `Either the emailAddress or password is invalid`
+    throw `Either the emailAddress or password is invalid`;
   }
   return result;
-}
+};
 
 export default {
   createStudent,
-  checkStudent
-}
+  checkStudent,
+};
