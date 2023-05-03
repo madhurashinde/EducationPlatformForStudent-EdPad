@@ -1,16 +1,20 @@
 {{#if faculty}}
-<button onclick="location.href='/newModule'"> New Module</button>
+<button onclick="location.href='/module/{{course}}/newModule'"> New Module</button>
 {{!-- <a href='/newModule'>New Module</a> --}}
 {{message}}
 {{/if}}
 {{#if modList.length}}
 {{#each  modList}}
-<div><a href='/module/{{_id}}'>{{title}}</a></div>    
+<div><a href='/{{courseId}}/{{_id}}'>{{title}}</a></div>    
 
 <div>{{user}}</div>
 <div>{{description}}</div>
-<button onclick="location.href='/module/delete/{{_id}}'">Delete</button>
+{{#if faculty}}
+<button onclick="location.href='/module/{{course}}/delete/{{_id}}'">Delete</button>
+{{/if}}
 {{!-- <a href='/module/{{_id}}?_method=DELETE'>delete</a> --}}
 <div>===================================================================</div>
 {{/each}}
 {{/if}}
+<div>
+<a href='/{{courseId}}/{{_id}}'>Back</a></div> 

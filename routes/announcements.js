@@ -37,7 +37,7 @@ router
     }
     if(req.session.user){
       if(req.session.user.role=="student"){
-        return res.render('error');
+        return res.render('notallowed');
       }
       let courseId=req.params.courseId;
       if(req.session.user.role=="feculty"){
