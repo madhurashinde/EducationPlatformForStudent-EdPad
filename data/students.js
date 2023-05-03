@@ -7,6 +7,8 @@ import {
   checkEmailAddress,
   validPassword,
   validRole,
+  checkValidStr,
+  checkValidArray,
 } from "../helper.js";
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
@@ -32,16 +34,18 @@ const createStudent = async (
   if (
     !gender ||
     typeof gender !== "string" ||
-    gender.trim().toLowerCase() !== "male" ||
-    gender.trim().toLowerCase() !== "female"
+    (gender.trim().toLowerCase() !== "male" &&
+      gender.trim().toLowerCase() !== "female")
   )
     throw "Gender is not valid";
   birthDate = checkBirthDateFormat(birthDate);
   password = validPassword(password);
-  role = validRole(role);
-  // major = checkValidStr(major);
+  major = checkValidStr(major);
   // courseCompleted = checkValidStr(courseCompleted);
   // courseInProgress = checkValidStr(courseInProgress);
+  if (!checkValidArray(courseCompleted) || !checkValidArray(courseInProgress))
+    throw "You must provide a valid course list";
+  role = validRole(role);
 
   const studCollection = await students();
   const studList = await studCollection.find({}).toArray();
@@ -58,7 +62,7 @@ const createStudent = async (
     lastName: lastName,
     studentCWID: studentCWID,
     emailAddress: emailAddress,
-    gender: gender,
+    gender: gender.trim().toLowerCase(),
     birthDate: birthDate,
     password: hash,
     major: major,

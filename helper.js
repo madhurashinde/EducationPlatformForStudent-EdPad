@@ -76,13 +76,11 @@ export const checkNameFormat = (strVal) => {
 export const checkEmailAddress = (strVal) => {
   if (!strVal) throw `Email address can not be empty`;
   if (typeof strVal !== "string") throw "Email address must be a string";
-  strVal = strVal.trim();
+  strVal = strVal.trim().toLowerCase();
   if (
-    !strVal
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      )
+    !strVal.match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    )
   )
     throw `Error: Invalid format for email address`;
   return strVal;
@@ -112,13 +110,15 @@ export const validPassword = (strVal) => {
 export const validRole = (strVal) => {
   if (!strVal) throw "Role can not be empty";
   if (typeof strVal !== "string") throw "Role must be a string";
-  strVal = strVal.trim();
-  if (strVal.length === 0)
-    throw "Password cannot be an empty string or just spaces";
-  if (!strVal.includes("student")) {
-    if (!strVal.includes("faculty"))
-      throw `Error: Role can only be user or admin`;
-  }
+  strVal = strVal.trim().toLowerCase();
+  // if (strVal.length === 0)
+  //   throw "Password cannot be an empty string or just spaces";
+  // if (!strVal.includes("student")) {
+  //   if (!strVal.includes("faculty"))
+  //     throw `Error: Role can only be user or admin`;
+  // }
+  if (strVal !== "student" && strVal !== "faculty" && strVal !== "admin")
+    throw `Error: Role can only be user or admin`;
   return strVal;
 };
 export const checkNumberFormat = (num) => {
@@ -167,6 +167,15 @@ export const checkBirthDateFormat = (strVal) => {
   // }
   if (!moment(strVal, "MM/DD/YYYY", true).isValid()) throw "not a valid date";
   return strVal;
+};
+
+export const checkValidArray = (arr) => {
+  if (!arr || !Array.isArray(arr) || arr.length === 0) return false;
+  for (let i = 0; i < arr.length; i++) {
+    arr[i] = arr[i].trim();
+    if (!arr[i] || typeof arr[i] !== "string" || arr[i] === "") return false;
+  }
+  return arr;
 };
 
 export default {
@@ -218,5 +227,3 @@ export default {
 // };
 
 // export default exportedMethods;
-
-console.log(validPassword("Password123*"));

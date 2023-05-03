@@ -6,6 +6,7 @@ import {
   checkEmailAddress,
   validPassword,
   validRole,
+  checkValidStr,
 } from "../helper.js";
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
@@ -24,8 +25,8 @@ const createAdmin = async (
   // adminCWID = checkNumberFormat(adminCWID);
   emailAddress = checkEmailAddress(emailAddress);
   password = validPassword(password);
-  role = validRole(role);
   major = checkValidStr(major);
+  role = validRole(role);
 
   const adminCollection = await admin();
   const adminList = await adminCollection.find({}).toArray();
