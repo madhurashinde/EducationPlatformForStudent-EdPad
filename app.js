@@ -1,6 +1,6 @@
 import express from "express";
 const app = express();
-import session from 'express-session';
+import session from "express-session";
 import configRoutes from "./routes/index.js";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
@@ -11,7 +11,6 @@ const staticDir = express.static(__dirname + "/public");
 import { dbConnection, closeConnection } from "./config/mongoConnection.js";
 
 import { coursesFunc, studFunc } from "./data/index.js";
-
 
 app.use("/public", staticDir);
 app.use(express.urlencoded({ extended: true }));
@@ -24,15 +23,12 @@ app.set("view engine", "handlebars");
 
 app.use(
   session({
-    name: 'AuthCookie',
+    name: "AuthCookie",
     secret: "This is a secret.. shhh don't tell anyone",
     saveUninitialized: false,
-    resave: false
+    resave: false,
   })
 );
-
-
-
 
 app.use("/assignment/:id", async (req, res, next) => {
   if (req.method == "POST") {
@@ -93,13 +89,13 @@ async function main() {
   // } catch (e) {
   //   console.log(e)
   // }
-  // 
+  //
 
   try {
-    let getCourse = await coursesFunc.getCourseByCWID("1234567")
-    console.log(getCourse)
+    let getCourse = await coursesFunc.getCourseByCWID("1234567");
+    console.log(getCourse);
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
 
   await closeConnection();

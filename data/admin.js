@@ -82,10 +82,10 @@ const checkAdmin = async (emailAddress, password) => {
         major: admin.major,
       };
     } else {
-      throw `Either the emailAddress or password is invalid`;
+      throw `5Either the emailAddress or password is invalid`;
     }
   } else {
-    throw `Either the emailAddress or password is invalid`;
+    throw `6Either the emailAddress or password is invalid`;
   }
   return result;
 };

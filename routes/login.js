@@ -27,21 +27,12 @@ router
       // console.log(req.body.emailAddressInput)
       validPassword(req.body.passwordInput);
 
+      // facluty login
       const result_fac = await facultyFunc.checkFaculty(
         req.body.emailAddressInput,
         req.body.passwordInput
       );
-      const result_stud = await studFunc.checkStudent(
-        req.body.emailAddressInput,
-        req.body.passwordInput
-      );
-      const result_admin = await adminFunc.checkAdmin(
-        req.body.emailAddressInput,
-        req.body.passwordInput
-      );
-      // console.log(result,'result');
       if (result_fac) {
-        // console.log("here1")
         req.session.user = {
           firstName: result_fac.firstName,
           lastName: result_fac.lastName,
@@ -52,7 +43,14 @@ router
         if (req.session.user.role === "faculty") {
           return res.redirect("/faculty");
         }
-      } else if (result_stud) {
+      }
+
+      // student login
+      const result_stud = await studFunc.checkStudent(
+        req.body.emailAddressInput,
+        req.body.passwordInput
+      );
+      if (result_stud) {
         req.session.user = {
           firstName: result_stud.firstName,
           lastName: result_stud.lastName,
@@ -61,50 +59,30 @@ router
           courseCompleted: result_stud.courseCompleted,
         };
         return res.redirect("/student");
-      } else {
+      }
+
+      // admin login
+      const result_admin = await adminFunc.checkAdmin(
+        req.body.emailAddressInput,
+        req.body.passwordInput
+      );
+      // console.log(result,'result');
+      if (result_admin) {
         req.session.user = {
           firstName: result_admin.firstName,
           lastName: result_admin.lastName,
         };
         return res.redirect("/admin");
+      } else {
+        res.render("login/login", {
+          error: "Either the email or the password is not valid",
+          title: "Login Page",
+        });
       }
     } catch (e) {
-      // console.log("Error: ",e);
-      res.status(400).render("login/login", { error: e, title: "Login Page" });
+      res.render("login/login", { error: e, title: "Login Page" });
       return;
     }
   });
-router.route("/faculty").get(async (req, res) => {
-  //code here for GET
-  // console.log('protected riyte');
-  return res.render("faculty", {
-    firstName: req.session.user.firstName,
-    lastName: req.session.user.lastName,
-    courseTaught: req.session.user.courseTaught,
-    title: "Faculty Page",
-  });
-});
-
-router.route("/student").get(async (req, res) => {
-  //code here for GET
-  // console.log('protected riyte');
-  return res.render("student", {
-    firstName: req.session.user.firstName,
-    lastName: req.session.user.lastName,
-    courseCompleted: req.session.user.courseCompleted,
-    courseInProgress: req.session.user.courseInProgress,
-    title: "Student Page",
-  });
-});
-
-router.route("/admin").get(async (req, res) => {
-  //code here for GET
-  // console.log('protected riyte');
-  return res.render("admin", {
-    firstName: req.session.user.firstName,
-    lastName: req.session.user.lastName,
-    title: "Admin Page",
-  });
-});
 
 export default router;

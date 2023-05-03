@@ -1,3 +1,4 @@
+import RootRoutes from "./root.js";
 import LoginRoutes from "./login.js";
 import CourseRoutes from "./course.js";
 import AnnouncementRoutes from "./announcements.js";
@@ -7,6 +8,7 @@ import GradeRoutes from "./grade.js";
 import ModuleRoutes from "./modules.js";
 
 const constructorMethod = (app) => {
+  app.use("/", RootRoutes);
   app.use("/login", LoginRoutes);
   app.use("/course", CourseRoutes);
   app.use("/assignment", AssignmentRoutes);

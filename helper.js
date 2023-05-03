@@ -98,6 +98,7 @@ export const validPassword = (strVal) => {
   if (strVal.length === 0)
     throw "Password cannot be an empty string or just spaces";
   if (strVal.length < 8) throw "Password must contain at least 8 characters";
+  if (strVal.length > 25) throw "Password must contain at most 25 characters";
   if (strVal.match(checkSpaces)) throw `Password can not contain any spaces`;
   if (!strVal.match(upperCase))
     throw `Password must contain atleast one uppercase letter`;

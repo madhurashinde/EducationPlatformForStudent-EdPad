@@ -109,10 +109,10 @@ const checkStudent = async (emailAddress, password) => {
         courseInProgress: stud.courseInProgress,
       };
     } else {
-      throw `Either the emailAddress or password is invalid`;
+      throw `3Either the emailAddress or password is invalid`;
     }
   } else {
-    throw `Either the emailAddress or password is invalid`;
+    throw `4Either the emailAddress or password is invalid`;
   }
   return result;
 };
