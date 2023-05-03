@@ -1,4 +1,4 @@
-<form class="newModForm" id="new-mod" method="post" action="/newModule">
+<form class="newModForm" id="new-mod" method="post" action="/{{course}}/newModule">
     <div>
         <label for="mod_title">Enter title</label>
         <textarea name="mod_title" id="mod_title"></textarea>
@@ -14,5 +14,8 @@
     </br>
 
 </form>
+<div>
+    {{error}}
+</div>
 </br>
-<a href="/module">Cancel</a>
+<a href="/module/{{course}}">Cancel</a>
