@@ -1,8 +1,28 @@
 import { dbConnection, closeConnection } from "./config/mongoConnection.js";
-import { assignmentFunc, submissionFunc, studFunc } from "./data/index.js";
+import {
+  studFunc,
+  facultyFunc,
+  adminFunc,
+  assignmentFunc,
+  submissionFunc,
+} from "./data/index.js";
 
 const db = await dbConnection();
 await db.dropDatabase();
+
+const faculty1 = await facultyFunc.createFaculty(
+  "Lori",
+  "Test",
+  "666666",
+  "test@test.com",
+  "female",
+  "02/29/1976",
+  "Password123*",
+  "Computer Science",
+  ["CS546", "CS123"],
+  ["CS554"],
+  "faculty"
+);
 
 const student1 = await studFunc.createStudent(
   "John",
@@ -10,21 +30,18 @@ const student1 = await studFunc.createStudent(
   "123456",
   "johndoe@example.com",
   "Male",
-  "1998-05-20",
-  "password123",
+  "05/20/1998",
+  "Password123!",
   "Computer Science",
   ["JS101", "HTML101"],
   ["JS101"],
   "student"
-
 );
-
-
 
 const assignment1 = await assignmentFunc.createAssignment(
   "Assignment 1",
   "643895a8b3ee41b54432b77b",
-  "2023-05-01",
+  "2023-05-10",
   "00:00:00",
   "please read the instruction",
   "www.file.com",
@@ -51,26 +68,19 @@ const assignment3 = await assignmentFunc.createAssignment(
   "50"
 );
 
-console.log(await assignmentFunc.getAllAssignment("643895a8b3ee41b54432b77b"));
-console.log("---------------------");
-console.log(await assignmentFunc.removeAssignment(assignment1._id.toString()));
-console.log("---------------------");
-console.log(await assignmentFunc.getAllAssignment("643895a8b3ee41b54432b77b"));
-
-console.log("update");
-console.log(
-  await assignmentFunc.updateAssignment(
-    assignment2._id.toString(),
-    "Assignment 2",
-    "2023-06-02",
-    "00:00:00",
-    "please read the instruction",
-    "www.google.com",
-    "50"
-  )
+await assignmentFunc.getAllAssignment("643895a8b3ee41b54432b77b");
+await assignmentFunc.removeAssignment(assignment1._id.toString());
+await assignmentFunc.getAllAssignment("643895a8b3ee41b54432b77b");
+await assignmentFunc.updateAssignment(
+  assignment2._id.toString(),
+  "Assignment 2",
+  "2023-06-02",
+  "00:00:00",
+  "please read the instruction",
+  "www.google.com",
+  "50"
 );
-console.log("---------------------");
-console.log(await assignmentFunc.getAllAssignment("643895a8b3ee41b54432b77b"));
+await assignmentFunc.getAllAssignment("643895a8b3ee41b54432b77b");
 
 const submission1 = await submissionFunc.createSubmission(
   assignment2._id.toString(),
@@ -78,31 +88,24 @@ const submission1 = await submissionFunc.createSubmission(
   "www.submission.com"
 );
 
-console.log(submission1);
-
 const submission2 = await submissionFunc.createSubmission(
   assignment2._id.toString(),
   "643895a8b3ee41b54432b774",
   "www.submission2.com",
   "this is a comment"
 );
-console.log(submission2);
 
-console.log(
-  await submissionFunc.getSubmission(
-    assignment2._id.toString(),
-    "643895a8b3ee41b54432b773"
-  )
+await submissionFunc.getSubmission(
+  assignment2._id.toString(),
+  "643895a8b3ee41b54432b773"
 );
-console.log("---------------------");
-console.log(await submissionFunc.getAllSubmission(assignment2._id.toString()));
-console.log("---------------------");
-console.log(
-  await submissionFunc.resubmitSubmission(
-    assignment2._id.toString(),
-    "643895a8b3ee41b54432b774",
-    "www.submission2.com"
-  )
+
+await submissionFunc.getAllSubmission(assignment2._id.toString());
+
+await submissionFunc.resubmitSubmission(
+  assignment2._id.toString(),
+  "643895a8b3ee41b54432b774",
+  "www.submission2.com"
 );
 
 const submission3 = await submissionFunc.createSubmission(
@@ -111,6 +114,5 @@ const submission3 = await submissionFunc.createSubmission(
   "www.submission2.com",
   "this is a comment"
 );
-console.log(submission3);
 
 await closeConnection();
