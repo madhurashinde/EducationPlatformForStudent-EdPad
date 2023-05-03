@@ -12,10 +12,11 @@
             {{#each allCourses}}
             <div>
                 <li>
-                    <h3>{{courseTitle}}</h3>
+                    <div><a href='/courses/{{courseId}}'>{{courseTitle}}</a></div>
+                    {{!-- <h3>{{courseTitle}}</h3> --}}
                     <p>{{courseId}}</p>
-                    <p>{{description}}</p>
-                    <p>{{professorId}}</p>
+                    {{!-- <p>{{description}}</p> --}}
+                    {{!-- <p>{{professorId}}</p> --}}
                     <p>{{professorName}}</p>
                 </li>
             </div>
