@@ -48,6 +48,61 @@ const faculty1 = await facultyFunc.createFaculty(
   "faculty"
 );
 
+const faculty2 = await facultyFunc.createFaculty(
+  "Patrick",
+  "Hill",
+  "20011456",
+  "patrick.hill@stevens.edu",
+  "Male",
+  "02/07/1976",
+  "TestingPass123@",
+  "Computer Science",
+  ["CS546", "CS554"],
+  ["CS554"],
+  "faculty"
+);
+
+const faculty3 = await facultyFunc.createFaculty(
+  "Samuel",
+  "Kim",
+  "20193735",
+  "samuel.kim@stevens.edu",
+  "Male",
+  "02/27/1980",
+  "ManagePass123@",
+  "Computer Science",
+  ["CS541", "CS 102"],
+  ["CS541"],
+  "faculty"
+);
+
+const faculty4 = await facultyFunc.createFaculty(
+  "Edward",
+  "Amoroso",
+  "20193745",
+  "edward.amoroso@stevens.edu",
+  "Male",
+  "10/17/1964",
+  "GivethePass@123",
+  "Computer Science",
+  ["CS573"],
+  ["CS573"],
+  "faculty"
+);
+
+const faculty5 = await facultyFunc.createFaculty(
+  "Michael",
+  "Greenberg",
+  "20022002",
+  "michael.greenberg@stevens.edu",
+  "Male",
+  "06/20/1973",
+  "LetsPartyTonight@123",
+  "Computer Science",
+  ["CS515"],
+  ["CS515"],
+  "faculty"
+);
 const student1 = await studFunc.createStudent(
   "John",
   "Doe",
@@ -62,20 +117,6 @@ const student1 = await studFunc.createStudent(
   "student"
 );
 
-// const student_new = await studFunc.createStudent(
-//   "John",
-//   "Doe",
-//   "123456",
-//   "madhura23@gmail.com",
-//   "Male",
-//   "05/20/1998",
-//   "Password@123",
-//   "Computer Science",
-//   ["JS101", "HTML101"],
-//   ["JS101"],
-//   "student"
-// );
-// console.log(student_new)
 const assignment1 = await assignmentFunc.createAssignment(
   "Assignment 1",
   "643895a8b3ee41b54432b77b",
