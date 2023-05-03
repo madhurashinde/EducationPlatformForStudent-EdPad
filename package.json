@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "seed" : "node seed.js",
     "start": "node app.js"
   },
   "author": "",
