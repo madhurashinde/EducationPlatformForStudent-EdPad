@@ -5,10 +5,34 @@ import {
   adminFunc,
   assignmentFunc,
   submissionFunc,
+  coursesFunc
 } from "./data/index.js";
 
 const db = await dbConnection();
 await db.dropDatabase();
+
+let courseTitle = "Introduction to JavaScript3";
+let courseId = "JS101";
+let description = "Learn the basics of JavaScript programming language";
+let professorId = "PROF001";
+let professorName = "John Smith";
+
+try {
+  let newCourse = await coursesFunc.createCourse(
+    "Introduction to JavaScript3",
+    courseId,
+    "Learn the basics of JavaScript programming language",
+    professorId,
+    professorName
+  );
+  // console.log(newCourse);
+} catch (e) {
+  console.log(e);
+}
+// console.log(newCourse);
+
+
+
 
 const faculty1 = await facultyFunc.createFaculty(
   "Lori",
@@ -92,81 +116,6 @@ const student1 = await studFunc.createStudent(
   ["JS101"],
   "student"
 );
-
-const student2 = await studFunc.createStudent(
-  "Madhura",
-  "Shinde",
-  "2011438",
-  "madhura.shinde@stevens.edu",
-  "Female",
-  "04/23/1998",
-  "Wefindyoucute123!",
-  "Computer Science",
-  ["CS513", "CS570", "CS555"],
-  ["CS546", "CS573", "CS513"],
-  "student"
-);
-
-const student3 = await studFunc.createStudent(
-  "Rishabh",
-  "Shirur",
-  "2011345",
-  "rishabh.shirur@stevens.edu",
-  "Male",
-  "05/31/200-",
-  "Thisisnotthepassword123!",
-  "Computer Science",
-  ["CS583", "CS590", "CS559"],
-  ["CS546", "CS561", "CS586"],
-  "student"
-);
-
-const student4 = await studFunc.createStudent(
-  "Rishabh",
-  "Shirur",
-  "2011345",
-  "rishabh.shirur@stevens.edu",
-  "Male",
-  "05/31/2000",
-  "Thisisnotthepassword123!",
-  "Computer Science",
-  ["CS583", "CS590", "CS559"],
-  ["CS546", "CS561", "CS586"],
-  "student"
-);
-
-const student5 = await studFunc.createStudent(
-  "Luoyi",
-  "Fu",
-  "2014321",
-  "luoyi.fu@stevens.edu",
-  "Female",
-  "11/09/2001",
-  "Testingeverything!123",
-  "Computer Science",
-  ["CS583", "CS590", "CS559"],
-  ["CS546", "CS561", "CS586"],
-  "student"
-);
-
-const admin1 = await adminFunc.createAdmin(
-  "Enrique",
-  "Dunn",
-  "1020202",
-  "enriqye.dunn@stevens.edu",
-  "Iamtheadmin@123",
-  "Computer Science",
-  "admin"
-)
-const admin2 = await adminFunc.createAdmin(
-  "Janine",
-  "Cucchiara",
-  "22301836",
-  "jannine.cucchiara@stevens.edu",
-  "Letsnotbeanadmin@123",
-  "Business Analytics",
-  "admin"
-)
 
 const assignment1 = await assignmentFunc.createAssignment(
   "Assignment 1",

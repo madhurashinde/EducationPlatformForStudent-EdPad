@@ -112,11 +112,10 @@ const checkFaculty = async (emailAddress, password) => {
         courseInProgress: facultyList.courseInProgress,
       };
     } else {
-      throw `Either the emailAddress or password is invalid`;
+      throw `3Either the emailAddress or password is invalid`;
     }
-  } else {
-    throw `Either the emailAddress or password is invalid`;
   }
+
   return result;
 };
 
