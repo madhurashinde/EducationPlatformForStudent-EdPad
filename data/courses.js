@@ -1,4 +1,6 @@
-import { courses_func } from "../config/mongoCollections.js";
+import { courses_func, faculty, students, admin } from "../config/mongoCollections.js";
+// import { faculty, students, admin } from "../config/mongoCollections.js";
+
 import { ObjectId } from "mongodb";
 // import moment from "moment";
 // import { validStr } from "../helper.js";
@@ -85,5 +87,32 @@ const getCourseByCID = async (id) => {
 };
 
 
+const getCourseByCWID = async (id) => {
+    if (!id) throw 'Must provide an id to search for';
+    if (typeof id !== 'string') throw 'Id must be a string';
+    if (id.trim().length === 0)
+        throw 'Id cannot be an empty string or just spaces';
+    id = id.trim();
+    // id = id.toUpperCase();
 
-export default { createCourse, getAll, getCourseByCID }
+    let studCollection = await students();
+
+    let stud = await studCollection.findOne({ studentCWID: id });
+    //
+
+    let studCoursesList = await stud.courseInProgress;
+    let specificCourses = [];
+    let speciCor
+    // let findCourse() => { }
+    for (let i of studCoursesList) {
+
+        speciCor = await getCourseByCID(i)
+        specificCourses.push(speciCor)
+    }
+    return specificCourses
+}
+
+
+
+
+export default { createCourse, getAll, getCourseByCID, getCourseByCWID }

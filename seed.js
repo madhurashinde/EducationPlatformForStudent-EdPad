@@ -1,8 +1,25 @@
 import { dbConnection, closeConnection } from "./config/mongoConnection.js";
-import { assignmentFunc, submissionFunc } from "./data/index.js";
+import { assignmentFunc, submissionFunc, studFunc } from "./data/index.js";
 
 const db = await dbConnection();
 await db.dropDatabase();
+
+const student1 = await studFunc.createStudent(
+  "John",
+  "Doe",
+  "123456",
+  "johndoe@example.com",
+  "Male",
+  "1998-05-20",
+  "password123",
+  "Computer Science",
+  ["JS101", "HTML101"],
+  ["JS101"],
+  "student"
+
+);
+
+
 
 const assignment1 = await assignmentFunc.createAssignment(
   "Assignment 1",
