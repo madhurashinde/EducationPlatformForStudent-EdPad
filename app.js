@@ -8,9 +8,6 @@ import exphbs from "express-handlebars";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const staticDir = express.static(__dirname + "/public");
-import { dbConnection, closeConnection } from "./config/mongoConnection.js";
-
-import { coursesFunc, studFunc } from "./data/index.js";
 
 app.use("/public", staticDir);
 app.use(express.urlencoded({ extended: true }));
@@ -30,6 +27,21 @@ app.use(
   })
 );
 
+app.all("/", async (req, res, next) => {
+  if (req.session.user) {
+    if (req.session.user.role === "faculty") {
+      return res.redirect("/faculty");
+    } else if (req.session.user.role === "student") {
+      return res.redirect("/student");
+    } else if (req.session.user.role === "admin") {
+      return res.redirect("/admin");
+    }
+  } else {
+    return res.redirect("/login");
+  }
+  next();
+});
+
 app.use("/assignment/:id", async (req, res, next) => {
   if (req.method == "POST") {
     if (req.body.method == "delete") {
@@ -45,61 +57,3 @@ app.listen(3000, () => {
   console.log("We've now got a server!");
   console.log("Your routes will be running on http://localhost:3000");
 });
-
-//test for the courses
-async function main() {
-  const db = await dbConnection();
-
-  let courseTitle = "Introduction to JavaScript3";
-  let courseId = "JS101";
-  let description = "Learn the basics of JavaScript programming language";
-  let professorId = "PROF001";
-  let professorName = "John Smith";
-
-  // try {
-  //   const newCourse = await coursesFunc.createCourse(
-  //     courseTitle,
-  //     courseId,
-  //     description,
-  //     professorId,
-  //     professorName
-  //   );
-  //   console.log(newCourse);
-  // } catch (e) {
-  //   console.log(e);
-  // }
-  // console.log(newCourse);
-
-  // try {
-  //   const student1 = await studFunc.createStudent(
-  //     "John",
-  //     "Doe",
-  //     "1234567",
-  //     "jo@example.com",
-  //     "Male",
-  //     "10/28/1900",
-  //     "Password123@",
-  //     "Computer Science",
-  //     ["JS101", "HTML101"],
-  //     ["JS123"],
-  //     "student"
-
-  //   );
-  //   console.log(student1)
-  // } catch (e) {
-  //   console.log(e)
-  // }
-  //
-
-  try {
-    let getCourse = await coursesFunc.getCourseByCWID("1234567");
-    console.log(getCourse);
-  } catch (e) {
-    console.log(e);
-  }
-
-  await closeConnection();
-  console.log("over");
-}
-
-// main()
