@@ -1,3 +1,6 @@
+<button onClick="location.href='/assignment/detail/{{assignmentId}}';">Back</button>
+
+
 <h2>All Submissions</h2>
 
 <p id="totalScore" hidden>{{totalScore}}</p>
@@ -27,7 +30,7 @@
      <div class="error" hidden>Score should be in range of 0~{{../totalScore}} </div>
     {{else}}
     <p>Score: Not Yet Graded</p>
-    <form class="grade" onsubmit="return confirm('Confirm?');" action="/grade/{{_id}}" method="post">
+    <form class="grade" onsubmit="return confirm('Confirm?');" action="/grade/detail/{{_id}}" method="post">
         <label for="assignmentId" hidden>Assignment Id: </label>
         <input name="assignmentId" value="{{../assignmentId}}"hidden>
         <label for="submissionId" hidden>Submission Id: </label>

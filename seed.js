@@ -157,7 +157,7 @@ const admin1 = await adminFunc.createAdmin(
   "Iamtheadmin@123",
   "Computer Science",
   "admin"
-)
+);
 const admin2 = await adminFunc.createAdmin(
   "Janine",
   "Cucchiara",
@@ -166,7 +166,7 @@ const admin2 = await adminFunc.createAdmin(
   "Letsnotbeanadmin@123",
   "Business Analytics",
   "admin"
-)
+);
 
 const assignment1 = await assignmentFunc.createAssignment(
   "Assignment 1",
@@ -220,7 +220,7 @@ const submission1 = await submissionFunc.createSubmission(
 
 const submission2 = await submissionFunc.createSubmission(
   assignment2._id.toString(),
-  "643895a8b3ee41b54432b774",
+  student1._id.toString(),
   "www.submission2.com",
   "this is a comment"
 );
