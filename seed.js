@@ -10,19 +10,19 @@ import {
 const db = await dbConnection();
 await db.dropDatabase();
 
-const faculty1 = await facultyFunc.createFaculty(
-  "Lori",
-  "Test",
-  "666666",
-  "test@test.com",
-  "female",
-  "02/29/1976",
-  "Password123*",
-  "Computer Science",
-  ["CS546", "CS123"],
-  ["CS554"],
-  "faculty"
-);
+// const faculty1 = await facultyFunc.createFaculty(
+//   "Lori",
+//   "Test",
+//   "666666",
+//   "test@test.com",
+//   "female",
+//   "02/29/1976",
+//   "Password123*",
+//   "Computer Science",
+//   ["CS546", "CS123"],
+//   ["CS554"],
+//   "faculty"
+// );
 
 const faculty2 = await facultyFunc.createFaculty(
   "Patrick",
@@ -79,19 +79,19 @@ const faculty5 = await facultyFunc.createFaculty(
   ["CS515"],
   "faculty"
 );
-const student1 = await studFunc.createStudent(
-  "John",
-  "Doe",
-  "123456",
-  "johndoe@example.com",
-  "Male",
-  "05/20/1998",
-  "Password123!",
-  "Computer Science",
-  ["JS101", "HTML101"],
-  ["JS101"],
-  "student"
-);
+// const student1 = await studFunc.createStudent(
+//   "John",
+//   "Doe",
+//   "123456",
+//   "johndoe@example.com",
+//   "Male",
+//   "05/20/1998",
+//   "Password123!",
+//   "Computer Science",
+//   ["JS101", "HTML101"],
+//   ["JS101"],
+//   "student"
+// );
 
 const student2 = await studFunc.createStudent(
   "Madhura",
@@ -113,7 +113,7 @@ const student3 = await studFunc.createStudent(
   "2011345",
   "rishabh.shirur@stevens.edu",
   "Male",
-  "05/31/200-",
+  "05/31/2000",
   "Thisisnotthepassword123!",
   "Computer Science",
   ["CS583", "CS590", "CS559"],
@@ -122,13 +122,13 @@ const student3 = await studFunc.createStudent(
 );
 
 const student4 = await studFunc.createStudent(
-  "Rishabh",
-  "Shirur",
-  "2011345",
-  "rishabh.shirur@stevens.edu",
+  "Jiaqi",
+  "Tu",
+  "2001234",
+  "jiaqi.tu@stevens.edu",
   "Male",
-  "05/31/2000",
-  "Thisisnotthepassword123!",
+  "05/13/2000",
+  "Keptthrowinganerror123!",
   "Computer Science",
   ["CS583", "CS590", "CS559"],
   ["CS546", "CS561", "CS586"],
