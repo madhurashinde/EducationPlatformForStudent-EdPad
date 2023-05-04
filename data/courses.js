@@ -155,7 +155,26 @@ const getCourseByFacultyEmail = async (email) => {
         speciCor = await getCourseByCID(i);
         specificCourses.push(speciCor);
     }
+    // console.log(specificCourses)
     return specificCourses;
 };
 
-export default { createCourse, getAll, getCourseByCID, getCourseByCWID, getCourseByStudentEmail, getCourseByFacultyEmail };
+
+const getCourseByObjectID = async (id) => {
+    if (!id) throw "Must provide an id to search for";
+    if (typeof id !== "string") throw "Id must be a string";
+    if (id.trim().length === 0)
+        throw "Id cannot be an empty string or just spaces";
+    id = id.trim();
+    if (!ObjectId.isValid(id)) throw 'invalid object ID';
+
+
+    const courseCollection = await courses_func();
+    const course = await courseCollection.findOne({ _id: new ObjectId(id) });
+    if (!course) {
+        throw "course does not exist";
+    }
+    course._id = course._id.toString();
+    return course
+};
+export default { createCourse, getAll, getCourseByCID, getCourseByCWID, getCourseByStudentEmail, getCourseByFacultyEmail, getCourseByObjectID };

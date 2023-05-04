@@ -25,17 +25,13 @@ router
           "professorId": i.professorId,
           "professorName": i.professorName,
         };
-        // coursesObj = {};
-        // coursesObj._id = i._id;
-        // coursesObj.name = i.name;
+
         coursesList.push(coursesObj);
       }
 
 
       return res.render("courses/courses", {
         title: "All courses",
-        // name: "haha",
-        // allCourses: JSON.stringify(coursesList)
         allCourses: coursesList
       })
     } catch (e) {
@@ -46,9 +42,6 @@ router
 
 
 router.get("/", async (req, res) => {
-  // let id_got = req.params.id
-  // id_got = id_got.trim()
-
 
   try {
     console.log(req.session.user.emailAddress)
@@ -76,7 +69,7 @@ router.get("/", async (req, res) => {
       res.redirect('/login');
 
     }
-    console.log(req.session.user.role)
+
 
 
     // if no role
@@ -87,19 +80,28 @@ router.get("/", async (req, res) => {
     // })
 
 
-
-
-
-
-
   } catch (e) {
     return res.status(400).json({ error: e });
   }
 });
 
+router.get("/:id", async (req, res) => {
+  let id_got = req.params.id
+  id_got = id_got.trim()
 
-
-
+  try {
+    console.log("haha")
+    let course_got = await coursesFunc.getCourseByObjectID(id_got)
+    console.log(course_got)
+    return res.render("courses/coursedetail", {
+      title: "Course Detail",
+      courseObjectID: course_got._id,
+      courseTitle: course_got.courseTitle
+    })
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+});
 
 
 
