@@ -1,6 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import { facultyFunc, adminFunc, studFunc } from "../data/index.js";
+import { student, faculty } from "../config/mongoCollections.js";
 import {
   validCWID,
   checkBirthDateFormat,
@@ -11,6 +12,47 @@ import {
   validGender,
 } from "../helper.js";
 import { coursesFunc } from "../data/index.js";
+
+router
+  .route('/admin/register')
+  .get(async (req, res) => {
+    //code here for GET
+    console.log("get route")
+    res.render('register/register', {title: "Register Page"});
+  })
+  .post(async (req, res) => {
+
+    //code here for POST
+    console.log("route")
+    let result ={};
+    try{
+      checkNameFormat(req.body.firstNameInput);
+      checkNameFormat(req.body.lastNameInput);
+  // CWID = validCWID(CWID);
+      checkEmailAddress(req.body.emailAddressInput);
+      validGender(req.body.genderInput);
+      checkBirthDateFormat(req.body.birthDateInput);
+      validPassword(req.body.passwordInput);
+      checkValidMajor(req.body.majorInput);
+
+      if(req.body.passwordInput !== req.body.confirmPasswordInput){
+        res.status(400).render('register/register',{error: "Passwords do not match", title: "Register Page"});
+      }
+      
+      result = await facultyFunc.createFaculty(req.body.firstNameInput, req.body.lastNameInput,req.body.emailAddressInput,req.body.genderInput, req.body.genderInput, req.body.passwordInput,req.body.majorInput );
+      if(result.insertedUser){
+        return res.redirect('/login')
+      }
+      else {
+        res.status(500).send("Internal Server Error")
+      }
+  }catch(e){
+    // console.log("Error: ",e);
+    res.status(400).render('register/register',{error: e, title: "Register Page"});
+    return;
+  }
+
+ } );
 
 router
   .route('/register')
@@ -34,6 +76,11 @@ router
 
       if(req.body.passwordInput !== req.body.confirmPasswordInput){
         res.status(400).render('register/register',{error: "Passwords do not match", title: "Register Page"});
+      }
+      const facCollection = await faculty();
+      const fac = await facCollection.findOne({emailAddress: req.body.emailAddressInput})
+      if (fac){
+          throw `Error: Email address is registered as a faculty`
       }
       result = await studFunc.createStudent(req.body.firstNameInput, req.body.lastNameInput,req.body.emailAddressInput,req.body.genderInput, req.body.genderInput, req.body.passwordInput,req.body.majorInput );
       if(result.insertedUser){
@@ -85,7 +132,7 @@ router
         // }
         return res.redirect("/course");
       }
-    } catch (e) { }
+    } catch (e) {}
 
     // student login
     try {
@@ -105,7 +152,7 @@ router
         };
         return res.redirect("/course");
       }
-    } catch (e) { }
+    } catch (e) {}
 
     // admin login
     try {
@@ -120,9 +167,9 @@ router
           lastName: result_admin.lastName,
           role: result_admin.role,
         };
-        return res.redirect("/course");
+        return res.redirect("/admin");
       }
-    } catch (e) { }
+    } catch (e) {}
     return res.render("login/login", {
       error: "Either the email or the password is not valid",
       title: "Login Page",
