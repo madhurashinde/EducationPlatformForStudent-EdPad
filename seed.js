@@ -80,6 +80,7 @@ const faculty5 = await facultyFunc.createFaculty(
   ["CS515"],
   "faculty"
 );
+
 const student1 = await studFunc.createStudent(
   "John",
   "Doe",
@@ -146,7 +147,7 @@ const student5 = await studFunc.createStudent(
   "Testingeverything!123",
   "Computer Science",
   ["CS583", "CS590", "CS559"],
-  ["CS546", "CS561", "CS586"],
+  [],
   "student"
 );
 
@@ -235,7 +236,7 @@ await submissionFunc.getAllSubmission(assignment2._id.toString());
 
 await submissionFunc.resubmitSubmission(
   assignment2._id.toString(),
-  "643895a8b3ee41b54432b774",
+  student1._id.toString(),
   "www.submission2.com"
 );
 

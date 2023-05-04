@@ -2,6 +2,7 @@ import { Router } from "express";
 const router = Router();
 import { facultyFunc, adminFunc, studFunc } from "../data/index.js";
 import { checkEmailAddress, validPassword } from "../helper.js";
+import { coursesFunc } from "../data/index.js";
 
 router
   .route("/login")
@@ -32,9 +33,10 @@ router
           courseTaught: result_fac.courseTaught,
           role: result_fac.role,
         };
-        if (req.session.user.role === "faculty") {
-          return res.redirect("/faculty");
-        }
+        // if (req.session.user.role === "faculty") {
+        //   return res.redirect("/faculty");
+        // }
+        return res.redirect("/course");
       }
     } catch (e) {}
 
@@ -63,7 +65,6 @@ router
         req.body.emailAddressInput,
         req.body.passwordInput
       );
-      // console.log(result,'result');
       if (result_admin) {
         req.session.user = {
           firstName: result_admin.firstName,
@@ -79,38 +80,31 @@ router
     });
   });
 
-router.route("/faculty").get(async (req, res) => {
-  //code here for GET
-  // console.log('protected riyte');
-  // return res.render("homepage", {
-  //   firstName: req.session.user.firstName,
-  //   lastName: req.session.user.lastName,
-  //   courseTaught: req.session.user.courseTaught,
-  //   title: "Faculty Page",
-  // });
-  return res.json({ sucess: "success" });
-});
-
-router.route("/student").get(async (req, res) => {
-  //code here for GET
-  // console.log('protected riyte');
-  return res.render("student", {
-    firstName: req.session.user.firstName,
-    lastName: req.session.user.lastName,
-    courseCompleted: req.session.user.courseCompleted,
-    courseInProgress: req.session.user.courseInProgress,
-    title: "Student Page",
-  });
-});
-
 router.route("/admin").get(async (req, res) => {
-  //code here for GET
-  // console.log('protected riyte');
-  return res.render("admin", {
-    firstName: req.session.user.firstName,
-    lastName: req.session.user.lastName,
-    title: "Admin Page",
-  });
+  try {
+    const allCourses = await coursesFunc.getAll();
+    let coursesList = [];
+    let coursesObj = {};
+    for (let i of allCourses) {
+      i._id = i._id.toString();
+      coursesObj = {
+        _id: i._id,
+        // "name": i.name,
+        courseTitle: i.courseTitle,
+        courseId: i.courseId,
+        description: i.description,
+        professorId: i.professorId,
+        professorName: i.professorName,
+      };
+      coursesList.push(coursesObj);
+    }
+    return res.render("courses/courses", {
+      title: "All courses",
+      allCourses: coursesList,
+    });
+  } catch (e) {
+    res.status(500).json({ error: e });
+  }
 });
 
 export default router;

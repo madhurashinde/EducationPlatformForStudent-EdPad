@@ -13,10 +13,10 @@ const getCollectionFn = (collection) => {
   };
 };
 
-export const assignment = getCollectionFn("assignment");
-export const courses_func = getCollectionFn("courses");
-export const students = getCollectionFn('students');
-export const faculty = getCollectionFn('faculty');
-export const admin = getCollectionFn('admin');
-export const announcements = getCollectionFn('announcements');
-export const modules = getCollectionFn('modules');
+export const assignment = getCollectionFn("assignmen");
+export const course = getCollectionFn("course");
+export const student = getCollectionFn("student");
+export const faculty = getCollectionFn("faculty");
+export const admin = getCollectionFn("admin");
+export const announcement = getCollectionFn("announcement");
+export const module = getCollectionFn("module");

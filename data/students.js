@@ -1,4 +1,4 @@
-import { students } from "../config/mongoCollections.js";
+import { student } from "../config/mongoCollections.js";
 import {
   validCWID,
   checkBirthDateFormat,
@@ -38,7 +38,7 @@ const createStudent = async (
   courseInProgress = checkValidArray(courseInProgress);
   role = validRole(role);
 
-  const studCollection = await students();
+  const studCollection = await student();
   const studEmail = await studCollection.findOne({
     emailAddress: emailAddress,
   });
@@ -75,7 +75,7 @@ const createStudent = async (
 const checkStudent = async (emailAddress, password) => {
   emailAddress = checkEmailAddress(emailAddress);
   password = validPassword(password);
-  const studCollection = await students();
+  const studCollection = await student();
   const stud = await studCollection.findOne({ emailAddress: emailAddress });
   if (stud) {
     const compare = async (password, hash) => {
