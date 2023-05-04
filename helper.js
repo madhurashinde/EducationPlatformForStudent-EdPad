@@ -138,7 +138,6 @@ export const checkNumberFormat = (num) => {
 export const checkBirthDateFormat = (strVal) => {
   if (!strVal) throw `Error: You must supply a string}!`;
   if (typeof strVal !== "string") throw `Error: Each value must be a string!`;
-  //console.log(strVal);
   strVal = strVal.trim();
   if (strVal.length === 0)
     throw `Error: Input cannot be an empty string or string with just spaces`;
@@ -168,8 +167,8 @@ export const checkBirthDateFormat = (strVal) => {
 };
 
 export const checkValidArray = (arr) => {
-  if (!arr || !Array.isArray(arr) || arr.length === 0)
-    throw "Array must has length > 0";
+  // if (!arr || !Array.isArray(arr) || arr.length === 0)
+  if (!arr || !Array.isArray(arr)) throw "Array must has length > 0";
   let res = [];
   for (let i = 0; i < arr.length; i++) {
     if (!arr[i] || typeof arr[i] !== "string" || arr[i] === "")

@@ -42,8 +42,6 @@ const createAssignment = async (
     score: parseInt(score),
     submission: [],
   };
-  console.log(dueDate.trim());
-  console.log(dueTime.trim());
   const assignmentCollection = await assignment();
   const insertInfo = await assignmentCollection.insertOne(newAssignment);
   if (!insertInfo.acknowledged || !insertInfo.insertedId)
