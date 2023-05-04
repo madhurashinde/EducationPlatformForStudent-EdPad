@@ -6,14 +6,17 @@ import { assignment } from "../config/mongoCollections.js";
 import { gradeFunc } from "../data/index.js";
 import { validStr, nonNegInt } from "../helper.js";
 
-router.route("/student/:id").get(async (req, res) => {
+// id = courseId, to check student's grade
+// only student is allowed
+router.route("/:id").get(async (req, res) => {
+  const courseId = req.params.id;
+  const role = req.session.user.role;
+  if (role !== "student") {
+    return res.redirect(`/assignment//${courseId}`);
+  }
   try {
-    const courseId = req.params.id;
-    // const studentId = req.session.id;
-    const allGrade = await gradeFunc.getAllGrade(
-      courseId,
-      "643895a8b3ee41b54432b774"
-    );
+    const studentId = req.session.user.id;
+    const allGrade = await gradeFunc.getAllGrade(courseId, studentId);
     // get course name by id
     const course = "Web Programming";
     let totalScoreGet = 0;
@@ -39,7 +42,8 @@ router.route("/student/:id").get(async (req, res) => {
   }
 });
 
-router.route("/:id").post(async (req, res) => {
+//id = submissionId
+router.route("/detail/:id").post(async (req, res) => {
   const assignmentId = req.body.assignmentId.trim();
   const id = req.body.submissionId.trim();
   const grade = req.body.score.trim();
