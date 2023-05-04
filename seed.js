@@ -5,6 +5,7 @@ import {
   adminFunc,
   assignmentFunc,
   submissionFunc,
+  coursesFunc
 } from "./data/index.js";
 
 const db = await dbConnection();
@@ -23,6 +24,31 @@ await db.dropDatabase();
 //   ["CS554"],
 //   "faculty"
 // );
+
+let newCourse = await coursesFunc.createCourse(
+  "Introduction to JavaScript3",
+  "JS101",
+  "Learn the basics of JavaScript programming language",
+  "PROF001",
+  "John Smith"
+);
+
+let newCourse2 = await coursesFunc.createCourse(
+  "Introduction to JavaScript3",
+  "CS554",
+  "Learn the basics of JavaScript programming language",
+  "PROF001",
+  "John Smith"
+);
+
+let newCourse3 = await coursesFunc.createCourse(
+  "Introduction to JavaScript3",
+  "CS573",
+  "Learn the basics of JavaScript programming language",
+  "PROF001",
+  "John Smith"
+);
+
 
 const faculty2 = await facultyFunc.createFaculty(
   "Patrick",
