@@ -6,14 +6,14 @@
         <h2>{{name}}</h2>
 
     </div> --}}
-    <div>
-
+    <h2>Completed Courses</h2>
+    {{#if CompletedCourses}}
+    <div>  
         <ol>
-            {{#each allCourses}}
+            {{#each CompletedCourses}}
             <div>
                 <li>
-                    <div><a href='/course/{{_id}}'>{{courseTitle}}</a></div>
-                    {{!-- <h3>{{courseTitle}}</h3> --}}
+                    <h3>{{courseTitle}}</h3>
                     <p>{{courseId}}</p>
                     {{!-- <p>{{description}}</p> --}}
                     {{!-- <p>{{professorId}}</p> --}}
@@ -23,5 +23,35 @@
             {{/each}}
         </ol>
     </div>
+    {{else}}
+    <div>
+        <p>No Completed Courses</p>
+    </div>
+    {{/if}}
+
+
+    <h2>Courses In Progress</h2>
+    {{#if CurrentCourses}}
+    <div>  
+        <ol>
+            {{#each CurrentCourses}}
+            <div>
+                <li>
+                    <h3>{{courseTitle}}</h3>
+                    <p>{{courseId}}</p>
+                    {{!-- <p>{{description}}</p> --}}
+                    {{!-- <p>{{professorId}}</p> --}}
+                    <p>{{professorName}}</p>
+                    <button onclick="location.href='/course/{{_id}}';">Detail</button>
+                </li>
+            </div>
+            {{/each}}
+        </ol>
+    </div>
+    {{else}}
+    <div>
+        <p>No Course In Progress</p>
+    </div>
+    {{/if}}
 
 </main>

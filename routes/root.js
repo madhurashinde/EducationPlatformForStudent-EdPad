@@ -27,6 +27,7 @@ router
       );
       if (result_fac) {
         req.session.user = {
+          id: result_fac._id,
           firstName: result_fac.firstName,
           lastName: result_fac.lastName,
           emailAddress: result_fac.emailAddress,
@@ -48,6 +49,7 @@ router
       );
       if (result_stud) {
         req.session.user = {
+          id: result_stud._id,
           firstName: result_stud.firstName,
           lastName: result_stud.lastName,
           emailAddress: result_stud.emailAddress,
@@ -67,6 +69,7 @@ router
       );
       if (result_admin) {
         req.session.user = {
+          id: result_admin._id,
           firstName: result_admin.firstName,
           lastName: result_admin.lastName,
           role: result_admin.role,
