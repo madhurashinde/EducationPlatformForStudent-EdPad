@@ -52,7 +52,9 @@ const createStudent = async (
   if (!studList) throw "Could not get all the students";
 
   const hash = await bcrypt.hash(password, saltRounds);
-  const studEmail = await studCollection.findOne({ emailAddress: emailAddress });
+  const studEmail = await studCollection.findOne({
+    emailAddress: emailAddress,
+  });
   if (studEmail) throw "This email address has an associated account";
   let newStud = {
     firstName: firstName,
@@ -72,7 +74,10 @@ const createStudent = async (
   if (!insertInfo.acknowledged || !insertInfo.insertedId)
     throw "Could not add a student";
 
-  return { insertedStud: true };
+  const id = insertInfo.insertedId;
+  const newStudent = await studCollection.findOne({ _id: id });
+  newStudent._id = newStudent._id.toString();
+  return newStudent;
 };
 
 const checkStudent = async (emailAddress, password) => {
@@ -82,14 +87,14 @@ const checkStudent = async (emailAddress, password) => {
     return await bcrypt.compare(password, hash);
   };
   const studCollection = await students();
-  const studList = await studCollection.find({}).toArray();
-  if (!studList) throw "Could not get all the students";
+  const stud = await studCollection.findOne({ emailAddress: emailAddress });
+  // if (!studList) throw "Could not get all the students";
   let result = {};
-  const stud = studList.find((element) => {
-    if (element["emailAddress"] === emailAddress) {
-      return element;
-    }
-  });
+  // const stud = studList.find((element) => {
+  //   if (element["emailAddress"] === emailAddress) {
+  //     return element;
+  //   }
+  // });
   if (stud) {
     let comparePassword = await compare(password, stud.password);
     if (comparePassword) {
@@ -106,7 +111,7 @@ const checkStudent = async (emailAddress, password) => {
         courseInProgress: stud.courseInProgress,
       };
     } else {
-      throw `3Either the emailAddress or password is invalid abc`;
+      throw `Either the emailAddress or password is invalid abc`;
     }
   }
   return result;

@@ -79,19 +79,19 @@ const faculty5 = await facultyFunc.createFaculty(
   ["CS515"],
   "faculty"
 );
-// const student1 = await studFunc.createStudent(
-//   "John",
-//   "Doe",
-//   "123456",
-//   "johndoe@example.com",
-//   "Male",
-//   "05/20/1998",
-//   "Password123!",
-//   "Computer Science",
-//   ["JS101", "HTML101"],
-//   ["JS101"],
-//   "student"
-// );
+const student1 = await studFunc.createStudent(
+  "John",
+  "Doe",
+  "123456",
+  "johndoe@example.com",
+  "Male",
+  "05/20/1998",
+  "Password123!",
+  "Computer Science",
+  ["JS101", "HTML101"],
+  ["JS101"],
+  "student"
+);
 
 const student2 = await studFunc.createStudent(
   "Madhura",
