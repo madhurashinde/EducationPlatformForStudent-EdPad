@@ -1,15 +1,14 @@
 import { faculty } from "../config/mongoCollections.js";
-import { ObjectId } from "mongodb";
-
 import {
-  checkNumberFormat,
+  validCWID,
   checkBirthDateFormat,
   checkNameFormat,
   checkEmailAddress,
   validPassword,
   validRole,
-  checkValidStr,
+  checkValidMajor,
   checkValidArray,
+  validGender,
 } from "../helper.js";
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
@@ -17,7 +16,7 @@ const saltRounds = 10;
 const createFaculty = async (
   firstName,
   lastName,
-  facultyCWID,
+  CWID,
   emailAddress,
   gender,
   birthDate,
@@ -29,42 +28,26 @@ const createFaculty = async (
 ) => {
   firstName = checkNameFormat(firstName);
   lastName = checkNameFormat(lastName);
-  // facultyCWID = checkNumberFormat(facultyCWID);
+  CWID = validCWID(CWID);
   emailAddress = checkEmailAddress(emailAddress);
-  if (
-    !gender ||
-    typeof gender !== "string" ||
-    (gender.trim().toLowerCase() !== "male" &&
-      gender.trim().toLowerCase() !== "female")
-  )
-    throw "Gender is not valid";
-
+  gender = validGender(gender);
   birthDate = checkBirthDateFormat(birthDate);
   password = validPassword(password);
-  major = checkValidStr(major);
-  // courseTaught = checkValidStr(courseTaught);
-  // courseInProgress = checkValidStr(courseInProgress);
-  if (!checkValidArray(courseTaught) || !checkValidArray(courseInProgress))
-    throw "You must provide a valid course list";
+  major = checkValidMajor(major);
+  checkValidArray(courseTaught);
+  checkValidArray(courseInProgress);
   role = validRole(role);
 
   const facCollection = await faculty();
-  // facList.forEach((element) => {
-  //   if ((element["emailAddress"] = emailAddress)) {
-  //     throw `Error: Email Addrress already taken`;
-  //   }
-  // });
   const facList = await facCollection.findOne({ emailAddress: emailAddress });
   if (facList) throw "This email address has an associated account";
-
   const hash = await bcrypt.hash(password, saltRounds);
-
-  let newFaculty = {
+  const newFac = {
     firstName: firstName,
     lastName: lastName,
-    facultyCWID: facultyCWID,
+    CWID: CWID,
     emailAddress: emailAddress,
-    gender: gender.trim().toLowerCase(),
+    gender: gender,
     birthDate: birthDate,
     password: hash,
     major: major,
@@ -73,50 +56,45 @@ const createFaculty = async (
     role: role,
   };
 
-  const insertInfo = await facCollection.insertOne(newFaculty);
+  const insertInfo = await facCollection.insertOne(newFac);
   if (!insertInfo.acknowledged || !insertInfo.insertedId)
     throw "Could not add faculty";
-
-  return { insertedFaculty: true };
+  const id = insertInfo.insertedId;
+  const newFaculty = await facCollection.findOne(
+    {
+      _id: id,
+    },
+    { projection: { password: 0 } }
+  );
+  newFaculty._id = newFaculty._id.toString();
+  return newFaculty;
 };
 
 const checkFaculty = async (emailAddress, password) => {
   emailAddress = checkEmailAddress(emailAddress);
   password = validPassword(password);
-  const compare = async (password, hash) => {
-    return await bcrypt.compare(password, hash);
-  };
   const facCollection = await faculty();
-  const facList = await facCollection.find({}).toArray();
-  if (!facList) throw "Could not get all the faculty";
-  let result = {};
-  const facultyList = facList.find((element) => {
-    if (element["emailAddress"] === emailAddress) {
-      return element;
-    }
-  });
-  if (facultyList) {
-    // let comparePassword = await compare(password, faculty.password);
-    let comparePassword = true;
+  const fac = await facCollection.findOne({ emailAddress: emailAddress });
+  if (fac) {
+    const compare = async (password, hash) => {
+      return await bcrypt.compare(password, hash);
+    };
+    const comparePassword = await compare(password, fac.password);
     if (comparePassword) {
-      result = {
-        firstName: facultyList.firstName,
-        lastName: facultyList.lastName,
-        facultyCWID: facultyList.facultyCWID,
-        emailAddress: facultyList.emailAddress,
-        role: facultyList.role,
-        gender: facultyList.gender,
-        birthDate: facultyList.birthDate,
-        major: facultyList.major,
-        courseTaught: facultyList.courseTaught,
-        courseInProgress: facultyList.courseInProgress,
-      };
+      const res = await facCollection.findOne(
+        {
+          emailAddress: emailAddress,
+        },
+        { projection: { password: 0 } }
+      );
+      res._id = res._id.toString();
+      return res;
     } else {
-      throw `3Either the emailAddress or password is invalid`;
+      throw `Either the emailAddress or password is invalid`;
     }
+  } else {
+    throw `Either the emailAddress or password is invalid`;
   }
-
-  return result;
 };
 
 export default {

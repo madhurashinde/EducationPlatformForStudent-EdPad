@@ -2,12 +2,9 @@ const checkEmailAddress = (strVal) => {
   if (!strVal) throw `Email address can not be empty`;
   if (typeof strVal !== "string") throw "Email address must be a string";
   strVal = strVal.trim().toLowerCase();
-  if (
-    !strVal.match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    )
-  )
-    throw `Error: Invalid format for email address`;
+  const emailRegex =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/;
+  if (!emailRegex.test(strVal)) throw `Error: Invalid format for email address`;
   return strVal;
 };
 
@@ -43,11 +40,10 @@ if (form) {
     emailAddressInput.classList.remove("inputClass");
     passwordInput.classList.remove("inputClass");
     errorDivs.hidden = true;
+    var email = emailAddressInput.value;
+    var pwd = passwordInput.value;
     try {
-      var email = emailAddressInput.value;
-      var pwd = passwordInput.value;
       checkEmailAddress(email);
-      validPassword(pwd);
     } catch (e) {
       event.preventDefault();
       const message = typeof e === "string" ? e : e.message;
@@ -55,13 +51,16 @@ if (form) {
       errorDivs.hidden = false;
       emailAddressInput.value = email;
       emailAddressInput.classList.add("inputClass");
+    }
+
+    try {
+      validPassword(pwd);
+    } catch (e) {
+      event.preventDefault();
+      const message = typeof e === "string" ? e : e.message;
+      errorDivs.textContent = message;
+      errorDivs.hidden = false;
       passwordInput.classList.add("inputClass");
-      if (checkEmailAddress(email)) {
-        emailAddressInput.classList.remove("inputClass");
-      }
-      if (validPassword(pwd)) {
-        passwordInput.classList.remove("inputClass");
-      }
     }
   });
 }
