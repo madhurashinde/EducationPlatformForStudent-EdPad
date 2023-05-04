@@ -156,4 +156,10 @@ router.route("/admin").get(async (req, res) => {
   }
 });
 
+router.route('/logout').get(async (req, res) => {
+  // console.log("logout");
+  //code here for GET
+  req.session.destroy();
+  res.render('login/logout',{title: "Logout Page"});
+});
 export default router;
