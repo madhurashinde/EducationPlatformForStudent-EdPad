@@ -1,0 +1,63 @@
+<form class="quizlet-form" action="/quizlet" id="quizlet-cat-form" method="post">
+    <div>
+        <label for="quizletCategoryInput">Filter based on categories</label>
+        <select name="quizletCategoryInput" id="quizletCategoryInput">
+            <option value= "9">General Knowledge</option>
+            <option value= "10">Entertainment: Books</option>
+            <option value= "19">Science: Mathematics</option>
+            <option value= "20">Mythology</option>
+            <option value= "21">Sports</option>
+            <option value= "22">Geography</option>
+            <option value= "23">History</option>
+            <option value= "24">Politics</option>
+            <option value= "25">Art</option>
+            <option value= "27">Animals</option>
+            <option value= "28">Vehicles</option>
+            <option value= "30">Science: Gadgets</option> 
+        </select>
+        
+        <button class="submit" type="submit">Filter</button>
+        
+        <div id="qzlts-error" hidden>Please enter valid input</div>
+    </div>
+</form>
+
+
+
+{{#if data.length}}
+{{#each data}}
+<div class="content-area">
+  <div class="container">
+    {{!-- <div class="row"> --}}
+      <div class="col-lg-4 col-sm-12">
+        <div class="box">
+          <div class="content">
+              <div class="front img-3">
+                  <h2>{{{question}}}</h2>
+              </div>
+              <div class="back">
+                <div class="back-content">
+                  <h2>{{{correct_answer}}}</h2>
+                </div>
+              </div>
+          </div>
+      </div>
+      </div>
+    </div>
+  {{!-- </div> --}}
+</div>
+<br>
+<br>
+{{/each}}
+{{/if}}
+
+<script src="../../public/js/quizlets.js"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script>
+    $('.box .content').click(function() {
+	$(this).closest('.box').toggleClass('animate');
+    $(this).css('transform, rotateY(180deg)');
+});
+</script>
