@@ -4,11 +4,26 @@ import { assignmentFunc } from "../data/index.js";
 import { validStr, validWeblink, nonNegInt, validDueTime } from "../helper.js";
 import { coursesFunc } from "../data/index.js";
 
+router.get("/admin", async (req, res) => {
+
+  let getAllCourses = await coursesFunc.getAll();
+  return res.render("courses/courseAdmin", {
+    title: "Admin can see all courses",
+    allCourses: getAllCourses,
+  });
+});
+
+
+
+
+
 router.get("/", async (req, res) => {
+  // console.log(req.session.user.role)
+  // console.log(req.session.user.id)
   if (req.session.user) {
     try {
       if (req.session.user.role === "admin") {
-        return res.redirect("/admin");
+        return res.redirect("/course/admin");
       } else if (req.session.user.role === "student") {
         // let getStudCourses = await coursesFunc.getCourseByStudentEmail(
         //   req.session.user.id
@@ -22,7 +37,6 @@ router.get("/", async (req, res) => {
         );
         const StudCompletedCourses =
           await coursesFunc.getStudentCompletedCourse(req.session.user.id);
-
         return res.render("courses/courses", {
           title: "Student courses",
           CompletedCourses: StudCompletedCourses,

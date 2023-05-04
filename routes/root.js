@@ -85,7 +85,7 @@ router
         // }
         return res.redirect("/course");
       }
-    } catch (e) {}
+    } catch (e) { }
 
     // student login
     try {
@@ -105,7 +105,7 @@ router
         };
         return res.redirect("/course");
       }
-    } catch (e) {}
+    } catch (e) { }
 
     // admin login
     try {
@@ -120,9 +120,9 @@ router
           lastName: result_admin.lastName,
           role: result_admin.role,
         };
-        return res.redirect("/admin");
+        return res.redirect("/course");
       }
-    } catch (e) {}
+    } catch (e) { }
     return res.render("login/login", {
       error: "Either the email or the password is not valid",
       title: "Login Page",
