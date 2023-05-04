@@ -5,17 +5,28 @@ import { validStr, validWeblink, nonNegInt, validDueTime } from "../helper.js";
 import { coursesFunc } from "../data/index.js";
 
 router.get("/", async (req, res) => {
-  try {
-    if (req.session.user) {
+  if (req.session.user) {
+    try {
       if (req.session.user.role === "admin") {
         return res.redirect("/admin");
       } else if (req.session.user.role === "student") {
-        let getStudCourses = await coursesFunc.getCourseByStudentEmail(
+        // let getStudCourses = await coursesFunc.getCourseByStudentEmail(
+        //   req.session.user.id
+        // );
+        // return res.render("courses/courses", {
+        //   title: "Student courses",
+        //   allCourses: getStudCourses,
+        // });
+        const StudCurrentCourses = await coursesFunc.getStudentCurrentCourse(
           req.session.user.id
         );
+        const StudCompletedCourses =
+          await coursesFunc.getStudentCompletedCourse(req.session.user.id);
+
         return res.render("courses/courses", {
           title: "Student courses",
-          allCourses: getStudCourses,
+          CompletedCourses: StudCurrentCourses,
+          CurrentCourses: StudCompletedCourses,
         });
       } else if (req.session.user.role === "faculty") {
         let getFacultyCourses = await coursesFunc.getCourseByFacultyEmail(
@@ -26,17 +37,10 @@ router.get("/", async (req, res) => {
           allCourses: getFacultyCourses,
         });
       }
-    } else {
+    } catch (e) {
       return res.status(400).json({ error: e });
     }
-
-    // if no role
-    // let getStudCourses = await coursesFunc.getCourseByCWID(id_got);
-    // return res.render("courses/courses", {
-    //   title: "Student courses",
-    //   allCourses: getStudCourses
-    // })
-  } catch (e) {
+  } else {
     return res.redirect("/login");
   }
 });

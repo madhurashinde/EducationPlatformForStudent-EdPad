@@ -20,7 +20,7 @@ const faculty1 = await facultyFunc.createFaculty(
   "02/29/1976",
   "Password123*",
   "Computer Science",
-  ["CS546", "CS123"],
+  ["CS546"],
   ["CS554"],
   "faculty"
 );
@@ -90,7 +90,7 @@ const student1 = await studFunc.createStudent(
   "05/20/1998",
   "Password123!",
   "Computer Science",
-  ["JS101", "HTML101"],
+  ["JS101", "CS554"],
   ["JS101"],
   "student"
 );

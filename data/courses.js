@@ -93,7 +93,7 @@ const getCourseByCWID = async (id) => {
   id = id.trim();
   // id = id.toUpperCase();
 
-  let studCollection = await students();
+  let studCollection = await student();
 
   let stud = await studCollection.findOne({ studentCWID: id });
   //
@@ -110,7 +110,7 @@ const getCourseByCWID = async (id) => {
 };
 
 const getCourseByStudentEmail = async (email) => {
-  let studCollection = await students();
+  let studCollection = await student();
 
   let stud = await studCollection.findOne({ emailAddress: email });
   //
@@ -163,7 +163,8 @@ const getCourseByObjectID = async (id) => {
   return courseInfo;
 };
 
-const getStudentCurrentCouse = async (id) => {
+// -----------------------------------------------------
+const getStudentCurrentCourse = async (id) => {
   if (!id) throw "Must provide an id to search for";
   if (typeof id !== "string") throw "Id must be a string";
   if (id.trim().length === 0)
@@ -171,17 +172,100 @@ const getStudentCurrentCouse = async (id) => {
   id = id.trim();
   if (!ObjectId.isValid(id)) throw "invalid object ID";
   const studCollection = await student();
+  const courseCollection = await course();
   const courseInfo = await studCollection.findOne(
     { _id: new ObjectId(id) },
     { projection: { courseInProgress: 1 } }
   );
   let courseList = [];
   if (courseInfo) {
-    // get detail info of course
-    // for (let i=0; i< courseInfo.length; i++ ){
-    //     courseInfo =
+    const course = courseInfo.courseInProgress;
+    for (let i = 0; i < course.length; i++) {
+      const courseInfo = await courseCollection.findOne({
+        courseId: course[i],
+      });
+      courseList.push(courseInfo);
+    }
+    return courseList;
   }
-  return courseInfo;
+};
+
+const getStudentCompletedCourse = async (id) => {
+  if (!id) throw "Must provide an id to search for";
+  if (typeof id !== "string") throw "Id must be a string";
+  if (id.trim().length === 0)
+    throw "Id cannot be an empty string or just spaces";
+  id = id.trim();
+  if (!ObjectId.isValid(id)) throw "invalid object ID";
+  const studCollection = await student();
+  const courseCollection = await course();
+  const courseInfo = await studCollection.findOne(
+    { _id: new ObjectId(id) },
+    { projection: { courseCompleted: 1 } }
+  );
+  let courseList = [];
+  if (courseInfo) {
+    const course = courseInfo.courseCompleted;
+    for (let i = 0; i < course.length; i++) {
+      const courseInfo = await courseCollection.findOne({
+        courseId: course[i],
+      });
+      courseList.push(courseInfo);
+    }
+    return courseList;
+  }
+};
+
+const getFacultyCurrentCourse = async (id) => {
+  if (!id) throw "Must provide an id to search for";
+  if (typeof id !== "string") throw "Id must be a string";
+  if (id.trim().length === 0)
+    throw "Id cannot be an empty string or just spaces";
+  id = id.trim();
+  if (!ObjectId.isValid(id)) throw "invalid object ID";
+  const facCollection = await faculty();
+  const courseCollection = await course();
+  const courseInfo = await facCollection.findOne(
+    { _id: new ObjectId(id) },
+    { projection: { courseInProgress: 1 } }
+  );
+  let courseList = [];
+  if (courseInfo) {
+    const course = courseInfo.courseInProgress;
+    for (let i = 0; i < course.length; i++) {
+      const courseInfo = await courseCollection.findOne({
+        courseId: course[i],
+      });
+      courseList.push(courseInfo);
+    }
+    return courseList;
+  }
+};
+
+const getFacultyTaughtCourse = async (id) => {
+  if (!id) throw "Must provide an id to search for";
+  if (typeof id !== "string") throw "Id must be a string";
+  if (id.trim().length === 0)
+    throw "Id cannot be an empty string or just spaces";
+  id = id.trim();
+  if (!ObjectId.isValid(id)) throw "invalid object ID";
+  const facCollection = await faculty();
+  const courseCollection = await course();
+  const courseInfo = await facCollection.findOne(
+    { _id: new ObjectId(id) },
+    { projection: { courseTaught: 1 } }
+  );
+  let courseList = [];
+  if (courseInfo) {
+    const course = courseInfo.courseCompleted;
+    for (let i = 0; i < course.length; i++) {
+      const courseInfo = await courseCollection.findOne({
+        courseId: course[i],
+      });
+      courseList.push(courseInfo);
+    }
+    return courseList;
+  }
 };
 
 export default {
@@ -192,4 +276,10 @@ export default {
   getCourseByStudentEmail,
   getCourseByFacultyEmail,
   getCourseByObjectID,
+  getStudentCurrentCourse,
+  getStudentCompletedCourse,
+  getFacultyCurrentCourse,
+  getFacultyTaughtCourse,
 };
+
+await getStudentCurrentCourse("645378c1943c6b0a6a627cf2");
