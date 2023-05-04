@@ -25,8 +25,8 @@ router.get("/", async (req, res) => {
 
         return res.render("courses/courses", {
           title: "Student courses",
-          CompletedCourses: StudCurrentCourses,
-          CurrentCourses: StudCompletedCourses,
+          CompletedCourses: StudCompletedCourses,
+          CurrentCourses: StudCurrentCourses,
         });
       } else if (req.session.user.role === "faculty") {
         let getFacultyCourses = await coursesFunc.getCourseByFacultyEmail(
@@ -50,9 +50,7 @@ router.get("/:id", async (req, res) => {
   id_got = id_got.trim();
 
   try {
-    console.log("haha");
     let course_got = await coursesFunc.getCourseByObjectID(id_got);
-    console.log(course_got);
     return res.render("courses/coursedetail", {
       title: "Course Detail",
       courseObjectID: course_got._id,

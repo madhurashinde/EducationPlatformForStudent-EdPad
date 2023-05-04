@@ -15,7 +15,6 @@ const createCourse = async (
     professorId: professorId,
     professorName: professorName,
     studentlist: [],
-    announcement: [],
   };
 
   if (
@@ -51,10 +50,9 @@ const createCourse = async (
   const insertInfo = await courseCollection.insertOne(newCourse);
   if (!insertInfo.acknowledged || !insertInfo.insertedId)
     throw "Could not add newCourse";
-  console.log(insertInfo);
   const newId = insertInfo.insertedId.toString();
-  // const assignmentDetail = await getAssignment(newId);
-  return insertInfo;
+  const courseDetail = await getCourseByObjectID(newId);
+  return courseDetail;
 };
 
 const getAll = async () => {
@@ -182,7 +180,7 @@ const getStudentCurrentCourse = async (id) => {
     const course = courseInfo.courseInProgress;
     for (let i = 0; i < course.length; i++) {
       const courseInfo = await courseCollection.findOne({
-        courseId: course[i],
+        _id: new ObjectId(course[i]),
       });
       courseList.push(courseInfo);
     }
@@ -208,7 +206,7 @@ const getStudentCompletedCourse = async (id) => {
     const course = courseInfo.courseCompleted;
     for (let i = 0; i < course.length; i++) {
       const courseInfo = await courseCollection.findOne({
-        courseId: course[i],
+        _id: new ObjectId(course[i]),
       });
       courseList.push(courseInfo);
     }
@@ -234,7 +232,7 @@ const getFacultyCurrentCourse = async (id) => {
     const course = courseInfo.courseInProgress;
     for (let i = 0; i < course.length; i++) {
       const courseInfo = await courseCollection.findOne({
-        courseId: course[i],
+        _id: new ObjectId(course[i]),
       });
       courseList.push(courseInfo);
     }
@@ -260,12 +258,61 @@ const getFacultyTaughtCourse = async (id) => {
     const course = courseInfo.courseCompleted;
     for (let i = 0; i < course.length; i++) {
       const courseInfo = await courseCollection.findOne({
-        courseId: course[i],
+        _id: new ObjectId(course[i]),
       });
       courseList.push(courseInfo);
     }
     return courseList;
   }
+};
+
+const registerCourse = async (studentId, courseId) => {
+  if (!studentId || !courseId) throw "Must provide student id and course id";
+  if (typeof studentId !== "string" || typeof courseId !== "string")
+    throw "Id must be a string";
+  if (studentId.trim().length === 0 || courseId.trim().length === 0)
+    throw "Id cannot be an empty string or just spaces";
+  studentId = studentId.trim();
+  courseId = courseId.trim();
+  if (!ObjectId.isValid(studentId) || !ObjectId.isValid(courseId))
+    throw "invalid object ID";
+
+  const studCollection = await student();
+  const studentInfo = await studCollection.findOne(
+    { _id: new ObjectId(studentId) },
+    { projection: { courseCompleted: 1, courseInProgress: 1 } }
+  );
+  if (studentInfo === null) throw "invalid student ID";
+  const courseCollection = await course();
+  const courseInfo = await courseCollection.findOne({
+    _id: new ObjectId(courseId),
+  });
+  if (courseInfo === null) throw "invalid course ID";
+  // already enrolled or completed
+  if (courseId in studentInfo.courseCompleted) {
+    throw "You have already completed this course";
+  }
+  if (courseId in studentInfo.courseInProgress) {
+    throw "You have already registered for this course";
+  }
+
+  // add course to student's courseInProgress
+  const studentUpdate = await studCollection.findOneAndUpdate(
+    { _id: new ObjectId(studentId) },
+    { $push: { courseInProgress: courseId } }
+  );
+  if (studentUpdate.lastErrorObject.n === 0) {
+    throw "could not update student info successfully";
+  }
+  // add student to course's studentList
+  const courseUpdate = await courseCollection.findOneAndUpdate(
+    { _id: new ObjectId(courseId) },
+    { $push: { studentlist: studentId } }
+  );
+  if (courseUpdate.lastErrorObject.n === 0) {
+    throw "could not update course info successfully";
+  }
+  return { Register: "success" };
 };
 
 export default {
@@ -280,6 +327,5 @@ export default {
   getStudentCompletedCourse,
   getFacultyCurrentCourse,
   getFacultyTaughtCourse,
+  registerCourse,
 };
-
-await getStudentCurrentCourse("645378c1943c6b0a6a627cf2");
