@@ -120,12 +120,7 @@ const getCourseByCWID = async (id) => {
 
 
 const getCourseByStudentEmail = async (email) => {
-    // if (!id) throw "Must provide an id to search for";
-    // if (typeof id !== "string") throw "Id must be a string";
-    // if (id.trim().length === 0)
-    //   throw "Id cannot be an empty string or just spaces";
-    // id = id.trim();
-    // id = id.toUpperCase();
+
 
     let studCollection = await students();
 
@@ -143,4 +138,24 @@ const getCourseByStudentEmail = async (email) => {
     return specificCourses;
 };
 
-export default { createCourse, getAll, getCourseByCID, getCourseByCWID, getCourseByStudentEmail };
+
+const getCourseByFacultyEmail = async (email) => {
+
+
+    let facultyCollection = await faculty();
+
+    let specificFaculty = await facultyCollection.findOne({ emailAddress: email });
+    //
+
+    let facultyCoursesList = await specificFaculty.courseInProgress;
+    let specificCourses = [];
+    let speciCor;
+    // let findCourse() => { }
+    for (let i of facultyCoursesList) {
+        speciCor = await getCourseByCID(i);
+        specificCourses.push(speciCor);
+    }
+    return specificCourses;
+};
+
+export default { createCourse, getAll, getCourseByCID, getCourseByCWID, getCourseByStudentEmail, getCourseByFacultyEmail };

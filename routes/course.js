@@ -62,13 +62,15 @@ router.get("/", async (req, res) => {
         let getStudCourses = await coursesFunc.getCourseByStudentEmail(req.session.user.emailAddress);
         return res.render("courses/courses", {
           title: "Student courses",
-          // name: "haha",
-          // allCourses: JSON.stringify(coursesList)
           allCourses: getStudCourses
         })
 
       } else if (req.session.user.role === 'faculty') {
-        return res.redirect('/faculty');
+        let getFacultyCourses = await coursesFunc.getCourseByFacultyEmail(req.session.user.emailAddress);
+        return res.render("courses/courses", {
+          title: "Faculty teaching courses",
+          allCourses: getFacultyCourses
+        })
       }
     } else {
       res.redirect('/login');
