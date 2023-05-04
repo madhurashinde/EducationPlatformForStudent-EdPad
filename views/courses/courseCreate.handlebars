@@ -1,0 +1,44 @@
+<h1>Create a course</h1>
+
+
+
+<form id="registration-form" method="POST" action="/course/admin/createcourse">
+
+    <div>
+        <label for="courseTitle">course title:</label>
+        <input type="text" id="courseTitle" name="courseTitle" required>
+    </div>
+
+    <div>
+        <label for="courseId">course Id:</label>
+        <input type="text" id="courseId" name="courseId" required>
+    </div>
+    <div>
+        <label for="description">description:</label>
+        <input type="text" id="description" name="description" required>
+    </div>
+    <div>
+        <label for="professorId">professor Id :</label>
+        <input type="text" id="professorId" name="professorId" required>
+    </div>
+    <div>
+        <label for="professorName">professor Name:</label>
+        <input type="text" id="professorName" name="professorName" required>
+    </div>
+    <div>
+        {{!-- <label for="roleInput">Role:</label>
+        <select id="roleInput" name="roleInput" required>
+            <option value="admin">Admin</option>
+            <option value="user">User</option>
+        </select> --}}
+    </div>
+
+    <div>
+        <button type="submit">Create</button>
+    </div>
+</form>
+
+<a href="/login">Click here to log in</a>
+
+
+{{#if error}} <p class="error">{{error}}</p>{{/if}}

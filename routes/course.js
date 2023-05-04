@@ -13,7 +13,30 @@ router.get("/admin", async (req, res) => {
   });
 });
 
+router
+  .route('/admin/createcourse')
+  .get(async (req, res) => {
+    return res.render('courses/courseCreate')
 
+  })
+  .post(async (req, res) => {
+    let courseTitle = req.body.courseTitle;
+    let courseId = req.body.courseId;
+    let description = req.body.description;
+    let professorId = req.body.professorId;
+    let professorName = req.body.professorName;
+
+    //validation for the same course
+
+    try {
+      let createdCourse = await coursesFunc.createCourse(courseTitle, courseId, description, professorId, professorName);
+      return res.redirect('/course/admin')
+
+    } catch (e) {
+      res.status(400).json({ error: "having error" })
+    }
+
+  })
 
 
 
