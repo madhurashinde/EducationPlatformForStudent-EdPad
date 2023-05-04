@@ -13,7 +13,7 @@ const getCollectionFn = (collection) => {
   };
 };
 
-export const assignment = getCollectionFn("assignmen");
+export const assignment = getCollectionFn("assignment");
 export const course = getCollectionFn("course");
 export const student = getCollectionFn("student");
 export const faculty = getCollectionFn("faculty");

@@ -6,10 +6,7 @@ import {
   checkNameFormat,
   checkEmailAddress,
   validPassword,
-  validRole,
   checkValidMajor,
-  checkValidArray,
-  validGender,
 } from "../helper.js";
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
@@ -20,8 +17,7 @@ const createAdmin = async (
   CWID,
   emailAddress,
   password,
-  major,
-  role
+  major
 ) => {
   firstName = checkNameFormat(firstName);
   lastName = checkNameFormat(lastName);
@@ -29,7 +25,6 @@ const createAdmin = async (
   emailAddress = checkEmailAddress(emailAddress);
   password = validPassword(password);
   major = checkValidMajor(major);
-  role = validRole(role);
 
   const adminCollection = await admin();
   const adminEmail = await adminCollection.findOne({
@@ -46,7 +41,7 @@ const createAdmin = async (
     emailAddress: emailAddress,
     password: hash,
     major: major,
-    role: role,
+    role: "admin",
   };
 
   const insertInfo = await adminCollection.insertOne(newAd);

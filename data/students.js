@@ -5,9 +5,7 @@ import {
   checkNameFormat,
   checkEmailAddress,
   validPassword,
-  validRole,
   checkValidMajor,
-  checkValidArray,
   validGender,
 } from "../helper.js";
 import bcrypt from "bcryptjs";
@@ -21,10 +19,7 @@ const createStudent = async (
   gender,
   birthDate,
   password,
-  major,
-  courseCompleted,
-  courseInProgress,
-  role
+  major
 ) => {
   firstName = checkNameFormat(firstName);
   lastName = checkNameFormat(lastName);
@@ -34,9 +29,6 @@ const createStudent = async (
   birthDate = checkBirthDateFormat(birthDate);
   password = validPassword(password);
   major = checkValidMajor(major);
-  courseCompleted = checkValidArray(courseCompleted);
-  courseInProgress = checkValidArray(courseInProgress);
-  role = validRole(role);
 
   const studCollection = await student();
   const studEmail = await studCollection.findOne({
@@ -53,9 +45,9 @@ const createStudent = async (
     birthDate: birthDate,
     password: hash,
     major: major,
-    courseCompleted: courseCompleted,
-    courseInProgress: courseInProgress,
-    role: role,
+    courseCompleted: [],
+    courseInProgress: [],
+    role: "student",
   };
 
   const insertInfo = await studCollection.insertOne(newStud);
