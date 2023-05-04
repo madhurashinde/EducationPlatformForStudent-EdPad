@@ -1,12 +1,11 @@
 import { Router } from "express";
 const router = Router();
-import path from "path";
 import { facultyFunc, adminFunc, studFunc } from "../data/index.js";
 import { checkEmailAddress, validPassword } from "../helper.js";
 
 router
   .route("/login")
-  .get(async (req, res) => {
+  .get((req, res) => {
     return res.render("login/login", {
       title: "Login Page",
     });
@@ -15,8 +14,12 @@ router
     try {
       checkEmailAddress(req.body.emailAddressInput);
       validPassword(req.body.passwordInput);
+    } catch (e) {
+      return res.render("login/login", { error: e, title: "Login Page" });
+    }
 
-      // facluty login
+    // facluty login
+    try {
       const result_fac = await facultyFunc.checkFaculty(
         req.body.emailAddressInput,
         req.body.passwordInput
@@ -33,8 +36,10 @@ router
           return res.redirect("/faculty");
         }
       }
+    } catch (e) {}
 
-      // student login
+    // student login
+    try {
       const result_stud = await studFunc.checkStudent(
         req.body.emailAddressInput,
         req.body.passwordInput
@@ -50,8 +55,10 @@ router
         };
         return res.redirect("/course");
       }
+    } catch (e) {}
 
-      // admin login
+    // admin login
+    try {
       const result_admin = await adminFunc.checkAdmin(
         req.body.emailAddressInput,
         req.body.passwordInput
@@ -61,19 +68,15 @@ router
         req.session.user = {
           firstName: result_admin.firstName,
           lastName: result_admin.lastName,
-          role: result_admin.role
+          role: result_admin.role,
         };
         return res.redirect("/admin");
-      } else {
-        res.render("login/login", {
-          error: "Either the email or the password is not valid",
-          title: "Login Page",
-        });
       }
-    } catch (e) {
-      res.render("login/login", { error: e, title: "Login Page" });
-      return;
-    }
+    } catch (e) {}
+    return res.render("login/login", {
+      error: "Either the email or the password is not valid",
+      title: "Login Page",
+    });
   });
 
 router.route("/faculty").get(async (req, res) => {

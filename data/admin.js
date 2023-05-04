@@ -1,12 +1,15 @@
+import e from "express";
 import { admin } from "../config/mongoCollections.js";
-import { ObjectId } from "mongodb";
 import {
-  checkNumberFormat,
+  validCWID,
+  checkBirthDateFormat,
   checkNameFormat,
   checkEmailAddress,
   validPassword,
   validRole,
-  checkValidStr,
+  checkValidMajor,
+  checkValidArray,
+  validGender,
 } from "../helper.js";
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
@@ -14,7 +17,7 @@ const saltRounds = 10;
 const createAdmin = async (
   firstName,
   lastName,
-  adminCWID,
+  CWID,
   emailAddress,
   password,
   major,
@@ -22,67 +25,71 @@ const createAdmin = async (
 ) => {
   firstName = checkNameFormat(firstName);
   lastName = checkNameFormat(lastName);
-  // adminCWID = checkNumberFormat(adminCWID);
+  CWID = validCWID(CWID);
   emailAddress = checkEmailAddress(emailAddress);
   password = validPassword(password);
-  major = checkValidStr(major);
+  major = checkValidMajor(major);
   role = validRole(role);
 
   const adminCollection = await admin();
-  const adminList = await adminCollection.find({}).toArray();
-  if (!adminList) throw "Could not get all the students";
-
+  const adminEmail = await adminCollection.findOne({
+    emailAddress: emailAddress,
+  });
+  if (adminEmail) {
+    throw "This admin email address has an associated account";
+  }
   const hash = await bcrypt.hash(password, saltRounds);
-  const adminEmail = await adminCollection.findOne({ emailAddress: emailAddress });
-  if (adminEmail) throw "This admin email address has an associated account";
-  let newAdmin = {
+  const newAd = {
     firstName: firstName,
     lastName: lastName,
-    adminCWID: adminCWID,
+    CWID: CWID,
     emailAddress: emailAddress,
     password: hash,
     major: major,
     role: role,
   };
 
-  const insertInfo = await adminCollection.insertOne(newAdmin);
+  const insertInfo = await adminCollection.insertOne(newAd);
   if (!insertInfo.acknowledged || !insertInfo.insertedId)
     throw "Could not add an admin";
-
-  return { insertedAdmin: true };
+  const id = insertInfo.insertedId;
+  const newAdmin = await adminCollection.findOne(
+    {
+      _id: id,
+    },
+    { projection: { password: 0 } }
+  );
+  newAdmin._id = newAdmin._id.toString();
+  return newAdmin;
 };
 
 const checkAdmin = async (emailAddress, password) => {
   emailAddress = checkEmailAddress(emailAddress);
   password = validPassword(password);
-  const compare = async (password, hash) => {
-    return await bcrypt.compare(password, hash);
-  };
   const adminCollection = await admin();
-  const adminList = await adminCollection.find({}).toArray();
-  if (!adminList) throw "Could not get all the faculty";
-  let result = {};
-  const admin = adminList.find((element) => {
-    if (element["emailAddress"] === emailAddress) {
-      return element;
-    }
+  const adm = await adminCollection.findOne({
+    emailAddress: emailAddress,
   });
-  if (admin) {
-    let comparePassword = await compare(password, admin.password);
+  if (adm) {
+    const compare = async (password, hash) => {
+      return await bcrypt.compare(password, hash);
+    };
+    const comparePassword = await compare(password, adm.password);
     if (comparePassword) {
-      result = {
-        firstName: admin.firstName,
-        lastName: admin.lastName,
-        adminCWID: admin.facultyCWID,
-        emailAddress: admin.emailAddress,
-        role: admin.role,
-        major: admin.major,
-      };
+      const res = await adminCollection.findOne(
+        {
+          emailAddress: emailAddress,
+        },
+        { projection: { password: 0 } }
+      );
+      res._id = res._id.toString();
+      return res;
     } else {
-      throw `5Either the emailAddress or password is invalid`;
+      throw `Either the emailAddress or password is invalid`;
     }
+  } else {
+    throw `Either the emailAddress or password is invalid`;
   }
-  return result;
 };
 
 export default {

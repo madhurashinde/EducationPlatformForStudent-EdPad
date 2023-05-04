@@ -5,50 +5,25 @@ import {
   adminFunc,
   assignmentFunc,
   submissionFunc,
-  coursesFunc
+  coursesFunc,
 } from "./data/index.js";
 
 const db = await dbConnection();
 await db.dropDatabase();
 
-// const faculty1 = await facultyFunc.createFaculty(
-//   "Lori",
-//   "Test",
-//   "666666",
-//   "test@test.com",
-//   "female",
-//   "02/29/1976",
-//   "Password123*",
-//   "Computer Science",
-//   ["CS546", "CS123"],
-//   ["CS554"],
-//   "faculty"
-// );
-
-let newCourse = await coursesFunc.createCourse(
-  "Introduction to JavaScript3",
-  "JS101",
-  "Learn the basics of JavaScript programming language",
-  "PROF001",
-  "John Smith"
+const faculty1 = await facultyFunc.createFaculty(
+  "Lori",
+  "Test",
+  "66666666",
+  "test@test.com",
+  "female",
+  "02/29/1976",
+  "Password123*",
+  "Computer Science",
+  ["CS546", "CS123"],
+  ["CS554"],
+  "faculty"
 );
-
-let newCourse2 = await coursesFunc.createCourse(
-  "Introduction to JavaScript3",
-  "CS554",
-  "Learn the basics of JavaScript programming language",
-  "PROF001",
-  "John Smith"
-);
-
-let newCourse3 = await coursesFunc.createCourse(
-  "Introduction to JavaScript3",
-  "CS573",
-  "Learn the basics of JavaScript programming language",
-  "PROF001",
-  "John Smith"
-);
-
 
 const faculty2 = await facultyFunc.createFaculty(
   "Patrick",
@@ -105,24 +80,24 @@ const faculty5 = await facultyFunc.createFaculty(
   ["CS515"],
   "faculty"
 );
-// const student1 = await studFunc.createStudent(
-//   "John",
-//   "Doe",
-//   "123456",
-//   "johndoe@example.com",
-//   "Male",
-//   "05/20/1998",
-//   "Password123!",
-//   "Computer Science",
-//   ["JS101", "HTML101"],
-//   ["JS101"],
-//   "student"
-// );
+const student1 = await studFunc.createStudent(
+  "John",
+  "Doe",
+  "12345678",
+  "johndoe@example.com",
+  "Male",
+  "05/20/1998",
+  "Password123!",
+  "Computer Science",
+  ["JS101", "HTML101"],
+  ["JS101"],
+  "student"
+);
 
 const student2 = await studFunc.createStudent(
   "Madhura",
   "Shinde",
-  "2011438",
+  "20114380",
   "madhura.shinde@stevens.edu",
   "Female",
   "04/23/1998",
@@ -136,7 +111,7 @@ const student2 = await studFunc.createStudent(
 const student3 = await studFunc.createStudent(
   "Rishabh",
   "Shirur",
-  "2011345",
+  "20113450",
   "rishabh.shirur@stevens.edu",
   "Male",
   "05/31/2000",
@@ -150,7 +125,7 @@ const student3 = await studFunc.createStudent(
 const student4 = await studFunc.createStudent(
   "Jiaqi",
   "Tu",
-  "2001234",
+  "20012340",
   "jiaqi.tu@stevens.edu",
   "Male",
   "05/13/2000",
@@ -164,7 +139,7 @@ const student4 = await studFunc.createStudent(
 const student5 = await studFunc.createStudent(
   "Luoyi",
   "Fu",
-  "2014321",
+  "20143210",
   "luoyi.fu@stevens.edu",
   "Female",
   "11/09/2001",
@@ -178,7 +153,7 @@ const student5 = await studFunc.createStudent(
 const admin1 = await adminFunc.createAdmin(
   "Enrique",
   "Dunn",
-  "1020202",
+  "10202020",
   "enriqye.dunn@stevens.edu",
   "Iamtheadmin@123",
   "Computer Science",
@@ -271,4 +246,27 @@ const submission3 = await submissionFunc.createSubmission(
   "this is a comment"
 );
 
+let newCourse = await coursesFunc.createCourse(
+  "Introduction to JavaScript3",
+  "JS101",
+  "Learn the basics of JavaScript programming language",
+  "PROF001",
+  "John Smith"
+);
+
+let newCourse2 = await coursesFunc.createCourse(
+  "Introduction to JavaScript3",
+  "CS554",
+  "Learn the basics of JavaScript programming language",
+  "PROF001",
+  "John Smith"
+);
+
+let newCourse3 = await coursesFunc.createCourse(
+  "Introduction to JavaScript3",
+  "CS573",
+  "Learn the basics of JavaScript programming language",
+  "PROF001",
+  "John Smith"
+);
 await closeConnection();

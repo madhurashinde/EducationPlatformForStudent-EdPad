@@ -49,8 +49,8 @@ export const validDueTime = (dueDate, dueTime) => {
   return current.getTime() < due.getTime();
 };
 
-export const checkValidStr = (strVal) => {
-  //console.log(strVal)
+// export const majors = ["Computer Science", "Finance", "Chemistry"];
+export const checkValidMajor = (strVal) => {
   if (!strVal) throw `Error: You must supply a input!`;
   if (typeof strVal !== "string") throw `Error: Input must be a string!`;
   strVal = strVal.trim();
@@ -77,12 +77,9 @@ export const checkEmailAddress = (strVal) => {
   if (!strVal) throw `Email address can not be empty`;
   if (typeof strVal !== "string") throw "Email address must be a string";
   strVal = strVal.trim().toLowerCase();
-  if (
-    !strVal.match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    )
-  )
-    throw `Error: Invalid format for email address`;
+  const emailRegex =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/;
+  if (!emailRegex.test(strVal)) throw `Error: Invalid format for email address`;
   return strVal;
 };
 
@@ -119,7 +116,7 @@ export const validRole = (strVal) => {
   //     throw `Error: Role can only be user or admin`;
   // }
   if (strVal !== "student" && strVal !== "faculty" && strVal !== "admin")
-    throw `Error: Role can only be user or admin`;
+    throw `Error: Role can only be student, faculty or admin`;
   return strVal;
 };
 export const checkNumberFormat = (num) => {
@@ -171,22 +168,49 @@ export const checkBirthDateFormat = (strVal) => {
 };
 
 export const checkValidArray = (arr) => {
-  if (!arr || !Array.isArray(arr) || arr.length === 0) return false;
+  if (!arr || !Array.isArray(arr) || arr.length === 0)
+    throw "Array must has length > 0";
+  let res = [];
   for (let i = 0; i < arr.length; i++) {
-    arr[i] = arr[i].trim();
-    if (!arr[i] || typeof arr[i] !== "string" || arr[i] === "") return false;
+    if (!arr[i] || typeof arr[i] !== "string" || arr[i] === "")
+      throw "Array must has valid string elements";
+    res.push(arr[i].trim());
   }
-  return arr;
+  return res;
+};
+
+export const validGender = (gender) => {
+  if (
+    !gender ||
+    typeof gender !== "string" ||
+    (gender.trim().toLowerCase() !== "male" &&
+      gender.trim().toLowerCase() !== "female")
+  )
+    throw "Gender is not valid";
+  return gender.trim().toLowerCase();
+};
+
+export const validCWID = (id) => {
+  if (
+    !id ||
+    typeof id !== "string" ||
+    id.trim() === "" ||
+    id.trim().length !== 8
+  )
+    throw "id should be a valid string of length 8";
+  return id.trim();
 };
 
 export default {
-  checkValidStr,
+  checkValidMajor,
   checkNameFormat,
   checkEmailAddress,
   validPassword,
   validRole,
   checkBirthDateFormat,
   checkNumberFormat,
+  validCWID,
+  validGender,
 };
 
 // const exportedMethods = {
