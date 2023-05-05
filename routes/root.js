@@ -8,14 +8,16 @@ import {
   validPassword,
   checkValidMajor,
   validGender,
-  validRole
+  validRole,
+  validStr,
+  validId
 } from "../helper.js";
-import {user} from '../config/mongoCollections.js';
+import { user } from '../config/mongoCollections.js';
 router
   .route("/admin/register")
   .get(async (req, res) => {
     console.log("get route")
-    res.render('register/registerAdmin', {title: "Register Page"});
+    res.render('register/registerAdmin', { title: "Register Page" });
   })
   .post(async (req, res) => {
     console.log("route");
@@ -30,44 +32,44 @@ router
       validPassword(req.body.passwordInput);
       checkValidMajor(req.body.majorInput);
       validRole(req.body.roleInput)
-      if(req.body.passwordInput !== req.body.confirmPasswordInput){
-        res.status(400).render('register/registerAdmin',{error: "Passwords do not match", title: "Register Page"});
+      if (req.body.passwordInput !== req.body.confirmPasswordInput) {
+        res.status(400).render('register/registerAdmin', { error: "Passwords do not match", title: "Register Page" });
       }
-      
-      result = await userFunc.createUser(req.body.firstNameInput, req.body.lastNameInput,req.body.emailAddressInput,req.body.genderInput, req.body.birthDateInput, req.body.passwordInput,req.body.majorInput, req.body.roleInput );
-      if(result.insertedUser){
+
+      result = await userFunc.createUser(req.body.firstNameInput, req.body.lastNameInput, req.body.emailAddressInput, req.body.genderInput, req.body.birthDateInput, req.body.passwordInput, req.body.majorInput, req.body.roleInput);
+      if (result.insertedUser) {
         return res.redirect('/login')
       }
       else {
         res.status(500).send("Internal Server Error")
       }
-  }catch(e){
-    // console.log("Error: ",e);
-    res.status(400).render('register/registerAdmin',{error: e, title: "Register Page"});
-    return;
-  }
-
-      result = await facultyFunc.createFaculty(
-        req.body.firstNameInput,
-        req.body.lastNameInput,
-        req.body.emailAddressInput,
-        req.body.genderInput,
-        req.body.birthDateInput,
-        req.body.passwordInput,
-        req.body.majorInput
-      );
-      if (result.insertedUser) {
-        return res.redirect("/login");
-      } else {
-        res.status(500).send("Internal Server Error");
-      }
     } catch (e) {
-      res
-        .status(400)
-        .render("register/register", { error: e, title: "Register Page" });
+      // console.log("Error: ",e);
+      res.status(400).render('register/registerAdmin', { error: e, title: "Register Page" });
       return;
     }
-  });
+
+    //   result = await facultyFunc.createFaculty(
+    //     req.body.firstNameInput,
+    //     req.body.lastNameInput,
+    //     req.body.emailAddressInput,
+    //     req.body.genderInput,
+    //     req.body.birthDateInput,
+    //     req.body.passwordInput,
+    //     req.body.majorInput
+    //   );
+    //   if (result.insertedUser) {
+    //     return res.redirect("/login");
+    //   } else {
+    //     res.status(500).send("Internal Server Error");
+    //   }
+    // } catch (e) {
+    //   res
+    //     .status(400)
+    //     .render("register/register", { error: e, title: "Register Page" });
+    //   return;
+  }
+  );
 
 router
   .route("/register")
@@ -85,8 +87,8 @@ router
       validPassword(req.body.passwordInput);
       checkValidMajor(req.body.majorInput);
       validRole(req.body.roleInput)
-      if(req.body.passwordInput !== req.body.confirmPasswordInput){
-        res.status(400).render('register/register',{error: "Passwords do not match", title: "Register Page"});
+      if (req.body.passwordInput !== req.body.confirmPasswordInput) {
+        res.status(400).render('register/register', { error: "Passwords do not match", title: "Register Page" });
       }
       // const facCollection = await user();
       // const fac = await facCollection.findOne({emailAddress: req.body.emailAddressInput})
@@ -94,8 +96,8 @@ router
       //   console.log(fac.role)
       //     throw `Error: Email address is registered as a faculty`
       // }
-      result = await userFunc.createUser(req.body.firstNameInput, req.body.lastNameInput,req.body.emailAddressInput,req.body.genderInput, req.body.birthDateInput, req.body.passwordInput,req.body.majorInput, req.body.roleInput );
-      if(result){
+      result = await userFunc.createUser(req.body.firstNameInput, req.body.lastNameInput, req.body.emailAddressInput, req.body.genderInput, req.body.birthDateInput, req.body.passwordInput, req.body.majorInput, req.body.roleInput);
+      if (result) {
         return res.redirect('/login')
       }
       result = await studFunc.createStudent(
@@ -219,15 +221,23 @@ router
 router
   .route("/admin/createcourse")
   .get(async (req, res) => {
-    return res.render("courses/courseCreate");
+
+    let allFacultyGot = await coursesFunc.getAllFaculty()
+    return res.render("courses/courseCreate", { allFaculty: allFacultyGot });
   })
   .post(async (req, res) => {
     let courseTitle = req.body.courseTitle;
     let courseId = req.body.courseId;
     let description = req.body.description;
-    let professorId = req.body.professorId;
-    let professorName = req.body.professorName;
-    // let courseMajor = req.body.courseMajor;
+    let professorObjectId = req.body.facultyInput;
+    try {
+      validStr(courseTitle)
+      validStr(courseId)
+      validStr(description)
+      validId(professorObjectId)
+    } catch (e) {
+      res.status(400).json({ error: e });
+    }
 
     //validation for the same course
 
@@ -236,12 +246,11 @@ router
         courseTitle,
         courseId,
         description,
-        professorId,
-        professorName
+        professorObjectId
       );
       return res.redirect("/course/admin");
     } catch (e) {
-      res.status(400).json({ error: "having error" });
+      res.status(400).json({ error: e });
     }
   });
 
