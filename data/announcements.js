@@ -1,40 +1,31 @@
-import { announcement } from "../config/mongoCollections.js";
+import { announcement, course } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
-import validation from "../helper.js";
+import { validStr, validId } from "../helper.js";
 
 const exportedMethods = {
   async get(id) {
-    if (!id) throw "You must provide an id to search for";
-    if (typeof id !== "string") throw "Id must be a string";
-    if (id.trim().length === 0)
-      throw "Id cannot be an empty string or just spaces";
-    id = id.trim();
-    if (!ObjectId.isValid(id)) throw "invalid object ID";
+    id = validId(id);
     const annCollection = await announcement();
     const ann = await annCollection.findOne({ _id: new ObjectId(id) });
-    if (ann === null) throw "No band with that id";
+    if (ann === null) throw "No announcement with that id";
     ann._id = ann._id.toString();
     return ann;
   },
 
-  async create(title, user, description, course) {
-    title = validation.checkString(title, "Title");
-    user = validation.checkString(user, "UserId");
-    description = validation.checkString(description, "description");
-    course = validation.checkId(course, "Course ID");
+  async create(title, description, courseId) {
+    title = validStr(title);
+    description = validStr(description);
+    courseId = validId(courseId);
 
-    // let currentDate = new Date();
-    // let cDay = currentDate.getDate();
-    // let cMonth = currentDate.getMonth() + 1;
-    // let cYear = currentDate.getFullYear();
-    // let time = currentDate.getHours() + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds();
-    // let createdAt="<b>" + cDay + "/" + cMonth + "/" + cYear + "</b>" + "  "+ time;
-
+    const courseCollection = await course();
+    const courseInfo = await courseCollection.findOne({
+      _id: new ObjectId(courseId),
+    });
+    if (!courseInfo) throw "invalid course id";
     let newAnn = {
       title: title,
-      user: user,
       description: description,
-      course: course,
+      courseId: new ObjectId(courseId),
       createdAt: new Date().toLocaleDateString(),
     };
     const annCollection = await announcement();
@@ -47,6 +38,7 @@ const exportedMethods = {
   },
 
   async getAll(courseId) {
+    courseId = validId(courseId);
     const annCollection = await announcement();
     let annList = await annCollection
       .find({ course: courseId })
@@ -61,12 +53,7 @@ const exportedMethods = {
   },
 
   async remove(id) {
-    if (!id) throw "You must provide an id to search for";
-    if (typeof id !== "string") throw "Id must be a string";
-    if (id.trim().length === 0)
-      throw "id cannot be an empty string or just spaces";
-    id = id.trim();
-    if (!ObjectId.isValid(id)) throw "invalid object ID";
+    id = validId(id);
     const annCollection = await announcement();
     const deletionInfo = await annCollection.findOneAndDelete({
       _id: new ObjectId(id),

@@ -1,6 +1,11 @@
+/* body{
+    background-color:cornflowerblue;
+} */
+
 .inputClass {
     border: 3.8px solid red
-}
+}   
+
 
 /* https://www.youtube.com/watch?v=6OLYaQ7AUXA&t=13s */
 .container {
@@ -38,7 +43,7 @@
 	align-items: center;
 	text-align: center;
 	padding: 15px;
-  background-color: beige;
+    background-color: beige;
 }
 .back {
 	display: flex;
@@ -49,6 +54,7 @@
     transform: rotateY(180deg);
     background-color: beige;
 }
+
 .back-content {
 	/* border: 10px inset #ddd; */
 	padding: 120px 5px;
