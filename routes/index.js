@@ -17,7 +17,6 @@ const constructorMethod = (app) => {
   app.use("/module", ModuleRoutes);
   app.use("/quizlet", QuizletRoutes);
 
-
   app.use("*", (req, res) => {
     res.status(404);
   });

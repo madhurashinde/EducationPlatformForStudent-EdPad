@@ -5,7 +5,6 @@ import { validStr, validWeblink, nonNegInt, validDueTime } from "../helper.js";
 import { coursesFunc } from "../data/index.js";
 
 router.get("/admin", async (req, res) => {
-
   let getAllCourses = await coursesFunc.getAll();
   return res.render("courses/courseAdmin", {
     title: "Admin can see all courses",
@@ -13,67 +12,35 @@ router.get("/admin", async (req, res) => {
   });
 });
 
-router
-  .route('/admin/createcourse')
-  .get(async (req, res) => {
-    return res.render('courses/courseCreate')
-
-  })
-  .post(async (req, res) => {
-    let courseTitle = req.body.courseTitle;
-    let courseId = req.body.courseId;
-    let description = req.body.description;
-    let professorId = req.body.professorId;
-    let professorName = req.body.professorName;
-    // let courseMajor = req.body.courseMajor;
-
-    //validation for the same course
-
-    try {
-      let createdCourse = await coursesFunc.createCourse(courseTitle, courseId, description, professorId, professorName);
-      return res.redirect('/course/admin')
-
-    } catch (e) {
-      res.status(400).json({ error: "having error" })
-    }
-
-  })
-
-
-
 router.get("/", async (req, res) => {
-  // console.log(req.session.user.role)
-  // console.log(req.session.user.id)
   if (req.session.user) {
     try {
       if (req.session.user.role === "admin") {
-        return res.redirect("/course/admin");
+        return res.redirect("/admin");
       } else if (req.session.user.role === "student") {
-        // let getStudCourses = await coursesFunc.getCourseByStudentEmail(
-        //   req.session.user.id
-        // );
-        // return res.render("courses/courses", {
-        //   title: "Student courses",
-        //   allCourses: getStudCourses,
-        // });
         const StudCurrentCourses = await coursesFunc.getStudentCurrentCourse(
-          req.session.user.id
+          req.session.user._id
         );
         const StudCompletedCourses =
-          await coursesFunc.getStudentCompletedCourse(req.session.user.id);
+          await coursesFunc.getStudentCompletedCourse(req.session.user._id);
         return res.render("courses/courses", {
           title: "Student courses",
           CompletedCourses: StudCompletedCourses,
           CurrentCourses: StudCurrentCourses,
-          role: true
+          role: true,
         });
       } else if (req.session.user.role === "faculty") {
-        let getFacultyCourses = await coursesFunc.getCourseByFacultyEmail(
-          req.session.user.emailAddress
+        const FacCurrentCourses = await coursesFunc.getFacultyCurrentCourse(
+          req.session.user._id
+        );
+        const FacCompletedCourses = await coursesFunc.getStudentCompletedCourse(
+          req.session.user._id
         );
         return res.render("courses/courses", {
-          title: "Faculty teaching courses",
-          allCourses: getFacultyCourses,
+          title: "Faculty courses",
+          CompletedCourses: FacCompletedCourses,
+          CurrentCourses: FacCurrentCourses,
+          role: false,
         });
       }
     } catch (e) {
@@ -84,26 +51,27 @@ router.get("/", async (req, res) => {
   }
 });
 
-
 router
-  .route('/registercourse')
+  .route("/registercourse")
   .get(async (req, res) => {
     let getAllCourses = await coursesFunc.getAll();
-    return res.render('courses/courseRegister', {
+    return res.render("courses/courseRegister", {
       allCourses: getAllCourses,
-    })
+    });
   })
   .post(async (req, res) => {
     let courseRegisteredObjectID = req.body.courseInput;
-    let studentObjectID = req.session.user.id;
+    let studentObjectID = req.session.user._id;
 
     try {
-      await coursesFunc.registerCourse(studentObjectID, courseRegisteredObjectID)
+      await coursesFunc.registerCourse(
+        studentObjectID,
+        courseRegisteredObjectID
+      );
       return res.redirect("/course");
     } catch (e) {
       return res.status(400).json({ error: e });
     }
-
   });
 
 router.get("/:id", async (req, res) => {
@@ -121,8 +89,6 @@ router.get("/:id", async (req, res) => {
     return res.status(400).json({ error: e });
   }
 });
-
-
 
 router.get("/:id/assignment", async (req, res) => {
   try {

@@ -1,6 +1,6 @@
+<button onclick="location.href='/admin';">Back</button>
+
 <h1>Create a course</h1>
-
-
 
 <form id="registration-form" method="POST" action="/course/admin/createcourse">
 
@@ -30,8 +30,6 @@
         <button type="submit">Create</button>
     </div>
 </form>
-
-<a href="/login">Click here to log in</a>
 
 
 {{#if error}} <p class="error">{{error}}</p>{{/if}}

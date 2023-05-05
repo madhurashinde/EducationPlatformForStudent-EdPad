@@ -15,7 +15,7 @@ router.route("/:id").get(async (req, res) => {
     return res.redirect(`/assignment//${courseId}`);
   }
   try {
-    const studentId = req.session.user.id;
+    const studentId = req.session.user._id;
     const allGrade = await gradeFunc.getAllGrade(courseId, studentId);
     // get course name by id
     const course = "Web Programming";

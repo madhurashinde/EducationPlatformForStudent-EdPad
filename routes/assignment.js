@@ -1,10 +1,8 @@
 import { Router } from "express";
 const router = Router();
 import path from "path";
-import { ObjectId } from "mongodb";
 import { assignmentFunc, submissionFunc } from "../data/index.js";
 import { validStr, validWeblink, nonNegInt, validDueTime } from "../helper.js";
-import submission from "../data/submission.js";
 
 // id = courseId
 // all assignment
@@ -96,7 +94,7 @@ router
       if (role === "faculty") {
         faculty = true;
       } else if (role === "student") {
-        const studentId = req.session.user.id;
+        const studentId = req.session.user._id;
         submission = await submissionFunc.getSubmission(id, studentId);
       }
       return res.render("assignment/assignmentDetail", {
@@ -136,7 +134,7 @@ router.route("/detail/:id/newSubmission").post(async (req, res) => {
   if (!submitFile || !validWeblink(submitFile)) {
     return res.json({ error: "Not a valid file link" });
   }
-  const studentId = req.session.user.id;
+  const studentId = req.session.user._id;
   const submit = await submissionFunc.getSubmission(id, studentId);
   if (submit === null) {
     var submission = await submissionFunc.createSubmission(
