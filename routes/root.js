@@ -41,11 +41,6 @@ router
       else {
         res.status(500).send("Internal Server Error")
       }
-  }catch(e){
-    // console.log("Error: ",e);
-    res.status(400).render('register/registerAdmin',{error: e, title: "Register Page"});
-    return;
-  }
 
       result = await facultyFunc.createFaculty(
         req.body.firstNameInput,
@@ -68,7 +63,6 @@ router
       return;
     }
   });
-
 router
   .route("/register")
   .get(async (req, res) => {
