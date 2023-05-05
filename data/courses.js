@@ -295,12 +295,11 @@ const registerCourse = async (studentId, courseId) => {
     });
     if (courseInfo === null) throw "invalid course ID";
     // already enrolled or completed
-    if (courseId in studentInfo.courseCompleted) {
+    if (studentInfo.courseCompleted.includes(courseId)) {
         throw "You have already completed this course";
     }
-    console.log(studentInfo.courseInProgress)
-    console.log(studentInfo.courseInProgress.toArray())
-    if (courseId in studentInfo.courseInProgress) {
+
+    if (studentInfo.courseInProgress.includes(courseId)) {
         throw "You have already registered for this course";
     }
 
