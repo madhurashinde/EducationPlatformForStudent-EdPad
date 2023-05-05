@@ -11,6 +11,90 @@ import {
 } from "../helper.js";
 
 router
+  .route('/admin/register')
+  .get(async (req, res) => {
+    //code here for GET
+    console.log("get route")
+    res.render('register/register', {title: "Register Page"});
+  })
+  .post(async (req, res) => {
+
+    //code here for POST
+    console.log("route")
+    let result ={};
+    try{
+      checkNameFormat(req.body.firstNameInput);
+      checkNameFormat(req.body.lastNameInput);
+  // CWID = validCWID(CWID);
+      checkEmailAddress(req.body.emailAddressInput);
+      validGender(req.body.genderInput);
+      checkBirthDateFormat(req.body.birthDateInput);
+      validPassword(req.body.passwordInput);
+      checkValidMajor(req.body.majorInput);
+
+      if(req.body.passwordInput !== req.body.confirmPasswordInput){
+        res.status(400).render('register/register',{error: "Passwords do not match", title: "Register Page"});
+      }
+      
+      result = await facultyFunc.createFaculty(req.body.firstNameInput, req.body.lastNameInput,req.body.emailAddressInput,req.body.genderInput, req.body.birthDateInput, req.body.passwordInput,req.body.majorInput );
+      if(result.insertedUser){
+        return res.redirect('/login')
+      }
+      else {
+        res.status(500).send("Internal Server Error")
+      }
+  }catch(e){
+    // console.log("Error: ",e);
+    res.status(400).render('register/register',{error: e, title: "Register Page"});
+    return;
+  }
+
+ } );
+
+router
+  .route('/register')
+  .get(async (req, res) => {
+    //code here for GET
+    res.render('register/register', {title: "Register Page"});
+  })
+  .post(async (req, res) => {
+    //code here for POST
+    // console.log("route")
+    let result ={};
+    try{
+      checkNameFormat(req.body.firstNameInput);
+      checkNameFormat(req.body.lastNameInput);
+  // CWID = validCWID(CWID);
+      checkEmailAddress(req.body.emailAddressInput);
+      validGender(req.body.genderInput);
+      checkBirthDateFormat(req.body.birthDateInput);
+      validPassword(req.body.passwordInput);
+      checkValidMajor(req.body.majorInput);
+
+      if(req.body.passwordInput !== req.body.confirmPasswordInput){
+        res.status(400).render('register/register',{error: "Passwords do not match", title: "Register Page"});
+      }
+      const facCollection = await faculty();
+      const fac = await facCollection.findOne({emailAddress: emailAddress})
+      if (fac){
+          throw `Error: Email address is registered as a faculty`
+      }
+      result = await studFunc.createStudent(req.body.firstNameInput, req.body.lastNameInput,req.body.emailAddressInput,req.body.genderInput, req.body.birthDateInput, req.body.passwordInput,req.body.majorInput );
+      if(result.insertedUser){
+        return res.redirect('/login')
+      }
+      else {
+        res.status(500).send("Internal Server Error")
+      }
+  }catch(e){
+    // console.log("Error: ",e);
+    res.status(400).render('register/register',{error: e, title: "Register Page"});
+    return;
+  }
+
+ } );
+
+router
   .route("/login")
   .get((req, res) => {
     return res.render("login/login", {
@@ -250,6 +334,6 @@ router
 
 router.route("/logout").get((req, res) => {
   req.session.destroy();
-  res.render("login/logout", { title: "Logout Page" });
+  res.render('login/logout',{title: "Logout Page"});
 });
 export default router;
