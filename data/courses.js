@@ -6,8 +6,7 @@ const createCourse = async (
     courseId,
     description,
     professorId,
-    professorName,
-    major
+    professorName
 ) => {
     let newCourse = {
         courseTitle: courseTitle,
@@ -23,8 +22,7 @@ const createCourse = async (
         !courseId ||
         !description ||
         !professorId ||
-        !professorName ||
-        !major
+        !professorName
     ) {
         throw "All fields need to have valid values";
     }
@@ -48,9 +46,7 @@ const createCourse = async (
     if (professorName.trim().length === 0)
         throw "professorName cannot be an empty string or just spaces";
 
-    if (typeof major !== "string") throw "major must be a string";
-    if (major.trim().length === 0)
-        throw "major cannot be an empty string or just spaces";
+
 
     const courseCollection = await course();
     const insertInfo = await courseCollection.insertOne(newCourse);
