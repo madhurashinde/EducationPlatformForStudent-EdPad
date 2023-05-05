@@ -4,7 +4,7 @@
 <form id="registration-form" method="POST" action="/course/registercourse">
 
 
-    <label for="courseInput">Role:</label>
+    <label for="courseInput">Course:</label>
     <select id="courseInput" name="courseInput" required>
         {{#each allCourses}}
         <option value="{{this._id}}">{{this.courseId}} {{this.courseTitle}}</option>

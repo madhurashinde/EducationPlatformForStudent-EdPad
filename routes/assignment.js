@@ -90,10 +90,12 @@ router
       const assignmentDetail = await assignmentFunc.getAssignment(id);
       const role = req.session.user.role;
       let faculty = false;
+      let student = false;
       let submission = null;
       if (role === "faculty") {
         faculty = true;
       } else if (role === "student") {
+        student = true;
         const studentId = req.session.user._id;
         submission = await submissionFunc.getSubmission(id, studentId);
       }

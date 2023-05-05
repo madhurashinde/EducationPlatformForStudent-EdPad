@@ -2,65 +2,46 @@ import { Router } from "express";
 const router = Router();
 import { modulesData } from "../data/index.js";
 import validation from "../helper.js";
+
 router.route("/:courseId").get(async (req, res) => {
-  try {
-    if (!req.session.user) {
-      return res.redirect("/login");
+  if (!req.session.user || !req.session.user.role) {
+    return res.redirect("/login");
+  } else {
+    try {
+      let course = req.params.courseId;
+      const moduleList = await modulesData.getAll(course);
+
+      if (req.session.user.role == "faculty") {
+        res.render("modules/allModules", {
+          moduleList: moduleList,
+          faculty: true,
+          courseId: course,
+        });
+      } else {
+        res.render("modules/allModules", {
+          moduleList: moduleList,
+          faculty: false,
+          courseId: course,
+        });
+      }
+    } catch (e) {
+      res.status(500).json({ error: e });
     }
-    let course = req.params.courseId;
-    const moduleList = await modulesData.getAll(course);
-    if (!moduleList) {
-      throw "No modules found";
-    }
-    if (req.session.user){
-    if (req.session.user.role == "student") {
-      res.render("modules/allModules", {
-        moduleList: moduleList,
-        student: true,
-        courseId:course
-      });
-    }
-    if (req.session.user.role == "faculty") {
-      res.render("modules/allModules", {
-        moduleList: moduleList,
-        faculty: true,
-        courseId:course
-      });
-    }
-    if (req.session.user.role == "admin") {
-      res.render("modules/allModules", { moduleList: moduleList, admin: true ,courseId:course});
-    }
-  }
-  } catch (e) {
-    res.status(500).json({ error: e });
   }
 });
 
 router
   .route("/:courseId/newModule")
-  .get(async (req, res) => {
-    try {
-      req.params.courseId = validation.checkId(req.params.courseId, "Id URL Param");
-      
-    } catch (e) {
-      res.status(404).render("modules/allModules", { error: `${e}` });
-    }
-    if (!req.session.user) {
+  .get((req, res) => {
+    if (!req.session.user || !req.session.user.role) {
       return res.redirect("/login");
-    }
-    if (req.session.user) {
-      if (req.session.user.role == "student") {
-        return res.render('notallowed');
+    } else {
+      const courseId = req.params.courseId;
+      if (!req.session.user.role == "faculty") {
+        return res.redirect(`/module/${courseId}`);
+      } else {
+        return res.render("modules/newModule", { course: courseId });
       }
-      // if (req.session.user.role == "feculty") {
-
-
-        let course=req.params.courseId;
-        return res.render("modules/newModule",{course:course});
-      // }
-      // if(req.session.user.role=="admin"){
-      //   return res.render('announcements/newAnnouncement');
-      // }
     }
   })
   .post(async (req, res) => {
@@ -84,7 +65,9 @@ router
       // anninfo.userId = validation.checkId(anninfo.userId, 'userId');
       // anninfo.description
     } catch (e) {
-      return res.status(400).render("modules/newModule",{course:course,error:`${e}`});
+      return res
+        .status(400)
+        .render("modules/newModule", { course: course, error: `${e}` });
     }
 
     try {
@@ -109,32 +92,18 @@ router
     }
   });
 
-router.route("/:courseId/:id").get(async (req, res) => {
-  try {
-    req.params.id = validation.checkId(req.params.id, "Id URL Param");
-    req.params.courseId = validation.checkId(req.params.courseId, "Id URL Param");
-    
-  } catch (e) {
-    res.status(404).render("error", { error: `${e}` });
-  }
+router.route("/detail/:id").get(async (req, res) => {
   try {
     if (!req.session.user) {
       return res.redirect("/login");
     }
-    let course= req.params.courseId;
 
     const mod = await modulesData.get(req.params.id);
-    let desc = mod.description;
-    let user = mod.user;
-    let title = mod.title;
-
     res.render("modules/moduleDetail", {
-      title: title,
-      user: user,
-      description: desc,
-      date: date,
-      course:course
-
+      title: mod.title,
+      description: mod.description,
+      fileURL: mod.fileURL,
+      course: mod.courseId,
     });
   } catch (e) {
     res.status(404).render("modules/allModules", { error: `${e}` });

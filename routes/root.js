@@ -11,88 +11,104 @@ import {
 } from "../helper.js";
 
 router
-  .route('/admin/register')
+  .route("/admin/register")
   .get(async (req, res) => {
     //code here for GET
-    console.log("get route")
-    res.render('register/register', {title: "Register Page"});
+    console.log("get route");
+    res.render("register/register", { title: "Register Page" });
   })
   .post(async (req, res) => {
-
     //code here for POST
-    console.log("route")
-    let result ={};
-    try{
+    console.log("route");
+    let result = {};
+    try {
       checkNameFormat(req.body.firstNameInput);
       checkNameFormat(req.body.lastNameInput);
-  // CWID = validCWID(CWID);
+      // CWID = validCWID(CWID);
       checkEmailAddress(req.body.emailAddressInput);
       validGender(req.body.genderInput);
       checkBirthDateFormat(req.body.birthDateInput);
       validPassword(req.body.passwordInput);
       checkValidMajor(req.body.majorInput);
 
-      if(req.body.passwordInput !== req.body.confirmPasswordInput){
-        res.status(400).render('register/register',{error: "Passwords do not match", title: "Register Page"});
+      if (req.body.passwordInput !== req.body.confirmPasswordInput) {
+        res.status(400).render("register/register", {
+          error: "Passwords do not match",
+          title: "Register Page",
+        });
       }
-      
-      result = await facultyFunc.createFaculty(req.body.firstNameInput, req.body.lastNameInput,req.body.emailAddressInput,req.body.genderInput, req.body.birthDateInput, req.body.passwordInput,req.body.majorInput );
-      if(result.insertedUser){
-        return res.redirect('/login')
-      }
-      else {
-        res.status(500).send("Internal Server Error")
-      }
-  }catch(e){
-    // console.log("Error: ",e);
-    res.status(400).render('register/register',{error: e, title: "Register Page"});
-    return;
-  }
 
- } );
+      result = await facultyFunc.createFaculty(
+        req.body.firstNameInput,
+        req.body.lastNameInput,
+        req.body.emailAddressInput,
+        req.body.genderInput,
+        req.body.birthDateInput,
+        req.body.passwordInput,
+        req.body.majorInput
+      );
+      if (result.insertedUser) {
+        return res.redirect("/login");
+      } else {
+        res.status(500).send("Internal Server Error");
+      }
+    } catch (e) {
+      res
+        .status(400)
+        .render("register/register", { error: e, title: "Register Page" });
+      return;
+    }
+  });
 
 router
-  .route('/register')
+  .route("/register")
   .get(async (req, res) => {
-    //code here for GET
-    res.render('register/register', {title: "Register Page"});
+    res.render("register/register", { title: "Register Page" });
   })
   .post(async (req, res) => {
-    //code here for POST
-    // console.log("route")
-    let result ={};
-    try{
+    let result = {};
+    try {
       checkNameFormat(req.body.firstNameInput);
       checkNameFormat(req.body.lastNameInput);
-  // CWID = validCWID(CWID);
       checkEmailAddress(req.body.emailAddressInput);
       validGender(req.body.genderInput);
       checkBirthDateFormat(req.body.birthDateInput);
       validPassword(req.body.passwordInput);
       checkValidMajor(req.body.majorInput);
 
-      if(req.body.passwordInput !== req.body.confirmPasswordInput){
-        res.status(400).render('register/register',{error: "Passwords do not match", title: "Register Page"});
+      if (req.body.passwordInput !== req.body.confirmPasswordInput) {
+        res.status(400).render("register/register", {
+          error: "Passwords do not match",
+          title: "Register Page",
+        });
       }
       const facCollection = await faculty();
-      const fac = await facCollection.findOne({emailAddress: emailAddress})
-      if (fac){
-          throw `Error: Email address is registered as a faculty`
+      const fac = await facCollection.findOne({ emailAddress: emailAddress });
+      if (fac) {
+        throw `Error: Email address is registered as a faculty`;
       }
-      result = await studFunc.createStudent(req.body.firstNameInput, req.body.lastNameInput,req.body.emailAddressInput,req.body.genderInput, req.body.birthDateInput, req.body.passwordInput,req.body.majorInput );
-      if(result.insertedUser){
-        return res.redirect('/login')
+      result = await studFunc.createStudent(
+        req.body.firstNameInput,
+        req.body.lastNameInput,
+        req.body.emailAddressInput,
+        req.body.genderInput,
+        req.body.birthDateInput,
+        req.body.passwordInput,
+        req.body.majorInput
+      );
+      if (result.insertedUser) {
+        return res.redirect("/login");
+      } else {
+        res.status(500).send("Internal Server Error");
       }
-      else {
-        res.status(500).send("Internal Server Error")
-      }
-  }catch(e){
-    // console.log("Error: ",e);
-    res.status(400).render('register/register',{error: e, title: "Register Page"});
-    return;
-  }
-
- } );
+    } catch (e) {
+      // console.log("Error: ",e);
+      res
+        .status(400)
+        .render("register/register", { error: e, title: "Register Page" });
+      return;
+    }
+  });
 
 router
   .route("/login")
@@ -129,66 +145,6 @@ router
         title: "Login Page",
       });
     }
-
-    // // facluty login
-    // try {
-    //   const result_fac = await facultyFunc.checkFaculty(
-    //     req.body.emailAddressInput,
-    //     req.body.passwordInput
-    //   );
-    //   if (result_fac) {
-    //     req.session.user = {
-    //       id: result_fac._id,
-    //       firstName: result_fac.firstName,
-    //       lastName: result_fac.lastName,
-    //       emailAddress: result_fac.emailAddress,
-    //       courseTaught: result_fac.courseTaught,
-    //       role: result_fac.role,
-    //     };
-    //     return res.redirect("/course");
-    //   }
-    // } catch (e) {}
-
-    // // student login
-    // try {
-    //   const result_stud = await studFunc.checkStudent(
-    //     req.body.emailAddressInput,
-    //     req.body.passwordInput
-    //   );
-    //   if (result_stud) {
-    //     req.session.user = {
-    //       id: result_stud._id,
-    //       firstName: result_stud.firstName,
-    //       lastName: result_stud.lastName,
-    //       emailAddress: result_stud.emailAddress,
-    //       courseInProgress: result_stud.courseInProgress,
-    //       courseCompleted: result_stud.courseCompleted,
-    //       role: result_stud.role,
-    //     };
-    //     return res.redirect("/course");
-    //   }
-    // } catch (e) {}
-
-    // // admin login
-    // try {
-    //   const result_admin = await adminFunc.checkAdmin(
-    //     req.body.emailAddressInput,
-    //     req.body.passwordInput
-    //   );
-    //   if (result_admin) {
-    //     req.session.user = {
-    //       id: result_admin._id,
-    //       firstName: result_admin.firstName,
-    //       lastName: result_admin.lastName,
-    //       role: result_admin.role,
-    //     };
-    //     return res.redirect("/course/admin");
-    //   }
-    // } catch (e) {}
-    // return res.render("login/login", {
-    //   error: "Either the email or the password is not valid",
-    //   title: "Login Page",
-    // });
   });
 
 router.route("/admin").get(async (req, res) => {
@@ -334,6 +290,6 @@ router
 
 router.route("/logout").get((req, res) => {
   req.session.destroy();
-  res.render('login/logout',{title: "Logout Page"});
+  res.render("login/logout", { title: "Logout Page" });
 });
 export default router;

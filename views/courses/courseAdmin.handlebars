@@ -9,12 +9,12 @@
         {{#each allCourses}}
         <div>
             <li>
-                <h3>{{courseTitle}}</h3>
-                <p>{{courseId}}</p>
-                <p>{{description}}</p>
-                <p>{{professorId}}</p>
-                <p>{{professorName}}</p>
+                <h3>Course Name: {{courseTitle}}</h3>
+                <p>Course CID: {{courseCID}}</p>
+                <p>Description: {{description}}</p>
+                <p>Professor: {{professorName}}</p>
             </li>
+            <button onclick="location.href='/course/{{_id}}';">Detail</button>
         </div>
         {{/each}}
     </ol>

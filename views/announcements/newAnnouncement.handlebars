@@ -1,3 +1,5 @@
+<button onclick="location.href='/announcement/{{course}}'"> Cancel</button>
+
 <form class="newAnnForm" id="new-ann" method="post" action="/{{course}}/newAnnouncement">
     <div>
         <label for="ann_title">Enter title</label>
@@ -14,8 +16,7 @@
     </br>
 
 </form>
-</br>
-<a href="/announcement/{{course}}">Cancel</a>
+
 <div>
     {{error}}
 </div>

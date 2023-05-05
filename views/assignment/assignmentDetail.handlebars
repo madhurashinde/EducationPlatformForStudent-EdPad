@@ -13,8 +13,10 @@ Instruction File: <a target="_blank" href="//{{assignment.file}}">{{assignment.f
     <button type="submit">Delete</button>
 </form>
 <a href="/assignment/{{assignment._id}}/allSubmission">To grade all submission</a>
+{{/if}}
 
-{{else}} {{#if submission}}
+{{#if student}}
+ {{#if submission}}
             <div id="start-submission-container">
                 <p>Submitted</p>
                 <p>Your File Link:</p>

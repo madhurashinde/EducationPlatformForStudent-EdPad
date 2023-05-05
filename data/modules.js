@@ -30,7 +30,7 @@ const exportedMethods = {
       title: title,
       description: description,
       fileURL: fileURL,
-      courseId: courseId,
+      courseId: new ObjectId(courseId),
     };
     const moduleCollection = await module();
     const insertInfo = await moduleCollection.insertOne(newModule);
@@ -51,7 +51,7 @@ const exportedMethods = {
 
     const moduleCollection = await module();
     let moduleList = await moduleCollection
-      .find({ course: courseId })
+      .find({ courseId: new ObjectId(courseId) })
       .sort({ _id: -1 })
       .toArray();
     if (!moduleList) throw "Could not get all modules";
