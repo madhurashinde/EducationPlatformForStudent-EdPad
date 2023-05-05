@@ -1,7 +1,7 @@
 <main>
   <div>{{error}}</div> 
   <div id="error" class="error" hidden>I'm an error. I will change through Client-Side JS</div>  
-  <form action="/register" method="POST" id="registration-form">
+  <form action="/admin/register" method="POST" id="registration-form">
           <label for="firstNameInput">
             First Name: 
             <input type="text" name="firstNameInput" id="firstNameInput"/>
@@ -37,20 +37,6 @@
             <option value="Male">Male</option>
             </select>
           </label> 
-           <label for="roleInput">
-            Role:
-            <select id="roleInput" name="roleInput">
-            <option value="faculty">Faculty</option>
-    
-            </select>
-          {{!-- </label> 
-              <label for="courseInProgressInput">
-            Courses Registered:
-            <select id="courseInProgressInput" name="courseInProgressInput">
-            <option value="student">Student</option>
-    
-            </select>
-          </label>       --}}
           <button type="submit">Submit</button>
     </form>
     {{!-- <a href="/login">Already have an account? Click here to log-in</a> --}}
