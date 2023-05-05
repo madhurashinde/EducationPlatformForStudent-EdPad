@@ -43,33 +43,27 @@ router
       else {
         res.status(500).send("Internal Server Error")
       }
+
+      result = await facultyFunc.createFaculty(
+        req.body.firstNameInput,
+        req.body.lastNameInput,
+        req.body.emailAddressInput,
+        req.body.genderInput,
+        req.body.birthDateInput,
+        req.body.passwordInput,
+        req.body.majorInput
+      );
+      if (result.insertedUser) {
+        return res.redirect("/login");
+      } else {
+        res.status(500).send("Internal Server Error");
+      }
     } catch (e) {
       // console.log("Error: ",e);
       res.status(400).render('register/registerAdmin', { error: e, title: "Register Page" });
       return;
     }
-
-    //   result = await facultyFunc.createFaculty(
-    //     req.body.firstNameInput,
-    //     req.body.lastNameInput,
-    //     req.body.emailAddressInput,
-    //     req.body.genderInput,
-    //     req.body.birthDateInput,
-    //     req.body.passwordInput,
-    //     req.body.majorInput
-    //   );
-    //   if (result.insertedUser) {
-    //     return res.redirect("/login");
-    //   } else {
-    //     res.status(500).send("Internal Server Error");
-    //   }
-    // } catch (e) {
-    //   res
-    //     .status(400)
-    //     .render("register/register", { error: e, title: "Register Page" });
-    //   return;
-  }
-  );
+  });
 
 router
   .route("/register")
