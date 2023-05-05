@@ -5,6 +5,8 @@ import {
   adminFunc,
   assignmentFunc,
   submissionFunc,
+  annsData,
+  modulesData,
   coursesFunc,
 } from "./data/index.js";
 
@@ -166,6 +168,44 @@ const course3 = await coursesFunc.createCourse(
   "John Smith"
 );
 
+// create announcement
+await annsData.create("Announcement 1", "This is announcement 1", course1._id);
+
+await annsData.create("Announcement 2", "This is announcement 2", course1._id);
+
+await annsData.create("Announcement 1", "This is an announcement", course2._id);
+
+await annsData.create("Announcement 1", "This is an announcement", course3._id);
+
+// create modules
+await modulesData.create(
+  "Material 1",
+  "This is material 1",
+  "www.module1.com",
+  course1._id
+);
+
+await modulesData.create(
+  "Material 2",
+  "This is material 2",
+  "www.module2.com",
+  course1._id
+);
+
+await modulesData.create(
+  "Material 1",
+  "This is material 1",
+  "www.module1.com",
+  course2._id
+);
+
+await modulesData.create(
+  "Material 1",
+  "This is material 1",
+  "www.module1.com",
+  course3._id
+);
+
 // create assignment
 const assignment1 = await assignmentFunc.createAssignment(
   "Assignment 1",
@@ -268,6 +308,7 @@ await coursesFunc.registerCourse(student3._id, course3._id);
 await coursesFunc.registerCourse(student4._id, course2._id);
 await coursesFunc.registerCourse(student4._id, course3._id);
 
+// create submission
 await submissionFunc.createSubmission(
   assignment1._id,
   student1._id,
