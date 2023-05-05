@@ -25,6 +25,7 @@ router
     let description = req.body.description;
     let professorId = req.body.professorId;
     let professorName = req.body.professorName;
+    // let courseMajor = req.body.courseMajor;
 
     //validation for the same course
 
@@ -64,6 +65,7 @@ router.get("/", async (req, res) => {
           title: "Student courses",
           CompletedCourses: StudCompletedCourses,
           CurrentCourses: StudCurrentCourses,
+          role: true
         });
       } else if (req.session.user.role === "faculty") {
         let getFacultyCourses = await coursesFunc.getCourseByFacultyEmail(
@@ -82,6 +84,28 @@ router.get("/", async (req, res) => {
   }
 });
 
+
+router
+  .route('/registercourse')
+  .get(async (req, res) => {
+    let getAllCourses = await coursesFunc.getAll();
+    return res.render('courses/courseRegister', {
+      allCourses: getAllCourses,
+    })
+  })
+  .post(async (req, res) => {
+    let courseRegisteredObjectID = req.body.courseInput;
+    let studentObjectID = req.session.user.id;
+
+    try {
+      await coursesFunc.registerCourse(studentObjectID, courseRegisteredObjectID)
+      return res.redirect("/course");
+    } catch (e) {
+      return res.status(400).json({ error: e });
+    }
+
+  });
+
 router.get("/:id", async (req, res) => {
   let id_got = req.params.id;
   id_got = id_got.trim();
@@ -97,6 +121,8 @@ router.get("/:id", async (req, res) => {
     return res.status(400).json({ error: e });
   }
 });
+
+
 
 router.get("/:id/assignment", async (req, res) => {
   try {
