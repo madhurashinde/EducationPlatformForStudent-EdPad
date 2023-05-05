@@ -1,77 +1,82 @@
-import e from "express";
-import { admin } from "../config/mongoCollections.js";
+import { user } from "../config/mongoCollections.js";
 import {
-  validCWID,
   checkBirthDateFormat,
   checkNameFormat,
   checkEmailAddress,
   validPassword,
   checkValidMajor,
+  validGender,
+  validRole,
 } from "../helper.js";
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
 
-const createAdmin = async (
+const createUser = async (
   firstName,
   lastName,
-  CWID,
   emailAddress,
+  gender,
+  birthDate,
   password,
-  major
+  major,
+  role
 ) => {
   firstName = checkNameFormat(firstName);
   lastName = checkNameFormat(lastName);
-  CWID = validCWID(CWID);
   emailAddress = checkEmailAddress(emailAddress);
+  gender = validGender(gender);
+  birthDate = checkBirthDateFormat(birthDate);
   password = validPassword(password);
   major = checkValidMajor(major);
+  role = validRole(role);
 
-  const adminCollection = await admin();
-  const adminEmail = await adminCollection.findOne({
+  const userCollection = await user();
+  const userEmail = await userCollection.findOne({
     emailAddress: emailAddress,
   });
-  if (adminEmail) {
-    throw "This admin email address has an associated account";
-  }
+  if (userEmail) throw "This email address has an associated account";
   const hash = await bcrypt.hash(password, saltRounds);
-  const newAd = {
+  const newUser = {
     firstName: firstName,
     lastName: lastName,
-    CWID: CWID,
     emailAddress: emailAddress,
+    gender: gender,
+    birthDate: birthDate,
     password: hash,
     major: major,
-    role: "admin",
+    courseCompleted: [],
+    courseInProgress: [],
+    role: role,
   };
 
-  const insertInfo = await adminCollection.insertOne(newAd);
+  const insertInfo = await userCollection.insertOne(newUser);
   if (!insertInfo.acknowledged || !insertInfo.insertedId)
-    throw "Could not add an admin";
+    throw "Could not add this user";
   const id = insertInfo.insertedId;
-  const newAdmin = await adminCollection.findOne(
+  const userInfo = await userCollection.findOne(
     {
       _id: id,
     },
     { projection: { password: 0 } }
   );
-  newAdmin._id = newAdmin._id.toString();
-  return newAdmin;
+  userInfo._id = userInfo._id.toString();
+  return userInfo;
 };
 
-const checkAdmin = async (emailAddress, password) => {
+const checkUser = async (emailAddress, password) => {
   emailAddress = checkEmailAddress(emailAddress);
   password = validPassword(password);
-  const adminCollection = await admin();
-  const adm = await adminCollection.findOne({
+  const userCollection = await user();
+  const userEmail = await userCollection.findOne({
     emailAddress: emailAddress,
   });
-  if (adm) {
+  if (userEmail) {
     const compare = async (password, hash) => {
       return await bcrypt.compare(password, hash);
     };
-    const comparePassword = await compare(password, adm.password);
+    const comparePassword = await compare(password, userEmail.password);
     if (comparePassword) {
-      const res = await adminCollection.findOne(
+      const res = await userCollection.findOne(
         {
           emailAddress: emailAddress,
         },
@@ -88,6 +93,6 @@ const checkAdmin = async (emailAddress, password) => {
 };
 
 export default {
-  createAdmin,
-  checkAdmin,
+  createUser,
+  checkUser,
 };

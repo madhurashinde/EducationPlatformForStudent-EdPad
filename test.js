@@ -62,3 +62,6 @@
 
 console.log(new Date().toLocaleDateString());
 console.log(new Date());
+for (let i = 0; i < 10; i++) {
+  console.log(i % 3);
+}

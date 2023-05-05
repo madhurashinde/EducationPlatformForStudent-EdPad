@@ -13,11 +13,8 @@ const getCollectionFn = (collection) => {
   };
 };
 
-export const assignment = getCollectionFn("assignment");
+export const user = getCollectionFn("user");
 export const course = getCollectionFn("course");
-export const student = getCollectionFn("student");
-export const faculty = getCollectionFn("faculty");
-export const admin = getCollectionFn("admin");
 export const announcement = getCollectionFn("announcement");
 export const module = getCollectionFn("module");
-export const user = getCollectionFn("user");
+export const assignment = getCollectionFn("assignment");
