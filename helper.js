@@ -23,11 +23,27 @@ export const validWeblink = (str) => {
   return str;
 };
 
+export const validDate = (str) => {
+  str = validStr(str);
+  if (moment(str, "YYYY-MM-DD", true).format() === "Invalid date") {
+    throw "invalid Date";
+  }
+  return str;
+};
+
+export const validTime = (str) => {
+  str = validStr(str);
+  const format = /^\d\d:\d\d:\d\d$/;
+  if (!format.test(str)) throw "invalid Time";
+  return str;
+};
+
 export const nonNegInt = (str) => {
-  if (!validStr(str)) return false;
+  str = validStr(str);
   const num = Number(str);
-  if (num === NaN || num < 0) return false;
-  return true;
+  if (num === NaN || num < 0 || !Number.isInteger(num))
+    throw "must ne a non negative integer";
+  return num;
 };
 
 const currentDate = () => {
@@ -111,35 +127,36 @@ export const validPassword = (strVal) => {
   return strVal;
 };
 
-export const validRole = (strVal) => {
-  if (!strVal) throw "Role can not be empty";
-  if (typeof strVal !== "string") throw "Role must be a string";
-  strVal = strVal.trim().toLowerCase();
-  // if (strVal.length === 0)
-  //   throw "Password cannot be an empty string or just spaces";
-  // if (!strVal.includes("student")) {
-  //   if (!strVal.includes("faculty"))
-  //     throw `Error: Role can only be user or admin`;
-  // }
-  if (strVal !== "student" && strVal !== "faculty" && strVal !== "admin")
-    throw `Error: Role can only be student, faculty or admin`;
-  return strVal;
-};
-export const checkNumberFormat = (num) => {
-  if (typeof num !== "number") {
-    throw `Error: The value is not of type number`;
-  }
-  if (!Number.isInteger(num)) {
-    throw `Error: The value should be an integer`;
-  }
-  if (num.toString().includes(".0")) {
-    throw `Error: The value should be an integer`;
-  }
-  if (num < 1900 || num > 2023) {
-    throw `Error: The year can only be between 1900 to 2023`;
-  }
-  return num;
-};
+// export const validRole = (strVal) => {
+//   if (!strVal) throw "Role can not be empty";
+//   if (typeof strVal !== "string") throw "Role must be a string";
+//   strVal = strVal.trim().toLowerCase();
+//   // if (strVal.length === 0)
+//   //   throw "Password cannot be an empty string or just spaces";
+//   // if (!strVal.includes("student")) {
+//   //   if (!strVal.includes("faculty"))
+//   //     throw `Error: Role can only be user or admin`;
+//   // }
+//   if (strVal !== "student" && strVal !== "faculty" && strVal !== "admin")
+//     throw `Error: Role can only be student, faculty or admin`;
+//   return strVal;
+// };
+
+// export const checkNumberFormat = (num) => {
+//   if (typeof num !== "number") {
+//     throw `Error: The value is not of type number`;
+//   }
+//   if (!Number.isInteger(num)) {
+//     throw `Error: The value should be an integer`;
+//   }
+//   if (num.toString().includes(".0")) {
+//     throw `Error: The value should be an integer`;
+//   }
+//   if (num < 1900 || num > 2023) {
+//     throw `Error: The year can only be between 1900 to 2023`;
+//   }
+//   return num;
+// };
 
 export const checkBirthDateFormat = (strVal) => {
   if (!strVal) throw `Error: You must supply a string}!`;
@@ -211,9 +228,9 @@ export default {
   checkNameFormat,
   checkEmailAddress,
   validPassword,
-  validRole,
+  // validRole,
   checkBirthDateFormat,
-  checkNumberFormat,
+  // checkNumberFormat,
   validCWID,
   validGender,
 };

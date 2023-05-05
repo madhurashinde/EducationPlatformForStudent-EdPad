@@ -1,7 +1,15 @@
 import { assignment } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
-import moment from "moment";
-import { validStr, validWeblink, nonNegInt, validDueTime } from "../helper.js";
+
+import {
+  validStr,
+  validId,
+  validWeblink,
+  nonNegInt,
+  validDueTime,
+  validDate,
+  validTime,
+} from "../helper.js";
 
 const createAssignment = async (
   title,
@@ -12,17 +20,12 @@ const createAssignment = async (
   file,
   score
 ) => {
-  if (!validStr(courseId)) throw "CourseID is missing";
-  courseId = courseId.trim();
-  if (!ObjectId.isValid(courseId)) throw "invalid courseID";
+  courseId = validId(courseId);
   const newCourseId = new ObjectId(courseId);
-  if (!validStr(title) || !validStr(dueDate) || !validStr(dueTime)) {
-    throw "please provide Title, courseID, Due Date, Due Time and Score";
-  }
-  if (moment(dueDate.trim(), "YYYY-MM-DD", true).format() === "Invalid date") {
-    throw "invalid dueDate";
-  }
-  if (!validDueTime(dueDate.trim(), dueTime.trim())) {
+  title = validStr(title);
+  dueDate = validDate(dueDate);
+  dueTime = validTime(dueTime);
+  if (!validDueTime(dueDate, dueTime)) {
     throw "invalid dueDate";
   }
   if (!validStr(content) && !validStr(file))
@@ -30,16 +33,16 @@ const createAssignment = async (
   if (validStr(file) && !validWeblink(file)) {
     throw "the link of file is not valid";
   }
-  if (!nonNegInt(score)) throw "score must be valid number";
+  score = nonNegInt(score);
 
-  let newAssignment = {
-    title: title.trim(),
+  const newAssignment = {
+    title: title,
     courseId: newCourseId,
-    dueDate: dueDate.trim(),
-    dueTime: dueTime.trim(),
-    content: content.trim(),
-    file: file.trim(),
-    score: parseInt(score),
+    dueDate: dueDate,
+    dueTime: dueTime,
+    content: content,
+    file: file,
+    score: score,
     submission: [],
   };
   const assignmentCollection = await assignment();
@@ -52,11 +55,9 @@ const createAssignment = async (
 };
 
 const getAssignment = async (assignmentId) => {
-  if (!validStr(assignmentId)) throw "invalid id";
-  assignmentId = assignmentId.trim();
-  if (!ObjectId.isValid(assignmentId)) throw "invalid object ID";
+  assignmentId = validId(assignmentId);
   const assignmentCollection = await assignment();
-  let newId = new ObjectId(assignmentId);
+  const newId = new ObjectId(assignmentId);
   const assignmentDetail = await assignmentCollection.findOne({ _id: newId });
   if (assignmentDetail === null) throw "No assignment with that id";
   assignmentDetail._id = assignmentDetail._id.toString();
@@ -69,9 +70,7 @@ const getAssignment = async (assignmentId) => {
 };
 
 const getAllAssignment = async (courseId) => {
-  if (!validStr(courseId)) throw "invalid id";
-  courseId = courseId.trim();
-  if (!ObjectId.isValid(courseId)) throw "invalid object ID";
+  courseId = validId(courseId);
   const assignmentCollection = await assignment();
   const newCourseId = new ObjectId(courseId);
   let assignmentList = await assignmentCollection
@@ -89,9 +88,7 @@ const getAllAssignment = async (courseId) => {
 };
 
 const removeAssignment = async (assignmentId) => {
-  if (!validStr(assignmentId)) throw "invalid id";
-  assignmentId = assignmentId.trim();
-  if (!ObjectId.isValid(assignmentId)) throw "invalid object ID";
+  assignmentId = validId(assignmentId);
   const assignmentCollection = await assignment();
   const newId = new ObjectId(assignmentId);
   const deletionInfo = await assignmentCollection.findOneAndDelete({
@@ -113,45 +110,36 @@ const updateAssignment = async (
   file,
   score
 ) => {
-  if (
-    !validStr(assignmentId) ||
-    !validStr(title) ||
-    !validStr(dueDate) ||
-    !validStr(dueTime) ||
-    !validStr(score)
-  )
-    throw "please provide assignmentId, title, courseID, dueDate and score";
-  assignmentId = assignmentId.trim();
-  if (!ObjectId.isValid(assignmentId)) throw "invalid object ID";
-  if (moment(dueDate, "YYYY-MM-DD", true).format() === "Invalid date") {
-    throw "invalid dueDate";
-  }
+  assignmentId = validId(assignmentId);
+  title = validStr(title);
+  dueDate = validDate(dueDate);
+  dueTime = validTime(dueTime);
   if (!validDueTime(dueDate.trim(), dueTime.trim())) {
     throw "invalid dueDate";
   }
   if (!validStr(content) && !validWeblink(file))
     throw "must provide instruction of the assignment by text or file";
-  if (!nonNegInt(score)) throw "score must be valid number";
+  score = nonNegInt(score);
 
   const assignmentDetail = await getAssignment(assignmentId);
   if (
-    title.trim() === assignmentDetail.title &&
-    dueDate.trim() === assignmentDetail.dueDate &&
-    dueTime.trim() === assignmentDetail.dueTime &&
-    content.trim() === assignmentDetail.content &&
-    file.trim() === assignmentDetail.file &&
-    score.trim() === assignmentDetail.score
+    title === assignmentDetail.title &&
+    dueDate === assignmentDetail.dueDate &&
+    dueTime === assignmentDetail.dueTime &&
+    content === assignmentDetail.content &&
+    file === assignmentDetail.file &&
+    score === assignmentDetail.score
   )
     throw "No updated info";
-  const courseId = new ObjectId(assignmentDetail.courseId);
+
   let updatedAssignment = {
-    title: title.trim(),
-    courseId: courseId,
-    dueDate: dueDate.trim(),
-    dueTime: dueTime.trim(),
-    content: content.trim(),
-    file: file.trim(),
-    score: parseInt(score),
+    title: title,
+    courseId: assignmentDetail.courseId,
+    dueDate: dueDate,
+    dueTime: dueTime,
+    content: content,
+    file: file,
+    score: score,
     submission: assignmentDetail.submission,
   };
 

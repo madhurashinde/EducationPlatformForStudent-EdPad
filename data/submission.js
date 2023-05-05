@@ -1,7 +1,7 @@
 import { assignment } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import { assignmentFunc } from "./index.js";
-import { validStr, validWeblink } from "../helper.js";
+import { validStr, validId, validWeblink } from "../helper.js";
 
 const createSubmission = async (
   assignmentId,
@@ -9,16 +9,9 @@ const createSubmission = async (
   submitFile,
   comment
 ) => {
-  if (
-    !validStr(assignmentId) ||
-    !validStr(studentId) ||
-    !validWeblink(submitFile)
-  )
-    throw "assignmentId, student or submitFile invalid";
-  assignmentId = assignmentId.trim();
-  if (!ObjectId.isValid(assignmentId)) throw "invalid assignmentId";
-  studentId = studentId.trim();
-  // if (!ObjectId.isValid(studentId)) throw "invalid studentId";
+  assignmentId = validId(assignmentId);
+  studentId = validId(studentId);
+  submitFile = validWeblink(submitFile);
 
   const newAssignmentId = new ObjectId(assignmentId);
   const newStudentId = new ObjectId(studentId);
@@ -34,14 +27,15 @@ const createSubmission = async (
 
   const submissionId = new ObjectId();
   let commentList = [];
-  if (comment && validStr(comment)) {
-    commentList.push([comment.trim(), studentId]);
+  if (comment && comment.trim().length > 0) {
+    comment = validStr(comment);
+    commentList.push([comment, studentId]);
   }
 
   let newSubmission = {
     _id: submissionId,
     studentId: newStudentId,
-    submitFile: submitFile.trim(),
+    submitFile: submitFile,
     comment: commentList,
     scoreGet: null,
   };
@@ -57,12 +51,8 @@ const createSubmission = async (
 };
 
 const getSubmission = async (assignmentId, studentId) => {
-  assignmentId = assignmentId.trim();
-  studentId = studentId.trim();
-  if (!validStr(assignmentId) || !validStr(studentId))
-    throw "invalid assignmentId and studentId";
-  if (!ObjectId.isValid(assignmentId) || !ObjectId.isValid(studentId))
-    throw "invalid object Id";
+  assignmentId = validId(assignmentId);
+  studentId = validId(studentId);
   const assignmentCollection = await assignment();
   const newAssignmentId = new ObjectId(assignmentId);
   const newStudentId = new ObjectId(studentId);
@@ -81,9 +71,7 @@ const getSubmission = async (assignmentId, studentId) => {
 };
 
 const getAllSubmission = async (assignmentId) => {
-  if (!validStr(assignmentId)) throw "invalid assignmentId";
-  assignmentId = assignmentId.trim();
-  if (!ObjectId.isValid(assignmentId)) throw "invalid assignmentId";
+  assignmentId = validId(assignmentId);
   const assignment = await assignmentFunc.getAssignment(assignmentId);
   let submissionList = assignment.submission;
   let res = [];
@@ -101,14 +89,10 @@ const resubmitSubmission = async (
   submitFile,
   comment
 ) => {
-  if (!validStr(assignmentId) || !validStr(studentId))
-    throw "invalid object Id";
-  if (validStr(submitFile) && !validWeblink(submitFile))
-    throw "invalid file link";
-  assignmentId = assignmentId.trim();
-  studentId = studentId.trim();
-  if (!ObjectId.isValid(assignmentId) || !ObjectId.isValid(studentId))
-    throw "invalid object ID";
+  assignmentId = validId(assignmentId);
+  studentId = validId(studentId);
+  submitFile = validWeblink(submitFile);
+
   const assignmentCollection = await assignment();
   const newAssignmentId = new ObjectId(assignmentId);
   const newStudentId = new ObjectId(studentId);
@@ -125,15 +109,15 @@ const resubmitSubmission = async (
   if (submissionDetail === null) throw "No submission yet";
   if (
     submitFile.trim() === submissionDetail.submission.submitFile &&
-    !validStr(comment)
+    (!comment || comment.trim().length === 0)
   )
     throw "the file is not updated";
 
   let commentList = [];
-  if (validStr(comment)) {
-    commentList.push([comment.trim(), studentId]);
+  if (comment && comment.trim().length > 0) {
+    comment = validStr(comment);
+    commentList.push([comment, studentId]);
   }
-  let submissionFile = submitFile.trim();
 
   const createAssignmentId = submissionDetail._id.toString();
   const createStudentId = submissionDetail.submission[0].studentId.toString();
@@ -150,8 +134,8 @@ const resubmitSubmission = async (
   await createSubmission(
     createAssignmentId,
     createStudentId,
-    submissionFile,
-    commentList
+    submitFile,
+    comment
   );
 
   const newSubmissionDetail = await getSubmission(assignmentId, studentId);

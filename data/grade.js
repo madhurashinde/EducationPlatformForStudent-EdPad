@@ -1,16 +1,10 @@
 import { assignment } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
-import { validStr } from "../helper.js";
+import { validStr, validId, nonNegInt } from "../helper.js";
 
 const grade = async (submissionId, grade) => {
-  if (!validStr(submissionId) || !validStr(grade))
-    throw "invalid submissionId or grade";
-  submissionId = submissionId.trim();
-  if (!ObjectId.isValid(submissionId)) throw "invalid object Id";
-  grade = grade.trim();
-  grade = Number(grade);
-  if (!grade || grade === NaN || grade < 0) throw "invalid grade";
-
+  submissionId = validId(submissionId);
+  grade = nonNegInt(grade);
   const assignmentDetail = await assignment();
   const newSubmissionId = new ObjectId(submissionId);
   const submissionDetail = await assignmentDetail.findOne(
@@ -25,7 +19,6 @@ const grade = async (submissionId, grade) => {
     { "submission._id": newSubmissionId },
     { $set: { "submission.$.scoreGet": grade } }
   );
-
   if (!updateSubmission.acknowledged) throw "Cannot grade successfully";
 
   return "Successfully graded";
@@ -33,12 +26,8 @@ const grade = async (submissionId, grade) => {
 
 // add courseId
 const getAllGrade = async (courseId, studentId) => {
-  if (!validStr(courseId) || !validStr(studentId)) throw "invalid studentId";
-  courseId = courseId.trim();
-  studentId = studentId.trim();
-  if (!ObjectId.isValid(courseId) || !ObjectId.isValid(studentId))
-    throw "invalid object Id";
-  const newCourseId = new ObjectId(courseId);
+  courseId = validId(courseId);
+  studentId = validId(studentId);
   const newStudentId = new ObjectId(studentId);
   const assignemntCollection = await assignment();
   const allGrade = await assignemntCollection
