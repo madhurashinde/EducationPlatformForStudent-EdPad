@@ -152,7 +152,7 @@ router
         req.body.lastNameInput,
         req.body.emailAddressInput,
         req.body.genderInput,
-        req.body.genderInput,
+        req.body.birthDateInput,
         req.body.passwordInput,
         req.body.majorInput
       );
@@ -206,7 +206,7 @@ router
         req.body.lastNameInput,
         req.body.emailAddressInput,
         req.body.genderInput,
-        req.body.genderInput,
+        req.body.birthDateInput,
         req.body.passwordInput,
         req.body.majorInput
       );
