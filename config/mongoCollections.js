@@ -20,3 +20,4 @@ export const faculty = getCollectionFn("faculty");
 export const admin = getCollectionFn("admin");
 export const announcement = getCollectionFn("announcement");
 export const module = getCollectionFn("module");
+export const user = getCollectionFn("user");

@@ -1,43 +1,36 @@
-import { module } from "../config/mongoCollections.js";
+import { module, course } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
-import validation from "../helper.js";
+import { validStr, validId, validWeblink } from "../helper.js";
 
 const exportedMethods = {
   async get(id) {
-    if (!id) throw "You must provide an id to search for";
-    if (typeof id !== "string") throw "Id must be a string";
-    if (id.trim().length === 0)
-      throw "Id cannot be an empty string or just spaces";
-    id = id.trim();
-    if (!ObjectId.isValid(id)) throw "invalid object ID";
+    id = validId(id);
     const moduleCollection = await module();
     const moduleInfo = await moduleCollection.findOne({
       _id: new ObjectId(id),
     });
     if (moduleInfo === null) throw "No module with that id";
-    const newId = moduleInfo._id.toString();
-    const ann = await this.get(newId);
-    return ann;
+    moduleInfo._id = moduleInfo._id.toString();
+    return moduleInfo;
   },
 
-  async create(title, user, description, course) {
-    title = validation.checkString(title, "Title");
-    user = validation.checkString(user, "UserId");
-    description = validation.checkString(description, "description");
-    course = validation.checkId(course, "Course ID");
+  async create(title, description, fileURL, courseId) {
+    title = validStr(title);
+    description = validStr(description);
+    fileURL = validWeblink(fileURL);
+    courseId = validId(courseId);
 
-    // let currentDate = new Date();
-    // let cDay = currentDate.getDate();
-    // let cMonth = currentDate.getMonth() + 1;
-    // let cYear = currentDate.getFullYear();
-    // let time = currentDate.getHours() + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds();
-    // let createdAt="<b>" + cDay + "/" + cMonth + "/" + cYear + "</b>" + "  "+ time;
+    const courseCollection = await course();
+    const courseInfo = await courseCollection.findOne({
+      _id: new ObjectId(courseId),
+    });
+    if (!courseInfo) throw "invalid course id";
 
     let newModule = {
       title: title,
-      user: user,
       description: description,
-      course: course,
+      fileURL: fileURL,
+      courseId: courseId,
     };
     const moduleCollection = await module();
     const insertInfo = await moduleCollection.insertOne(newModule);
@@ -49,12 +42,19 @@ const exportedMethods = {
   },
 
   async getAll(courseId) {
+    courseId = validId(courseId);
+    const courseCollection = await course();
+    const courseInfo = await courseCollection.findOne({
+      _id: new ObjectId(courseId),
+    });
+    if (!courseInfo) throw "invalid course id";
+
     const moduleCollection = await module();
     let moduleList = await moduleCollection
       .find({ course: courseId })
       .sort({ _id: -1 })
       .toArray();
-    if (!moduleList) throw "Could not get all announcements";
+    if (!moduleList) throw "Could not get all modules";
     moduleList = moduleList.map((element) => {
       element._id = element._id.toString();
       return element;

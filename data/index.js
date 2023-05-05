@@ -8,7 +8,6 @@ import annsDataFunctions from "./announcements.js";
 import modsDataFunctions from "./modules.js";
 import coursesFunctions from "./courses.js";
 
-
 export const assignmentFunc = assignmentFunctions;
 export const submissionFunc = submissionFunctions;
 export const gradeFunc = gradeFunctions;

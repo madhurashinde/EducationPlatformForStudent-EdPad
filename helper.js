@@ -1,17 +1,26 @@
 import moment from "moment";
+import { ObjectId } from "mongodb";
 
 export const validStr = (str) => {
-  if (!str) return false;
-  if (typeof str !== "string") return false;
-  if (str.trim() === "") return false;
-  return true;
+  if (!str) throw `Error: You must supply an input!`;
+  if (typeof str !== "string") throw `Error: input must be a string!`;
+  str = str.trim();
+  if (str === "")
+    `Error: input cannot be an empty string or string with just spaces`;
+  return str;
+};
+
+export const validId = (id) => {
+  id = validStr(id);
+  if (!ObjectId.isValid(id)) throw `Error: invalid object ID`;
+  return id;
 };
 
 export const validWeblink = (str) => {
-  if (!validStr(str)) return false;
+  str = validStr(str);
   const web = /^www\..+\.com$/;
-  if (!web.test(str.trim())) return false;
-  return true;
+  if (!web.test(str.trim())) throw "not in a valid weblink format";
+  return str;
 };
 
 export const nonNegInt = (str) => {
@@ -91,9 +100,6 @@ const numbers = /[0-9]/g;
 export const validPassword = (strVal) => {
   if (!strVal) throw "Password can not be empty";
   if (typeof strVal !== "string") throw "Password must be a string";
-  strVal = strVal.trim();
-  if (strVal.length === 0)
-    throw "Password cannot be an empty string or just spaces";
   if (strVal.length < 8) throw "Password must contain at least 8 characters";
   if (strVal.length > 25) throw "Password must contain at most 25 characters";
   if (strVal.match(checkSpaces)) throw `Password can not contain any spaces`;
@@ -212,42 +218,16 @@ export default {
   validGender,
 };
 
-// const exportedMethods = {
-//   checkId(id, varName) {
-//     if (!id) throw `Error: You must provide a ${varName}`;
-//     if (typeof id !== 'string') throw `Error:${varName} must be a string`;
-//     id = id.trim();
-//     if (id.length === 0)
-//       throw `Error: ${varName} cannot be an empty string or just spaces`;
-//     if (!ObjectId.isValid(id)) throw `Error: ${varName} invalid object ID`;
-//     return id;
-//   },
-
-//   checkString(strVal, varName) {
-//     if (!strVal) throw `Error: You must supply a ${varName}!`;
-//     if (typeof strVal !== 'string') throw `Error: ${varName} must be a string!`;
-//     strVal = strVal.trim();
-//     if (strVal.length === 0)
-//       throw `Error: ${varName} cannot be an empty string or string with just spaces`;
-//     if (!isNaN(strVal))
-//       throw `Error: ${strVal} is not a valid value for ${varName} as it only contains digits`;
-//     return strVal;
-//   },
-
-//   checkStringArray(arr, varName) {
-//     //We will allow an empty array for this,
-//     //if it's not empty, we will make sure all tags are strings
-//     if (!arr || !Array.isArray(arr))
-//       throw `You must provide an array of ${varName}`;
-//     for (let i in arr) {
-//       if (typeof arr[i] !== 'string' || arr[i].trim().length === 0) {
-//         throw `One or more elements in ${varName} array is not a string or is an empty string`;
-//       }
-//       arr[i] = arr[i].trim();
+// checkStringArray(arr, varName) {
+//   //We will allow an empty array for this,
+//   //if it's not empty, we will make sure all tags are strings
+//   if (!arr || !Array.isArray(arr))
+//     throw `You must provide an array of ${varName}`;
+//   for (let i in arr) {
+//     if (typeof arr[i] !== 'string' || arr[i].trim().length === 0) {
+//       throw `One or more elements in ${varName} array is not a string or is an empty string`;
 //     }
-
-//     return arr;
+//     arr[i] = arr[i].trim();
 //   }
-// };
 
-// export default exportedMethods;
+//   return arr;
