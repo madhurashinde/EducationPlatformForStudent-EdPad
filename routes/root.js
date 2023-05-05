@@ -8,17 +8,16 @@ import {
   validPassword,
   checkValidMajor,
   validGender,
+  validRole
 } from "../helper.js";
-
+import {user} from '../config/mongoCollections.js';
 router
   .route("/admin/register")
   .get(async (req, res) => {
-    //code here for GET
-    console.log("get route");
-    res.render("register/register", { title: "Register Page" });
+    console.log("get route")
+    res.render('register/registerAdmin', {title: "Register Page"});
   })
   .post(async (req, res) => {
-    //code here for POST
     console.log("route");
     let result = {};
     try {
@@ -30,13 +29,23 @@ router
       checkBirthDateFormat(req.body.birthDateInput);
       validPassword(req.body.passwordInput);
       checkValidMajor(req.body.majorInput);
-
-      if (req.body.passwordInput !== req.body.confirmPasswordInput) {
-        res.status(400).render("register/register", {
-          error: "Passwords do not match",
-          title: "Register Page",
-        });
+      validRole(req.body.roleInput)
+      if(req.body.passwordInput !== req.body.confirmPasswordInput){
+        res.status(400).render('register/registerAdmin',{error: "Passwords do not match", title: "Register Page"});
       }
+      
+      result = await userFunc.createUser(req.body.firstNameInput, req.body.lastNameInput,req.body.emailAddressInput,req.body.genderInput, req.body.birthDateInput, req.body.passwordInput,req.body.majorInput, req.body.roleInput );
+      if(result.insertedUser){
+        return res.redirect('/login')
+      }
+      else {
+        res.status(500).send("Internal Server Error")
+      }
+  }catch(e){
+    // console.log("Error: ",e);
+    res.status(400).render('register/registerAdmin',{error: e, title: "Register Page"});
+    return;
+  }
 
       result = await facultyFunc.createFaculty(
         req.body.firstNameInput,
@@ -75,17 +84,19 @@ router
       checkBirthDateFormat(req.body.birthDateInput);
       validPassword(req.body.passwordInput);
       checkValidMajor(req.body.majorInput);
-
-      if (req.body.passwordInput !== req.body.confirmPasswordInput) {
-        res.status(400).render("register/register", {
-          error: "Passwords do not match",
-          title: "Register Page",
-        });
+      validRole(req.body.roleInput)
+      if(req.body.passwordInput !== req.body.confirmPasswordInput){
+        res.status(400).render('register/register',{error: "Passwords do not match", title: "Register Page"});
       }
-      const facCollection = await faculty();
-      const fac = await facCollection.findOne({ emailAddress: emailAddress });
-      if (fac) {
-        throw `Error: Email address is registered as a faculty`;
+      // const facCollection = await user();
+      // const fac = await facCollection.findOne({emailAddress: req.body.emailAddressInput})
+      // if (fac){
+      //   console.log(fac.role)
+      //     throw `Error: Email address is registered as a faculty`
+      // }
+      result = await userFunc.createUser(req.body.firstNameInput, req.body.lastNameInput,req.body.emailAddressInput,req.body.genderInput, req.body.birthDateInput, req.body.passwordInput,req.body.majorInput, req.body.roleInput );
+      if(result){
+        return res.redirect('/login')
       }
       result = await studFunc.createStudent(
         req.body.firstNameInput,
