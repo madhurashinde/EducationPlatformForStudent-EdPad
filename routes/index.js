@@ -5,6 +5,7 @@ import AssignmentRoutes from "./assignment.js";
 import SubmissionRoutes from "./submission.js";
 import GradeRoutes from "./grade.js";
 import ModuleRoutes from "./modules.js";
+import QuizletRoutes from "./quizlets.js";
 
 const constructorMethod = (app) => {
   app.use("/", RootRoutes);
@@ -14,6 +15,8 @@ const constructorMethod = (app) => {
   app.use("/grade", GradeRoutes);
   app.use("/announcement", AnnouncementRoutes);
   app.use("/module", ModuleRoutes);
+  app.use("/quizlet", QuizletRoutes);
+
 
   app.use("*", (req, res) => {
     res.status(404);
