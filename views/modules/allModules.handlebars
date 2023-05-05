@@ -1,20 +1,23 @@
+<button onclick="location.href='/course/{{courseId}}'">Back</button>
 {{#if faculty}}
-<button onclick="location.href='/module/{{course}}/newModule'"> New Module</button>
-{{!-- <a href='/newModule'>New Module</a> --}}
-{{message}}
+<button onclick="location.href='/module/{{courseId}}/newModule'"> New Module</button>
+{{!-- {{message}} --}}
 {{/if}}
-{{#if modList.length}}
-{{#each  modList}}
-<div><a href='/{{courseId}}/{{_id}}'>{{title}}</a></div>    
 
-<div>{{user}}</div>
-<div>{{description}}</div>
-{{#if faculty}}
-<button onclick="location.href='/module/{{course}}/delete/{{_id}}'">Delete</button>
-{{/if}}
-{{!-- <a href='/module/{{_id}}?_method=DELETE'>delete</a> --}}
-<div>===================================================================</div>
-{{/each}}
+{{#if moduleList.length}}
+    {{#each moduleList}}
+        <div><a href='/module/detail/{{_id}}'>{{title}}</a></div>    
+
+        <div>{{description}}</div>
+
+        {{#if faculty}}
+            {{!-- <button onclick="location.href='/module/detail/{{_id}}'">Delete</button> --}}
+        {{/if}}
+
+    {{!-- <a href='/module/{{_id}}?_method=DELETE'>delete</a> --}}
+    <div></div>
+    {{/each}}
+{{else}}
+<div>No module yet</div>
 {{/if}}
 <div>
-<a href='/{{courseId}}/{{_id}}'>Back</a></div> 

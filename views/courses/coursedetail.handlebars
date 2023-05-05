@@ -1,24 +1,18 @@
 <button onclick="location.href='/course';">Back</button>
 
 <header>
-    <h1> {{title}}</h1>
+    <h1> {{courseTitle}}</h1>
 </header>
-
-<div>
-    {{courseTitle}}
-</div>
+<div>Welcome to {{courseTitle}}!</div>
 <div>
     <a href='/announcement/{{courseObjectID}}'>Announcements</a>
+</div>
+<div>
+    <a href='/module/{{courseObjectID}}'>Modules</a>
 </div>
 <div>
     <a href='/assignment/{{courseObjectID}}'>Assignments</a>
 </div>
 <div>
-    <a href='/submission/{{courseObjectID}}'>Submissions</a>
-</div>
-<div>
     <a href='/grade/{{courseObjectID}}'>Grades</a>
-</div>
-<div>
-    <a href='/module/{{courseObjectID}}'>Modules</a>
 </div>
