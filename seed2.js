@@ -15,8 +15,13 @@ await db.dropDatabase();
 // initialze registration status
 await adminFunc.initRegistrationStatus();
 
-// create faculty
+// create major
 const major = ["Computer Science", "Business Analysis", "Chemistry"];
+for (let i = 0; i < major; i++) {
+  await adminFunc.addMajor(major[i]);
+}
+// create faculty
+
 const gender = ["Male", "FEMALE", "prefer not to say"];
 
 // create faculty

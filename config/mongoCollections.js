@@ -19,3 +19,4 @@ export const announcement = getCollectionFn("announcement");
 export const module = getCollectionFn("module");
 export const assignment = getCollectionFn("assignment");
 export const registration = getCollectionFn("registration");
+export const major = getCollectionFn("major");

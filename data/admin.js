@@ -1,7 +1,25 @@
-import { registration, user } from "../config/mongoCollections.js";
+import { registration, major, user } from "../config/mongoCollections.js";
+import { validStr } from "../helper.js";
+
+const addMajor = async (str) => {
+  str = validStr(str).toLowerCase();
+  const majorCollection = await major();
+  const majorInfo = majorCollection.findOne({ major: strVal });
+  if (majorInfo !== null) throw "Major already exists";
+  const insertInfo = await majorCollection.insertOne({
+    major: str,
+  });
+  if (!insertInfo.acknowledged || !insertInfo.insertedId)
+    throw "Could not add major";
+  return "success";
+};
 
 const initRegistrationStatus = async () => {
   const regCollection = await registration();
+  const registrationStatus = await regCollection.find({}).toArray();
+  if (registrationStatus.length === 1) {
+    throw "Registration already exists";
+  }
   const insertInfo = await regCollection.insertOne({
     Enableregistration: false,
   });
@@ -49,4 +67,5 @@ export default {
   registrationStatus,
   changeStatus,
   archive,
+  addMajor,
 };
