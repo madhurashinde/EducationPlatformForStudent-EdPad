@@ -42,6 +42,55 @@ app.all("/", async (req, res, next) => {
   next();
 });
 
+app.use("/admin", async (req, res, next) => {
+  if (!req.session.user || req.session.user.role !== "admin") {
+    return res.redirect("/");
+  }
+  next();
+});
+
+app.use("/course", async (req, res, next) => {
+  if (!req.session.user || !req.session.user.role) {
+    return res.redirect("/login");
+  }
+  next();
+});
+
+app.use("/announcement", async (req, res, next) => {
+  if (!req.session.user || !req.session.user.role) {
+    return res.redirect("/login");
+  }
+  next();
+});
+
+app.use("/module", async (req, res, next) => {
+  if (!req.session.user || !req.session.user.role) {
+    return res.redirect("/login");
+  }
+  next();
+});
+
+app.use("/assignment", async (req, res, next) => {
+  if (!req.session.user || !req.session.user.role) {
+    return res.redirect("/login");
+  }
+  next();
+});
+
+app.use("/grade", async (req, res, next) => {
+  if (!req.session.user || !req.session.user.role) {
+    return res.redirect("/login");
+  }
+  next();
+});
+
+app.use("/people", async (req, res, next) => {
+  if (!req.session.user || !req.session.user.role) {
+    return res.redirect("/login");
+  }
+  next();
+});
+
 app.use("/assignment/:id", async (req, res, next) => {
   if (req.method == "POST") {
     if (req.body.method == "delete") {

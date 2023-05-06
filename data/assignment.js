@@ -156,10 +156,25 @@ const updateAssignment = async (
   return newAssignment;
 };
 
+const getCourseId = async (id) => {
+  id = validId(id);
+  const assignmentCollection = await assignment();
+  const assignmentInfo = await assignmentCollection.findOne(
+    {
+      _id: new ObjectId(id),
+    },
+    { projection: { courseId: 1 } }
+  );
+  if (assignmentInfo === null) throw "can not find the assignment";
+  const courseId = assignmentInfo.courseId.toString();
+  return courseId;
+};
+
 export default {
   createAssignment,
   getAllAssignment,
   getAssignment,
   removeAssignment,
   updateAssignment,
+  getCourseId,
 };

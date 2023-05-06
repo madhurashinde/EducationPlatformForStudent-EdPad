@@ -2,15 +2,30 @@ import { Router } from "express";
 const router = Router();
 import { ObjectId } from "mongodb";
 import { assignment } from "../config/mongoCollections.js";
-import { coursesFunc, gradeFunc } from "../data/index.js";
-import { validStr, nonNegInt } from "../helper.js";
+import { coursesFunc, gradeFunc, submissionFunc } from "../data/index.js";
+import { validId, nonNegInt } from "../helper.js";
 
 // id = courseId, to check student's grade
 router.route("/:id").get(async (req, res) => {
-  const courseId = req.params.id;
+  // if the student/faculty is not in this course, do not let pass
+  let courseId = req.params.id;
+  if (
+    req.session.user.role == "student" ||
+    req.session.user.role == "faculty"
+  ) {
+    const currentCourse = await coursesFunc.getCurrentCourse(
+      req.session.user._id
+    );
+    for (let i = 0; i < currentCourse.length; i++) {
+      if (currentCourse[i]._id.toString() === courseId) {
+        break;
+      } else {
+        return res.redirect("/course");
+      }
+    }
+  }
   const role = req.session.user.role;
   if (role !== "student") {
-    // return res.json({ error: "pending this func" });
     const allGrades = await gradeFunc.getClassScore(courseId);
     return res.render("grade/courseGrade", {
       courseId: courseId,
@@ -25,7 +40,9 @@ router.route("/:id").get(async (req, res) => {
       let totalScore = 0;
       let afterCalTotalScoreGet = 0;
       const assignment = Object.keys(allGrade);
+
       let studentName = allGrade[assignment[0]][0];
+      console.log(studentName);
       for (let i = 0; i < assignment.length; i++) {
         if (typeof allGrade[assignment[i]][3] === "number") {
           totalScoreGet += allGrade[assignment[i]][3];
@@ -37,6 +54,7 @@ router.route("/:id").get(async (req, res) => {
           Math.round((totalScoreGet / totalScore) * 10000) / 100;
       }
       return res.render("grade/grade", {
+        courseId: course._id,
         course: course.courseTitle,
         student: studentName,
         allGrade: allGrade,
@@ -48,22 +66,30 @@ router.route("/:id").get(async (req, res) => {
   }
 });
 
-//id = submissionId
 router.route("/detail/:id").post(async (req, res) => {
-  const assignmentId = req.body.assignmentId.trim();
-  const id = req.body.submissionId.trim();
-  const grade = req.body.score.trim();
+  // if the student/faculty is not in this course, do not let pass
+  let submissionId = req.params.id;
+  const course = await submissionFunc.getCourseId(submissionId);
   if (
-    !validStr(assignmentId) ||
-    !validStr(id) ||
-    !nonNegInt(grade) ||
-    !ObjectId.isValid(assignmentId) ||
-    !ObjectId.isValid(id)
+    req.session.user.role == "student" ||
+    req.session.user.role == "faculty"
   ) {
-    return res.json({ error: "Error" });
+    const currentCourse = await coursesFunc.getCurrentCourse(
+      req.session.user._id
+    );
+    for (let i = 0; i < currentCourse.length; i++) {
+      if (currentCourse[i]._id.toString() === course) {
+        break;
+      } else {
+        return res.redirect(`grade/${course}`);
+      }
+    }
   }
-  let num_grade = Number(grade);
+
   try {
+    const assignmentId = validId(req.body.assignmentId);
+    const id = validId(req.body.submissionId);
+    const grade = nonNegInt(req.body.score);
     const assignmentDetail = await assignment();
     const newSubmissionId = new ObjectId(id);
     var submissionDetail = await assignmentDetail.findOne(
@@ -72,22 +98,25 @@ router.route("/detail/:id").post(async (req, res) => {
       },
       { projection: { score: 1, "submission.$": 1 } }
     );
-  } catch (e) {
-    return res.status(500).json({ error: e });
-  }
-  if (num_grade > submissionDetail.score) {
-    return res.json({ error: "Grade can not exceed total score" });
-  }
 
-  try {
-    await gradeFunc.grade(id, grade);
+    if (grade > submissionDetail.score) {
+      return res.json({ error: "Grade can not exceed total score" });
+    }
+    await gradeFunc.grade(id, grade.toString());
     return res.redirect(`/assignment/${assignmentId}/allSubmission`);
   } catch (e) {
-    return res.json({ error: e });
+    return res.json({ error: `${e}` });
   }
 });
 
 router.route("/:courseId/:studentId").get(async (req, res) => {
+  // only faculty of this course and admin allowed
+  let courseId = req.params.courseId;
+  const professor = await coursesFunc.getFaculty(courseId);
+  if (req.session.user._id !== professor && req.session.user.role !== "admin") {
+    return res.redirect(`/grade/${courseId}`);
+  }
+
   try {
     const studentId = req.params.studentId;
     const courseId = req.params.courseId;
@@ -109,12 +138,16 @@ router.route("/:courseId/:studentId").get(async (req, res) => {
         Math.round((totalScoreGet / totalScore) * 10000) / 100;
     }
     return res.render("grade/grade", {
+      faculty: true,
+      courseId: courseId,
       course: course.courseTitle,
       student: studentName,
       allGrade: allGrade,
       totalScore: afterCalTotalScoreGet,
     });
-  } catch (e) {}
+  } catch (e) {
+    return res.json({ error: `${e}` });
+  }
 });
 
 export default router;

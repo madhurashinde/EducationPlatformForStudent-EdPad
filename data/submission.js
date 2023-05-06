@@ -157,9 +157,24 @@ const resubmitSubmission = async (
   return newSubmissionDetail;
 };
 
+const getCourseId = async (id) => {
+  id = validId(id);
+  const assignmentCollection = await assignment();
+  const submissionInfo = await assignmentCollection.findOne(
+    {
+      "submission._id": new ObjectId(id),
+    },
+    { projection: { courseId: 1 } }
+  );
+  if (submissionInfo === null) throw "can not find the submission";
+  const courseId = submissionInfo.courseId.toString();
+  return courseId;
+};
+
 export default {
   createSubmission,
   getAllSubmission,
   getSubmission,
   resubmitSubmission,
+  getCourseId,
 };

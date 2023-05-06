@@ -68,5 +68,20 @@ const exportedMethods = {
     };
     return obj;
   },
+
+  async getCourseId(id) {
+    id = validId(id);
+    const annCollection = await announcement();
+    const annInfo = await annCollection.findOne(
+      {
+        _id: new ObjectId(id),
+      },
+      { projection: { courseId: id } }
+    );
+    if (annInfo === null) throw "can not find the announcement";
+    const courseId = annInfo.courseId;
+    return courseId;
+  },
 };
+
 export default exportedMethods;

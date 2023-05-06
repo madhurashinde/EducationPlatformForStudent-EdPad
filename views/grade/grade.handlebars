@@ -1,3 +1,9 @@
+{{#if faculty}}
+    <button onclick="location.href='/grade/{{courseId}}'"> Back</button>
+{{else}}
+    <button onclick="location.href='/course/{{courseId}}'"> Back</button>
+{{/if}}
+
 <h2>{{course}} - Grade</h2>
 
 {{#if faculty}}

@@ -88,8 +88,18 @@ const getStudentList = async (courseId) => {
   return studentInfo;
 };
 
-// -----------------------------------------------------
-const getStudentCurrentCourse = async (id) => {
+const getFaculty = async (courseId) => {
+  courseId = validId(courseId);
+  const courseCollection = await course();
+  const courseInfo = await courseCollection.findOne(
+    { _id: new ObjectId(courseId) },
+    { projection: { professorId: 1 } }
+  );
+  const faculty = courseInfo.professorId;
+  return faculty;
+};
+
+const getCurrentCourse = async (id) => {
   id = validId(id);
   const userCollection = await user();
   const courseCollection = await course();
@@ -110,55 +120,13 @@ const getStudentCurrentCourse = async (id) => {
   }
 };
 
-const getStudentCompletedCourse = async (id) => {
+const getCompletedCourse = async (id) => {
   id = validId(id);
   const userCollection = await user();
   const courseCollection = await course();
   const courseInfo = await userCollection.findOne(
     { _id: new ObjectId(id) },
     { projection: { courseCompleted: 1 } }
-  );
-  let courseList = [];
-  if (courseInfo) {
-    const course = courseInfo.courseCompleted;
-    for (let i = 0; i < course.length; i++) {
-      const courseInfo = await courseCollection.findOne({
-        _id: new ObjectId(course[i]),
-      });
-      courseList.push(courseInfo);
-    }
-    return courseList;
-  }
-};
-
-const getFacultyCurrentCourse = async (id) => {
-  id = validId(id);
-  const userCollection = await user();
-  const courseCollection = await course();
-  const courseInfo = await userCollection.findOne(
-    { _id: new ObjectId(id) },
-    { projection: { courseInProgress: 1 } }
-  );
-  let courseList = [];
-  if (courseInfo) {
-    const course = courseInfo.courseInProgress;
-    for (let i = 0; i < course.length; i++) {
-      const courseInfo = await courseCollection.findOne({
-        _id: new ObjectId(course[i]),
-      });
-      courseList.push(courseInfo);
-    }
-    return courseList;
-  }
-};
-
-const getFacultyTaughtCourse = async (id) => {
-  id = validId(id);
-  const userCollection = await user();
-  const courseCollection = await course();
-  const courseInfo = await userCollection.findOne(
-    { _id: new ObjectId(id) },
-    { projection: { courseTaught: 1 } }
   );
   let courseList = [];
   if (courseInfo) {
@@ -222,12 +190,10 @@ const registerCourse = async (studentId, courseId) => {
 export default {
   createCourse,
   getAll,
-  // getCourseByCID,
   getCourseByObjectID,
-  getStudentCurrentCourse,
-  getStudentCompletedCourse,
-  getFacultyCurrentCourse,
-  getFacultyTaughtCourse,
+  getCurrentCourse,
+  getCompletedCourse,
   registerCourse,
   getStudentList,
+  getFaculty,
 };
