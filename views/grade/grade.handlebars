@@ -1,12 +1,13 @@
 <h2>{{course}} - Grade</h2>
+
+{{#if faculty}}
+<h3>Student Name: {{student}}</h3>
+{{/if}}
+
 {{#each allGrade}}
 <div> 
-    <h3>{{title}}</h3>
-    {{#if scoreGet}}
-        <p>Grade:{{scoreGet}}/{{score}}</p>
-    {{else}}
-        <p>Grade:To be Graded/{{score}}</p>
-    {{/if}}
+    <h4>{{this.[1]}}</h4>
+    <p>Grade:{{this.[3]}}/{{this.[2]}}</p>
 </div>
 {{/each}}
 <h3>Total Score: {{totalScore}} / 100</h3>

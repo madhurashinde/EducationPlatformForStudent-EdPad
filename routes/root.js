@@ -9,13 +9,11 @@ import {
   checkValidMajor,
   validGender,
 } from "../helper.js";
-import {user} from '../config/mongoCollections.js';
+import { user } from "../config/mongoCollections.js";
 router
   .route('/admin/register')
   .get(async (req, res) => {
-    //code here for GET
-    console.log("get route")
-    res.render('register/registerAdmin', {title: "Register Page"});
+    res.render("register/registerAdmin", { title: "Register Page" });
   })
   .post(async (req, res) => {
 
@@ -49,28 +47,19 @@ router
       else {
         res.status(500).send("Internal Server Error")
       }
-  }catch(e){
-    // console.log("Error: ",e);
-    res.status(400).render('register/registerAdmin',{error: e, title: "Register Page"});
-    return;
-  }
-
  } );
+
 
 router
   .route('/register')
   .get(async (req, res) => {
-    //code here for GET
     res.render('register/register', {title: "Register Page"});
   })
   .post(async (req, res) => {
-    //code here for POST
-    // console.log("route")
     let result ={};
     try{
       checkNameFormat(req.body.firstNameInput);
       checkNameFormat(req.body.lastNameInput);
-  // CWID = validCWID(CWID);
       checkEmailAddress(req.body.emailAddressInput);
       validGender(req.body.genderInput);
       checkBirthDateFormat(req.body.birthDateInput);

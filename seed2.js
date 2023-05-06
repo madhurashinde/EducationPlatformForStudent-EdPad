@@ -93,7 +93,7 @@ for (let i = 0; i < 7; i++) {
 let assignment = [];
 for (let i = 0; i < 10; i++) {
   const a = await assignmentFunc.createAssignment(
-    `Assignment ${parseInt(i / 6) + 1}`,
+    `Assignment ${parseInt(i / 5) + 1}`,
     course[i % 5]._id,
     `2023-05-1${i}`,
     "00:00:00",
@@ -119,11 +119,22 @@ await coursesFunc.registerCourse(student[4]._id, course[4]._id);
 await coursesFunc.registerCourse(student[4]._id, course[5]._id);
 
 // create submission
-for (let i = 0; i < 6; i++)
-  await submissionFunc.createSubmission(
-    assignment[i]._id,
-    student[i % 5]._id,
-    `www.submission${i % 5}.com`
-  );
+await submissionFunc.createSubmission(
+  assignment[0]._id,
+  student[0]._id,
+  `www.submission.com`
+);
+
+await submissionFunc.createSubmission(
+  assignment[1]._id,
+  student[2]._id,
+  `www.submission.com`
+);
+
+await submissionFunc.createSubmission(
+  assignment[0]._id,
+  student[2]._id,
+  `www.submission.com`
+);
 
 await closeConnection();
