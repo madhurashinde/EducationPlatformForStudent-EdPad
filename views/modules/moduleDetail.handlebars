@@ -5,3 +5,10 @@
 <div>
     {{description}}
 </div>
+
+{{#if faculty}}
+    <form onsubmit="return confirm('Confirm?');" action="/module/detail/{{_id}}" method="post">
+        <input name="method" value="delete" hidden>
+        <button type="submit">Delete</button>
+    </form>
+{{/if}}

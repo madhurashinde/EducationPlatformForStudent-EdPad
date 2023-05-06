@@ -10,4 +10,12 @@
     {{description}}
 </div>
 
+{{#if faculty}}
+<form onsubmit="return confirm('Confirm?');" action="/announcement/detail/{{id}}" method="post">
+    <input name="method" value="delete" hidden>
+    <button type="submit">Delete</button>
+</form>
+{{/if}}
+
+
 

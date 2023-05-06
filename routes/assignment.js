@@ -16,7 +16,6 @@ router.get("/:id", async (req, res) => {
       faculty = true;
     }
     return res.render("assignment/assignment", {
-      title: "All Assignment",
       courseId: courseId,
       assignmentList: assignmentList,
       faculty: faculty,

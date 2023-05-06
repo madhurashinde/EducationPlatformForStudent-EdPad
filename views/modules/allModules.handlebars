@@ -10,11 +10,13 @@
 
         <div>{{description}}</div>
 
-        {{#if faculty}}
-            {{!-- <button onclick="location.href='/module/detail/{{_id}}'">Delete</button> --}}
+        {{#if ../faculty}}
+        <form onsubmit="return confirm('Confirm?');" action="/module/detail/{{_id}}" method="post">
+            <input name="method" value="delete" hidden>
+            <button type="submit">Delete</button>
+        </form>
         {{/if}}
 
-    {{!-- <a href='/module/{{_id}}?_method=DELETE'>delete</a> --}}
     <div></div>
     {{/each}}
 {{else}}

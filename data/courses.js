@@ -34,13 +34,12 @@ const createCourse = async (
   if (!insertInfo.acknowledged || !insertInfo.insertedId)
     throw "Could not add newCourse";
 
-  const updateFac = userCollection.findOneAndUpdate(
+  const updateFac = await userCollection.findOneAndUpdate(
     {
       _id: new ObjectId(professorId),
     },
     { $push: { courseInProgress: insertInfo.insertedId.toString() } }
   );
-
   if (updateFac.lastErrorObject.n === 0) {
     throw "could not update faculty profile successfully";
   }
@@ -71,14 +70,22 @@ const getCourseByObjectID = async (id) => {
   return courseInfo;
 };
 
-const getAllFaculty = async () => {
+const getStudentList = async (courseId) => {
+  courseId = validId(courseId);
+  const courseCollection = await course();
+  const courseInfo = await courseCollection
+    .find({ _id: new ObjectId(courseId) }, { projection: { studentlist: 1 } })
+    .toArray();
+  const student = courseInfo[0].studentlist;
   const userCollection = await user();
-  let allFaculty = await userCollection.find({ role: "faculty" }).toArray();
-  allFaculty = allFaculty.map((element) => {
-    element._id = element._id.toString();
-    return element;
-  });
-  return allFaculty;
+  let studentInfo = [];
+  for (let i = 0; i < student.length; i++) {
+    const info = await userCollection.findOne({
+      _id: new ObjectId(student[i]),
+    });
+    studentInfo.push(info);
+  }
+  return studentInfo;
 };
 
 // -----------------------------------------------------
@@ -222,5 +229,5 @@ export default {
   getFacultyCurrentCourse,
   getFacultyTaughtCourse,
   registerCourse,
-  getAllFaculty,
+  getStudentList,
 };
