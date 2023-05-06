@@ -25,15 +25,20 @@ if (form) {
             errorDiv.hidden = false;
             if (!courseTitle.value.trim()) {
                 courseTitle.classList.add("inputClass");
+                errorDiv.innerHTML = "invalid courseTitle"
             }
             if (!courseId.value.trim()) {
                 courseId.classList.add("inputClass");
+                errorDiv.innerHTML = "invalid courseId"
+
             }
             if (!description.value.trim()) {
                 description.classList.add("inputClass");
+                errorDiv.innerHTML = "invalid description"
             }
             if (!facultyInput.value.trim()) {
                 facultyInput.classList.add("inputClass");
+                errorDiv.innerHTML = "invalid faculty"
             }
         }
     });

@@ -1,6 +1,14 @@
 import { Router } from "express";
 const router = Router();
 import { adminFunc, coursesFunc, userFunc } from "../data/index.js";
+import {
+  checkValidMajor,
+  checkNameFormat,
+  checkEmailAddress,
+  validPassword,
+  checkBirthDateFormat,
+  validGender,
+} from "../helper.js";
 
 //ok
 router.route("/").get((req, res) => {
@@ -66,7 +74,7 @@ router
         "faculty"
       );
       if (result) {
-        return res.redirect("/admin");
+        return res.redirect("/admin/faculty");
       } else {
         res.status(500).send("Internal Server Error");
       }
