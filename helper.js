@@ -143,8 +143,8 @@ export const checkBirthDateFormat = (strVal) => {
   if (strVal.slice(4, 5) !== "-" || strVal.slice(7, 8) !== "-")
     throw `Date must be in the dd-mm-yyyy format`;
 
-  let month = Number(strVal.slice(8));
-  let day = Number(strVal.slice(0, 2));
+  let month = Number(strVal.slice(5,7));
+  let day = Number(strVal.slice(8));
   let year = Number(strVal.slice(0,4));
 
   if (Number.isNaN(day) || Number.isNaN(month) || Number.isNaN(year))
