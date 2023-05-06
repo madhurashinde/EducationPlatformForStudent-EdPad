@@ -1,46 +1,38 @@
 import { Router } from "express";
 const router = Router();
-import { assignmentFunc } from "../data/index.js";
-import { validStr, validWeblink, nonNegInt, validDueTime } from "../helper.js";
 import { coursesFunc } from "../data/index.js";
 
 //ok
 router.get("/", async (req, res) => {
   if (req.session.user) {
+    if (req.session.user.role === "admin") {
+      return res.redirect("/admin");
+    }
     try {
-      if (req.session.user.role === "admin") {
-        return res.redirect("/admin");
-      } else if (req.session.user.role === "student") {
-        const StudCurrentCourses = await coursesFunc.getStudentCurrentCourse(
-          req.session.user._id
-        );
-        const StudCompletedCourses =
-          await coursesFunc.getStudentCompletedCourse(req.session.user._id);
+      const CurrentCourses = await coursesFunc.getCurrentCourse(
+        req.session.user._id
+      );
+      const CompletedCourses = await coursesFunc.getCompletedCourse(
+        req.session.user._id
+      );
+      if (req.session.user.role === "student") {
         return res.render("courses/courses", {
           title: "Student courses",
-          CompletedCourses: StudCompletedCourses,
-          CurrentCourses: StudCurrentCourses,
+          CompletedCourses: CompletedCourses,
+          CurrentCourses: CurrentCourses,
           student: true,
         });
-      } else if (req.session.user.role === "faculty") {
-        const FacCurrentCourses = await coursesFunc.getFacultyCurrentCourse(
-          req.session.user._id
-        );
-        const FacCompletedCourses = await coursesFunc.getStudentCompletedCourse(
-          req.session.user._id
-        );
+      } else {
         return res.render("courses/courses", {
           title: "Faculty courses",
-          CompletedCourses: FacCompletedCourses,
-          CurrentCourses: FacCurrentCourses,
+          CompletedCourses: CompletedCourses,
+          CurrentCourses: CurrentCourses,
           student: false,
         });
       }
     } catch (e) {
       return res.status(400).json({ error: e });
     }
-  } else {
-    return res.redirect("/login");
   }
 });
 
@@ -48,12 +40,20 @@ router.get("/", async (req, res) => {
 router
   .route("/registercourse")
   .get(async (req, res) => {
+    // only students allowed
+    if (req.session.user.role !== "student") {
+      return res.redirect("/course");
+    }
     let getAllCourses = await coursesFunc.getAll();
     return res.render("courses/courseRegister", {
       allCourses: getAllCourses,
     });
   })
   .post(async (req, res) => {
+    // only students allowed
+    if (req.session.user.role !== "student") {
+      return res.redirect("/course");
+    }
     let courseRegisteredObjectID = req.body.courseInput;
     let studentObjectID = req.session.user._id;
 
@@ -70,15 +70,31 @@ router
 
 //ok
 router.get("/:id", async (req, res) => {
-  let id = req.params.id;
+  // only student/faculty in this course allowed
+  let courseId = req.params.id;
+  if (
+    req.session.user.role == "student" ||
+    req.session.user.role == "faculty"
+  ) {
+    const currentCourse = await coursesFunc.getCurrentCourse(
+      req.session.user._id
+    );
+    for (let i = 0; i < currentCourse.length; i++) {
+      if (currentCourse[i]._id.toString() === courseId) {
+        break;
+      } else {
+        return res.redirect("/course");
+      }
+    }
+  }
   try {
-    let course = await coursesFunc.getCourseByObjectID(id);
+    let course = await coursesFunc.getCourseByObjectID(courseId);
     return res.render("courses/coursedetail", {
-      courseObjectID: id,
+      courseObjectID: course._id,
       courseTitle: course.courseTitle,
     });
   } catch (e) {
-    return res.status(400).json({ error: e });
+    return res.status(400).json({ error: `${e}` });
   }
 });
 

@@ -1,21 +1,35 @@
 import { Router } from "express";
 const router = Router();
-import { annsData } from "../data/index.js";
+import { annsData, coursesFunc } from "../data/index.js";
 import { validStr, validId } from "../helper.js";
 
 //ok
 router.route("/:courseId").get(async (req, res) => {
-  try {
-    if (!req.session.user) {
-      return res.redirect("/login");
+  // if the student/faculty is not in this course, do not let pass
+  let course = req.params.courseId;
+  if (
+    req.session.user.role == "student" ||
+    req.session.user.role == "faculty"
+  ) {
+    const currentCourse = await coursesFunc.getCurrentCourse(
+      req.session.user._id
+    );
+    for (let i = 0; i < currentCourse.length; i++) {
+      console.log(currentCourse[i]._id.toString(), course);
+      if (currentCourse[i]._id.toString() === course) {
+        break;
+      } else {
+        return res.redirect("/course");
+      }
     }
-    let course = req.params.courseId;
+  }
+  try {
     const annList = await annsData.getAll(course);
     if (req.session.user.role == "student") {
       res.render("announcements/allAnnouncements", {
         courseId: course,
         annList: annList,
-        // student: true,
+        faculty: false,
       });
     }
     if (req.session.user.role == "faculty") {
@@ -29,7 +43,7 @@ router.route("/:courseId").get(async (req, res) => {
       res.render("announcements/allAnnouncements", {
         courseId: course,
         annList: annList,
-        // admin: true,
+        faculty: false,
       });
     }
   } catch (e) {
@@ -41,22 +55,23 @@ router
   .route("/:courseId/newAnnouncement")
   //ok
   .get(async (req, res) => {
-    if (!req.session.user || !req.session.user.role) {
-      return res.redirect("/login");
-    }
+    // only the professor of this course is allowed
     let courseId = req.params.courseId;
-    if (req.session.user.role) {
-      if (req.session.user.role == "faculty") {
-        return res.render(`announcements/newAnnouncement`, {
-          course: courseId,
-        });
-      } else {
-        return res.redirect(`/announcement/${courseId}`);
-      }
+    const professor = await coursesFunc.getFaculty(courseId);
+    if (req.session.user._id !== professor) {
+      return res.redirect(`/announcement/${courseId}`);
     }
+    return res.render(`announcements/newAnnouncement`, {
+      course: courseId,
+    });
   })
   //ok
   .post(async (req, res) => {
+    // only the professor of this course is allowed
+    const professor = await coursesFunc.getFaculty(courseId);
+    if (req.session.user._id !== professor) {
+      return res.redirect(`/announcement/${courseId}`);
+    }
     const anninfo = req.body;
     if (!anninfo || Object.keys(anninfo).length === 0) {
       return res
@@ -96,10 +111,21 @@ router
   .route("/detail/:id")
   //ok
   .get(async (req, res) => {
-    try {
-      if (!req.session.user || !req.session.user.role) {
-        return res.redirect("/login");
+    // if the student/faculty is not in this course, do not let pass
+    if (
+      req.session.user.role == "student" ||
+      req.session.user.role == "faculty"
+    ) {
+      const id = req.params.id;
+      const courseId = annsData.getCourseId(id);
+      const currentCourse = await coursesFunc.getCurrentCourse(
+        req.session.user._id
+      );
+      if (!currentCourse.includes(courseId)) {
+        return res.redirect(`/announcement/${courseId}`);
       }
+    }
+    try {
       const ann = await annsData.get(req.params.id);
       res.render("announcements/announcementDetail", {
         title: ann.title,
@@ -114,15 +140,15 @@ router
   })
   //ok
   .delete(async (req, res) => {
-    if (!req.session.user) {
-      return res.redirect("/login");
-    }
+    // only the professor of this course is allowed
     const id = validId(req.params.id);
     const announcement = await annsData.get(id);
     const courseId = announcement.courseId;
-    if (req.session.user.role == "student") {
-      return res.redirect(`/announcement/${courseId}`);
+    const professor = await coursesFunc.getFaculty(courseId);
+    if (req.session.user._id !== professor) {
+      return res.redirect(`/announcement/detail/${id}`);
     }
+
     try {
       let deletedAnn = await annsData.remove(req.params.id);
       return res.redirect(`/announcement/${courseId}`);

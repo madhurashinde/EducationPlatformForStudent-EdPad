@@ -75,13 +75,27 @@ const exportedMethods = {
     });
 
     if (deletionInfo.lastErrorObject.n === 0) {
-      throw `Could not delete announcement with id of ${id}`;
+      throw `Could not delete module with id of ${id}`;
     }
     let obj = {
       annId: deletionInfo.value._id,
       deleted: true,
     };
     return obj;
+  },
+
+  async getCourseId(id) {
+    id = validId(id);
+    const modCollection = await module();
+    const modInfo = await modCollection.findOne(
+      {
+        _id: new ObjectId(id),
+      },
+      { projection: { courseId: 1 } }
+    );
+    if (modInfo === null) throw "can not find the module";
+    const courseId = modInfo.courseId.toString();
+    return courseId;
   },
 };
 export default exportedMethods;

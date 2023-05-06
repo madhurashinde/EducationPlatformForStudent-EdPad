@@ -1,10 +1,17 @@
 import { Router } from "express";
 const router = Router();
 import path from "path";
-import { assignmentFunc } from "../data/index.js";
+import { assignmentFunc, coursesFunc } from "../data/index.js";
 import { submissionFunc } from "../data/index.js";
 
 router.route("/:id").post(async (req, res) => {
+  // only student in this course allowed
+  let assignmentId = req.params.id;
+  const courseId = assignmentFunc.getCourseId(assignmentId);
+  const studentList = coursesFunc.getStudentList(courseId);
+  if (!studentList.includes(req.session.user.role)) {
+    return res.redirect(`/assignment/detail/${id}`);
+  }
   try {
     const id = req.params.id;
     const submitFile = req.body.submitFile;
@@ -14,7 +21,7 @@ router.route("/:id").post(async (req, res) => {
     }
     const submit = await submissionFunc.createSubmission(
       id,
-      "643895a8b3ee41b54432b776",
+      req.session.user._id,
       submitFile,
       comment
     );
@@ -25,16 +32,16 @@ router.route("/:id").post(async (req, res) => {
   }
 });
 
-router.route("/detail/:id").get(async (req, res) => {
-  const id = req.params.id;
-  const submissionDetail = await submissionFunc.getSubmission(id);
-  const assignmentId = submissionDetail.assignmentId;
-  const assignmentDetail = await assignmentFunc.getAssignment(assignmentId);
-  return res.render("assignment/assignmentDetail", {
-    title: "Assignment Detail",
-    assignment: assignmentDetail,
-    submission: submissionDetail,
-  });
-});
+// router.route("/detail/:id").get(async (req, res) => {
+//   const id = req.params.id;
+//   const submissionDetail = await submissionFunc.getSubmission(id);
+//   const assignmentId = submissionDetail.assignmentId;
+//   const assignmentDetail = await assignmentFunc.getAssignment(assignmentId);
+//   return res.render("assignment/assignmentDetail", {
+//     title: "Assignment Detail",
+//     assignment: assignmentDetail,
+//     submission: submissionDetail,
+//   });
+// });
 
 export default router;

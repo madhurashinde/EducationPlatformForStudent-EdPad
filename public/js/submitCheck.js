@@ -50,7 +50,9 @@ if (startSubmission) {
         // set up AJAX request config
         let requestConfig = {
           method: "POST",
-          url: `/assignment/${$("#assignment-id").html().trim()}/newSubmission`,
+          url: `/assignment/detail/${$("#assignment-id")
+            .html()
+            .trim()}/newSubmission`,
           contentType: "application/json",
           data: JSON.stringify({
             file: $("#submitFile").val(),

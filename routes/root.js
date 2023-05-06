@@ -13,10 +13,20 @@ import { user } from "../config/mongoCollections.js";
 
 router
   .route("/register")
+  // ok
   .get((req, res) => {
+    // if one is logged in, do not show this page
+    if (req.session.user && req.session.user.role) {
+      return res.redirect("/course");
+    }
     return res.render("login/register");
   })
+  //check
   .post(async (req, res) => {
+    // if one is logged in, do not show this page
+    if (req.session.user && req.session.user.role) {
+      return res.redirect("/course");
+    }
     let result = {};
     try {
       checkNameFormat(req.body.firstNameInput);
@@ -63,12 +73,22 @@ router
 
 router
   .route("/login")
+  // ok
   .get((req, res) => {
+    // if one is logged in, do not show this page
+    if (req.session.user && req.session.user.role) {
+      return res.redirect("/course");
+    }
     return res.render("login/login", {
       title: "Login Page",
     });
   })
+  //check
   .post(async (req, res) => {
+    // if one is logged in, do not show this page
+    if (req.session.user && req.session.user.role) {
+      return res.redirect("/course");
+    }
     try {
       checkEmailAddress(req.body.emailAddressInput);
       validPassword(req.body.passwordInput);
@@ -76,7 +96,6 @@ router
       return res.render("error", { error: e, title: "Error" });
     }
 
-    // user login
     try {
       const result = await userFunc.checkUser(
         req.body.emailAddressInput,
@@ -98,11 +117,13 @@ router
     }
   });
 
-router
-  .route("/logout")
-  .get((req, res) => {
-    req.session.destroy();
-    res.render("login/logout", { title: "Logout Page" });
-  })
-  .post(async (req, res) => {});
+router.route("/logout").get((req, res) => {
+  // if one is not logged in, do not show this page
+  if (!req.session.user) {
+    return res.redirect("/login");
+  }
+  req.session.destroy();
+  res.render("login/logout", { title: "Logout Page" });
+});
+
 export default router;

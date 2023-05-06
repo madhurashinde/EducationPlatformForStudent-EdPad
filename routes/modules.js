@@ -1,17 +1,30 @@
 import { Router } from "express";
 const router = Router();
-import { modulesData } from "../data/index.js";
+import { coursesFunc, modulesData } from "../data/index.js";
 import { validId, validStr } from "../helper.js";
 
 //ok
 router.route("/:courseId").get(async (req, res) => {
-  if (!req.session.user || !req.session.user.role) {
-    return res.redirect("/login");
+  // if the student/faculty is not in this course, do not let pass
+  let course = req.params.courseId;
+  if (
+    req.session.user.role == "student" ||
+    req.session.user.role == "faculty"
+  ) {
+    const currentCourse = await coursesFunc.getCurrentCourse(
+      req.session.user._id
+    );
+    for (let i = 0; i < currentCourse.length; i++) {
+      if (currentCourse[i]._id.toString() === course) {
+        break;
+      } else {
+        return res.redirect("/course");
+      }
+    }
   }
-  try {
-    let course = req.params.courseId;
-    const moduleList = await modulesData.getAll(course);
 
+  try {
+    const moduleList = await modulesData.getAll(course);
     if (req.session.user.role == "faculty") {
       res.render("modules/allModules", {
         moduleList: moduleList,
@@ -33,27 +46,31 @@ router.route("/:courseId").get(async (req, res) => {
 //ok
 router
   .route("/:courseId/newModule")
-  .get((req, res) => {
-    if (!req.session.user || !req.session.user.role) {
-      return res.redirect("/login");
-    } else {
-      const courseId = req.params.courseId;
-      if (!req.session.user.role == "faculty") {
-        return res.redirect(`/module/${courseId}`);
-      } else {
-        return res.render("modules/newModule", { course: courseId });
-      }
+  .get(async (req, res) => {
+    // only the professor of this course is allowed
+    let courseId = req.params.courseId;
+    const professor = await coursesFunc.getFaculty(courseId);
+    if (req.session.user._id !== professor) {
+      return res.redirect(`/module/${courseId}`);
     }
+    return res.render("modules/newModule", { course: courseId });
   })
   .post(async (req, res) => {
+    // only the professor of this course is allowed
+    let courseId = req.params.courseId;
+    const professor = await coursesFunc.getFaculty(courseId);
+    if (req.session.user._id !== professor) {
+      return res.redirect(`/module/${courseId}`);
+    }
+
     const moduleinfo = req.body;
     if (!moduleinfo || Object.keys(moduleinfo).length === 0) {
       return res
         .status(400)
         .json({ error: "There are no fields in the request body" });
     }
-    const courseId = validId(req.params.courseId);
     try {
+      courseId = validId(courseId);
       if (!moduleinfo.mod_title || !moduleinfo.mod_description)
         throw "All fields need to have valid values";
       moduleinfo.mod_title = validStr(moduleinfo.mod_title);
@@ -84,11 +101,27 @@ router
 router
   .route("/detail/:id")
   .get(async (req, res) => {
-    try {
-      if (!req.session.user) {
-        return res.redirect("/login");
+    // if the student/faculty is not in this course, do not let pass
+    const id = req.params.id;
+    if (
+      req.session.user.role == "student" ||
+      req.session.user.role == "faculty"
+    ) {
+      const courseId = await modulesData.getCourseId(id);
+      const currentCourse = await coursesFunc.getCurrentCourse(
+        req.session.user._id
+      );
+      for (let i = 0; i < currentCourse.length; i++) {
+        if (currentCourse[i]._id.toString() === courseId) {
+          break;
+        } else {
+          return res.redirect(`/module/${courseId}`);
+        }
       }
-      const mod = await modulesData.get(req.params.id);
+    }
+
+    try {
+      const mod = await modulesData.get(id);
       res.render("modules/moduleDetail", {
         title: mod.title,
         description: mod.description,
@@ -96,21 +129,22 @@ router
         course: mod.courseId,
       });
     } catch (e) {
-      res.status(404).render("modules/allModules", { error: e });
+      res.status(404).render("modules/allModules", { error: `${e}` });
     }
   })
   .delete(async (req, res) => {
-    if (!req.session.user) {
-      return res.redirect("/login");
+    // only the professor of this course is allowed
+    let modId = req.params.id;
+    const course = await modulesData.getCourseId(modId);
+    const professor = await coursesFunc.getFaculty(course);
+    if (req.session.user._id !== professor) {
+      return res.redirect(`/module/${course}`);
     }
-    const id = validId(req.params.id);
+
+    const id = validId(modId);
     const module = await modulesData.get(id);
     const courseId = module.courseId;
-    if (req.session.user.role == "student") {
-      return res.redirect(`/module/${courseId}`);
-    }
     try {
-      let Mod = await modulesData.get(req.params.id);
       let deletedMod = await modulesData.remove(id);
       if (deletedMod) {
         res.redirect(`/module/${courseId}`);
