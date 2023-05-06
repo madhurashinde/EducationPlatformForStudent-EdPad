@@ -4,6 +4,7 @@ import { assignmentFunc } from "../data/index.js";
 import { validStr, validWeblink, nonNegInt, validDueTime } from "../helper.js";
 import { coursesFunc } from "../data/index.js";
 
+//ok
 router.get("/", async (req, res) => {
   if (req.session.user) {
     try {
@@ -19,7 +20,7 @@ router.get("/", async (req, res) => {
           title: "Student courses",
           CompletedCourses: StudCompletedCourses,
           CurrentCourses: StudCurrentCourses,
-          role: true,
+          student: true,
         });
       } else if (req.session.user.role === "faculty") {
         const FacCurrentCourses = await coursesFunc.getFacultyCurrentCourse(
@@ -32,7 +33,7 @@ router.get("/", async (req, res) => {
           title: "Faculty courses",
           CompletedCourses: FacCompletedCourses,
           CurrentCourses: FacCurrentCourses,
-          role: false,
+          student: false,
         });
       }
     } catch (e) {
@@ -43,6 +44,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+//ok
 router
   .route("/registercourse")
   .get(async (req, res) => {
@@ -66,92 +68,18 @@ router
     }
   });
 
+//ok
 router.get("/:id", async (req, res) => {
-  let id_got = req.params.id;
-  id_got = id_got.trim();
-
+  let id = req.params.id;
   try {
-    let course_got = await coursesFunc.getCourseByObjectID(id_got);
+    let course = await coursesFunc.getCourseByObjectID(id);
     return res.render("courses/coursedetail", {
-      title: "Course Detail",
-      courseObjectID: course_got._id,
-      courseTitle: course_got.courseTitle,
+      courseObjectID: id,
+      courseTitle: course.courseTitle,
     });
   } catch (e) {
     return res.status(400).json({ error: e });
   }
 });
-
-router.get("/:id/assignment", async (req, res) => {
-  try {
-    const courseId = req.params.id;
-    const assignmentList = await assignmentFunc.getAllAssignment(courseId);
-    // const role = req.session.role;
-    let faculty = true;
-    // if (role === "faculty") {
-    //   faculty = true;
-    // }
-    return res.render("assignment/assignment", {
-      title: "All Assignment",
-      courseId: courseId,
-      assignmentList: assignmentList,
-      faculty: faculty,
-    });
-  } catch (e) {
-    return res.status(400).json({ error: e });
-  }
-});
-
-router
-  .route("/:id/newAssignment")
-  .get(async (req, res) => {
-    try {
-      //   if (req.session.role !== "faculty") {
-      //     return res.redirect(`/course/${id}/assignment`);
-      //   }
-      const id = req.params.id;
-      return res.render("assignment/newAssignment", { courseId: id });
-    } catch (e) {
-      return res.json({ error: e });
-    }
-  })
-  .post(async (req, res) => {
-    //   if (req.session.role !== "faculty") {
-    //     return res.redirect(`/course/${id}/assignment`);
-    //   }
-    const courseId = req.params.id;
-    const title = req.body.title.trim();
-    const dueDate = req.body.dueDate.trim();
-    const dueTime = req.body.dueTime.trim();
-    const content = req.body.content.trim();
-    const file = req.body.file.trim();
-    const score = req.body.score.trim();
-
-    if (
-      !validStr(title) ||
-      !validStr(dueDate) ||
-      !validStr(dueTime) ||
-      (!validStr(content) && !validWeblink(file)) ||
-      !nonNegInt(score) ||
-      !validDueTime(dueDate, dueTime)
-    ) {
-      return res.json({ error: "Invalid Input" });
-    }
-
-    try {
-      await assignmentFunc.createAssignment(
-        title,
-        courseId,
-        dueDate,
-        dueTime,
-        content,
-        file,
-        score
-      );
-      return res.redirect(`/course/${courseId}/assignment`);
-    } catch (e) {
-      return res.status(400).json({ error: e });
-    }
-  });
 
 export default router;

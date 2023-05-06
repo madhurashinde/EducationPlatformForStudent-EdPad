@@ -1,5 +1,6 @@
 import RootRoutes from "./root.js";
 import AdminRoutes from "./admin.js";
+import PeopleRoutes from "./people.js";
 import QuizletRoutes from "./quizlets.js";
 import CourseRoutes from "./course.js";
 import ModuleRoutes from "./modules.js";
@@ -11,6 +12,7 @@ import GradeRoutes from "./grade.js";
 const constructorMethod = (app) => {
   app.use("/", RootRoutes);
   app.use("/admin", AdminRoutes);
+  app.use("/people", PeopleRoutes);
   app.use("/course", CourseRoutes);
   app.use("/assignment", AssignmentRoutes);
   app.use("/submission", SubmissionRoutes);

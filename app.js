@@ -51,6 +51,24 @@ app.use("/assignment/:id", async (req, res, next) => {
   next();
 });
 
+app.use("/announcement/detail/:id", async (req, res, next) => {
+  if (req.method == "POST") {
+    if (req.body.method == "delete") {
+      req.method = "DELETE";
+    }
+  }
+  next();
+});
+
+app.use("/module/detail/:id", async (req, res, next) => {
+  if (req.method == "POST") {
+    if (req.body.method == "delete") {
+      req.method = "DELETE";
+    }
+  }
+  next();
+});
+
 configRoutes(app);
 
 app.listen(3000, () => {

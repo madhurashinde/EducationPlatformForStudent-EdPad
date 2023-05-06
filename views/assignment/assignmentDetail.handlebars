@@ -8,7 +8,7 @@ Total Score: {{assignment.score}}
 Instruction File: <a target="_blank" href="//{{assignment.file}}">{{assignment.file}}</a>
 
 {{#if faculty}}
-<form onsubmit="return confirm('Confirm?');" action="/assignment/{{assignment._id}}" method="post">
+<form onsubmit="return confirm('Confirm?');" action="/assignment/detail/{{assignment._id}}" method="post">
     <input name="method" value="delete" hidden>
     <button type="submit">Delete</button>
 </form>
