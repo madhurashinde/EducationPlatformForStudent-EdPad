@@ -140,19 +140,27 @@ export const checkBirthDateFormat = (strVal) => {
   if (strVal.length === 0)
     throw `Error: Input cannot be an empty string or string with just spaces`;
 
-  if (strVal.slice(2, 3) !== "/" || strVal.slice(5, 6) !== "/")
-    throw `Date must be in the mm/dd/yyyy format`;
+  if (strVal.slice(4, 5) !== "-" || strVal.slice(7, 8) !== "-")
+    throw `Date must be in the dd-mm-yyyy format`;
 
-  let month = Number(strVal.slice(0, 2));
-  let day = Number(strVal.slice(3, 5));
-  let year = Number(strVal.slice(6));
+  let month = Number(strVal.slice(8));
+  let day = Number(strVal.slice(0, 2));
+  let year = Number(strVal.slice(0,4));
 
-  if (Number.isNaN(month) || Number.isNaN(day) || Number.isNaN(year))
+  if (Number.isNaN(day) || Number.isNaN(month) || Number.isNaN(year))
     throw `day, month and year must be numbers`;
   const date = new Date();
   const currentYear = date.getFullYear();
   if (year > currentYear - 15) throw `Must be at least 15 years old`;
-  if (!moment(strVal, "MM/DD/YYYY", true).isValid()) throw "not a valid date";
+  // if(year < 1900) throw `Relese date can not be lower than 1900`;
+  if (month < 1 || month > 12) throw `Month must be between 1-12`;
+  if (day < 1 || day > 31) throw `Day must be between 1-31`;
+  if (month === 2 && day > 28)
+    throw `February can not contain more than 28 days`;
+  if (month === 4 || month === 6 || month === 9 || month === 11) {
+    if (day > 30) throw `Date can not be 31 for this month `;
+  }
+  // if (!moment(strVal, "DD/MM/YYYY", true).isValid()) throw "not a valid date";
   return strVal;
 };
 
