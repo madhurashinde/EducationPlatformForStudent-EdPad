@@ -70,22 +70,22 @@ router
       } else {
         res.status(500).send("Internal Server Error");
       }
-    } catch (e) {}
+    } catch (e) { }
   });
 
 router
   //ok
   .route("/createcourse")
-  .get((req, res) => {
-    return res.render("admin/courseCreate");
+  .get(async (req, res) => {
+    let allFacultyGot = await coursesFunc.getAllFaculty();
+    return res.render("admin/courseCreate", { allFaculty: allFacultyGot });
   })
   //check
   .post(async (req, res) => {
     let courseTitle = req.body.courseTitle;
     let courseId = req.body.courseId;
     let description = req.body.description;
-    let professorId = req.body.professorId;
-    let professorName = req.body.professorName;
+    let professorObjectId = req.body.facultyInput;
 
     //validation for the same course
 
@@ -94,10 +94,9 @@ router
         courseTitle,
         courseId,
         description,
-        professorId,
-        professorName
+        professorObjectId
       );
-      return res.redirect("/course/admin");
+      return res.redirect("/admin/course");
     } catch (e) {
       res.status(400).json({ error: "having error" });
     }
@@ -123,6 +122,6 @@ router
     return res.render("admin/archive");
   })
   // pending
-  .post(async (req, res) => {});
+  .post(async (req, res) => { });
 
 export default router;
