@@ -1,8 +1,9 @@
 <button onclick="location.href='/admin';">Back</button>
 
 <h1>Create New Course</h1>
-
-<form id="registration-form" method="POST" action="/admin/createcourse">
+<div>{{error}}</div>
+<div id="error" class="error" hidden>I'm an error. I will change through Client-Side JS</div>
+<form id="course-registration-form" method="POST" action="/admin/createcourse">
     <label for="courseTitle">course title:</label>
     <input type="text" id="courseTitle" name="courseTitle" required>
     <br>
@@ -15,7 +16,7 @@
     <label for="facultyInput">Professor:</label>
     <select id="facultyInput" name="facultyInput" required>
         {{#each allFaculty}}
-            <option value="{{this._id}}">{{this.firstName}} {{this.lastName}}</option>
+        <option value="{{this._id}}">{{this.firstName}} {{this.lastName}}</option>
         {{/each}}
     </select>
     <br>
@@ -23,6 +24,8 @@
 </form>
 
 
-{{#if error}} 
+{{#if error}}
 <p class="error">{{error}}</p>
 {{/if}}
+
+<script src="../../public/js/courseCheck.js"></script>
