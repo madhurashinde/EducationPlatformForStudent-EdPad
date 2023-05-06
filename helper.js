@@ -88,8 +88,6 @@ export const checkNameFormat = (strVal) => {
   strVal = strVal.trim();
   if (strVal.length === 0)
     throw `Error: Input cannot be an empty string or string with just spaces`;
-  if (!isNaN(strVal))
-    throw `Error: Input is not a valid value as it only contains digits`;
   if (strVal.length < 2 || strVal.length > 25)
     throw `Error: Input should be at least 2 characters long with a max of 25 characters`;
   return strVal;
