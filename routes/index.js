@@ -1,14 +1,16 @@
 import RootRoutes from "./root.js";
+import AdminRoutes from "./admin.js";
+import QuizletRoutes from "./quizlets.js";
 import CourseRoutes from "./course.js";
+import ModuleRoutes from "./modules.js";
 import AnnouncementRoutes from "./announcements.js";
 import AssignmentRoutes from "./assignment.js";
 import SubmissionRoutes from "./submission.js";
 import GradeRoutes from "./grade.js";
-import ModuleRoutes from "./modules.js";
-import QuizletRoutes from "./quizlets.js";
 
 const constructorMethod = (app) => {
   app.use("/", RootRoutes);
+  app.use("/admin", AdminRoutes);
   app.use("/course", CourseRoutes);
   app.use("/assignment", AssignmentRoutes);
   app.use("/submission", SubmissionRoutes);

@@ -1,0 +1,13 @@
+<button onclick="location.href='/admin';">Back</button>
+
+{{#if status}}
+    <p>Students now is allowed to register for courses</p>
+    <form onsubmit="return confirm('Confirm?');" action="/admin/openregister" method="post">
+        <button type="submit">Close Registration</button>
+    </form>
+{{else}}
+    <p>After opening registration, students will be able to register for courses</p>
+    <form onsubmit="return confirm('Confirm?');" action="/admin/openregister" method="post">
+        <button type="submit">Open Registration</button>
+    </form>
+{{/if}}

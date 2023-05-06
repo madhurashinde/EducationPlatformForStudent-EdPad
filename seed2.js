@@ -1,6 +1,7 @@
 import { dbConnection, closeConnection } from "./config/mongoConnection.js";
 import {
   userFunc,
+  adminFunc,
   assignmentFunc,
   submissionFunc,
   annsData,
@@ -10,6 +11,9 @@ import {
 
 const db = await dbConnection();
 await db.dropDatabase();
+
+// initialze registration status
+await adminFunc.initRegistrationStatus();
 
 // create faculty
 const major = ["Computer Science", "Business Analysis", "Chemistry"];

@@ -1,4 +1,5 @@
 import assignmentFunctions from "./assignment.js";
+import adminFunctions from "./admin.js";
 import submissionFunctions from "./submission.js";
 import gradeFunctions from "./grade.js";
 import annsDataFunctions from "./announcements.js";
@@ -13,3 +14,4 @@ export const annsData = annsDataFunctions;
 export const modulesData = modsDataFunctions;
 export const coursesFunc = coursesFunctions;
 export const userFunc = userFunctions;
+export const adminFunc = adminFunctions;

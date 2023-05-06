@@ -4,14 +4,6 @@ import { assignmentFunc } from "../data/index.js";
 import { validStr, validWeblink, nonNegInt, validDueTime } from "../helper.js";
 import { coursesFunc } from "../data/index.js";
 
-router.get("/admin", async (req, res) => {
-  let getAllCourses = await coursesFunc.getAll();
-  return res.render("courses/courseAdmin", {
-    title: "Admin can see all courses",
-    allCourses: getAllCourses,
-  });
-});
-
 router.get("/", async (req, res) => {
   if (req.session.user) {
     try {
