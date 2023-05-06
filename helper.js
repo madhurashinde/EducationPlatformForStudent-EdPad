@@ -1,5 +1,6 @@
 import moment from "moment";
 import { ObjectId } from "mongodb";
+import { major } from "./config/mongoCollections.js";
 
 export const validStr = (str) => {
   if (!str) throw `Error: You must supply an input!`;
@@ -74,15 +75,11 @@ export const validDueTime = (dueDate, dueTime) => {
   return current.getTime() < due.getTime();
 };
 
-// export const majors = ["Computer Science", "Finance", "Chemistry"];
-export const checkValidMajor = (strVal) => {
-  if (!strVal) throw `Error: You must supply a input!`;
-  if (typeof strVal !== "string") throw `Error: Input must be a string!`;
-  strVal = strVal.trim();
-  if (strVal.length === 0)
-    throw `Error: Input cannot be an empty string or string with just spaces`;
-  if (!isNaN(strVal))
-    throw `Error: Input is not a valid value as it only contains digits`;
+export const checkValidMajor = async (strVal) => {
+  strVal = validStr(strVal).toLowerCase();
+  const majorCollection = await major();
+  const majorInfo = majorCollection.findOne({ major: strVal });
+  if (majorInfo === null) throw "no such major";
   return strVal;
 };
 export const checkNameFormat = (strVal) => {
@@ -136,22 +133,6 @@ export const validRole = (strVal) => {
   return strVal;
 };
 
-// export const checkNumberFormat = (num) => {
-//   if (typeof num !== "number") {
-//     throw `Error: The value is not of type number`;
-//   }
-//   if (!Number.isInteger(num)) {
-//     throw `Error: The value should be an integer`;
-//   }
-//   if (num.toString().includes(".0")) {
-//     throw `Error: The value should be an integer`;
-//   }
-//   if (num < 1900 || num > 2023) {
-//     throw `Error: The year can only be between 1900 to 2023`;
-//   }
-//   return num;
-// };
-
 export const checkBirthDateFormat = (strVal) => {
   if (!strVal) throw `Error: You must supply a string}!`;
   if (typeof strVal !== "string") throw `Error: Each value must be a string!`;
@@ -171,14 +152,6 @@ export const checkBirthDateFormat = (strVal) => {
   const date = new Date();
   const currentYear = date.getFullYear();
   if (year > currentYear - 15) throw `Must be at least 15 years old`;
-  // if(year < 1900) throw `Relese date can not be lower than 1900`;
-  // if (month < 1 || month > 12) throw `Month must be between 1-12`;
-  // if (day < 1 || day > 31) throw `Day must be between 1-31`;
-  // if (month === 2 && day > 28)
-  //   throw `February can not contain more than 28 days`;
-  // if (month === 4 || month === 6 || month === 9 || month === 11) {
-  //   if (day > 30) throw `Date can not be 31 for this month `;
-  // }
   if (!moment(strVal, "MM/DD/YYYY", true).isValid()) throw "not a valid date";
   return strVal;
 };

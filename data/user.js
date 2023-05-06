@@ -27,7 +27,7 @@ const createUser = async (
   gender = validGender(gender);
   birthDate = checkBirthDateFormat(birthDate);
   password = validPassword(password);
-  major = checkValidMajor(major);
+  major = await checkValidMajor(major);
   role = validRole(role);
 
   const userCollection = await user();
