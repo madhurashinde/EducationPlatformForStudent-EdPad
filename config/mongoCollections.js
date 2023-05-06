@@ -18,3 +18,4 @@ export const course = getCollectionFn("course");
 export const announcement = getCollectionFn("announcement");
 export const module = getCollectionFn("module");
 export const assignment = getCollectionFn("assignment");
+export const registration = getCollectionFn("registration");

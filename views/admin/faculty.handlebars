@@ -1,0 +1,17 @@
+<button onclick="location.href='/admin';">Back</button>
+
+<button onclick="location.href='/logout';">Log Out</button>
+
+<h3>Faculty List</h3>
+<button onclick="location.href='/admin/register';">Register a Faculty Account</button>
+
+{{#each faculties}}
+    <div>
+        <p>Id: {{_id}}</p>
+        <p>Name: {{firstName}} {{lastName}}</p>
+        <p>Email: {{emailAddress}}</p>
+        <p>Gender: {{gender}}</p>
+        <p>Birth Date: {{birthDate}}</p>
+        <p>Major: {{major}}</p>
+    </div>
+{{/each}}

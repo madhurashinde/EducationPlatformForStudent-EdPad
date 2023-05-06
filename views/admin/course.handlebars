@@ -1,0 +1,15 @@
+<button onclick="location.href='/admin';">Back</button>
+<button onclick="location.href='/logout';">Log Out</button>
+
+<h3>Course List</h3>
+<button onclick="location.href='/admin/createcourse';">Create a New Course</button>
+
+{{#each allCourses}}
+    <div>
+        <p>Course Name: {{courseTitle}}</p>
+        <p>Course CID: {{courseCID}}</p>
+        <p>Description: {{description}}</p>
+        <p>Professor: {{professorName}}</p>
+        <button onclick="location.href='/course/{{_id}}';">Detail</button>
+    </div>
+{{/each}}

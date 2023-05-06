@@ -92,7 +92,21 @@ const checkUser = async (emailAddress, password) => {
   }
 };
 
+const allFaculty = async () => {
+  const userCollection = await user();
+  const faculty = userCollection.find({ role: "faculty" }).toArray();
+  return faculty;
+};
+
+const allStudent = async () => {
+  const userCollection = await user();
+  const student = userCollection.find({ role: "student" }).toArray();
+  return student;
+};
+
 export default {
   createUser,
   checkUser,
+  allFaculty,
+  allStudent,
 };

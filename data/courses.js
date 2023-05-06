@@ -24,10 +24,12 @@ const createCourse = async (
     description: description,
     professorId: professorId,
     professorName: faculty.firstName + " " + faculty.lastName,
+    major: faculty.major,
     studentlist: [],
   };
 
   const courseCollection = await course();
+  // if course exist?
   const insertInfo = await courseCollection.insertOne(newCourse);
   if (!insertInfo.acknowledged || !insertInfo.insertedId)
     throw "Could not add newCourse";
@@ -38,6 +40,11 @@ const createCourse = async (
     },
     { $push: { courseInProgress: insertInfo.insertedId.toString() } }
   );
+
+  if (updateFac.lastErrorObject.n === 0) {
+    throw "could not update faculty profile successfully";
+  }
+
   const newId = insertInfo.insertedId.toString();
   const courseDetail = await getCourseByObjectID(newId);
   return courseDetail;
@@ -53,24 +60,6 @@ const getAll = async () => {
   return allCourse;
 };
 
-// const getCourseByCID = async (id) => {
-//   if (!id) throw "Must provide an id to search for";
-//   if (typeof id !== "string") throw "Id must be a string";
-//   if (id.trim().length === 0)
-//     throw "Id cannot be an empty string or just spaces";
-//   id = id.trim();
-//   id = id.toUpperCase();
-//   // if (!ObjectId.isValid(id)) throw 'invalid object ID';
-
-//   const courseCollection = await course();
-//   const courseInfo = await courseCollection.findOne({ courseId: id });
-//   if (!courseInfo) {
-//     throw "course not found";
-//   }
-//   courseInfo._id = courseInfo._id.toString();
-//   return courseInfo;
-// };
-
 const getCourseByObjectID = async (id) => {
   id = validId(id);
   const courseCollection = await course();
@@ -83,7 +72,6 @@ const getCourseByObjectID = async (id) => {
 };
 
 const getAllFaculty = async () => {
-
   const userCollection = await user();
   let allFaculty = await userCollection.find({ role: "faculty" }).toArray();
   allFaculty = allFaculty.map((element) => {
@@ -234,5 +222,5 @@ export default {
   getFacultyCurrentCourse,
   getFacultyTaughtCourse,
   registerCourse,
-  getAllFaculty
+  getAllFaculty,
 };
