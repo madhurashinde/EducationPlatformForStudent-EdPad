@@ -14,6 +14,10 @@
 <div> 
     <h4>{{this.[1]}}</h4>
     <p>Grade:{{this.[3]}}/{{this.[2]}}</p>
+    {{/if ../faculty}}
+    {{else}}
+    <form></form>
+    {{/if}}
 </div>
 {{/each}}
 <h3>Total Score: {{totalScore}} / 100</h3>

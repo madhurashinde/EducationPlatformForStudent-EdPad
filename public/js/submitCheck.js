@@ -61,18 +61,17 @@ if (startSubmission) {
         };
 
         $.ajax(requestConfig).then(function (responseMessage) {
-          console.log(responseMessage);
-
           let element = $(`<div id="start-submission-container">
                 <p>Submitted</p>
                 <p>Your File Link:</p>
                 <a target="_blank" href="//${responseMessage.submission.submitFile}"> ${responseMessage.submission.submitFile}</a>
-                <button id="start-submission">New Attempt</button>
-                <div id="form-container"></div>
-                <div id="error-container" hidden></div>
             </div>`);
 
+          $("#form-container").empty();
+          $("#error-container").empty();
           $("#start-submission-container").replaceWith(element);
+          $("#start-submission").prop("disabled", false);
+          $("#start-submission").html("New Attempt");
         });
       } else {
         $("#error-container").show();
