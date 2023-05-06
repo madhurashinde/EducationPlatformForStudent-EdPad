@@ -103,6 +103,7 @@ router
         title: "Assignment Detail",
         assignment: assignmentDetail,
         faculty: faculty,
+        student: student,
         submission: submission,
       });
     } catch (e) {

@@ -1,4 +1,4 @@
-import { assignment } from "../config/mongoCollections.js";
+import { user, assignment } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import { assignmentFunc } from "./index.js";
 import { validStr, validId, validWeblink } from "../helper.js";
@@ -16,8 +16,23 @@ const createSubmission = async (
   const newAssignmentId = new ObjectId(assignmentId);
   const newStudentId = new ObjectId(studentId);
 
-  // Students are not allowed to submit for multiple times. They can resubmit.
+  // student can only submit to current course
+  const userCollection = await user();
+  const inCourse = await userCollection.findOne(
+    { _id: new ObjectId(studentId) },
+    { projection: { courseInProgress: 1 } }
+  );
+  if (!inCourse) throw "invalid student id";
+
   const assignmentCollection = await assignment();
+  const assignmentInfo = await assignmentCollection.findOne({
+    _id: newAssignmentId,
+  });
+  if (!inCourse.courseInProgress.includes(assignmentInfo.courseId.toString()))
+    throw "you are not in this course";
+
+  // Students are not allowed to submit for multiple times. They can resubmit.
+
   const info = await assignmentCollection.findOne({
     $and: [{ _id: newAssignmentId }, { "submission.studentId": newStudentId }],
   });
