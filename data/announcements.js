@@ -25,7 +25,7 @@ const exportedMethods = {
     let newAnn = {
       title: title,
       description: description,
-      courseId: new ObjectId(courseId),
+      courseId: courseId,
       createdAt: new Date().toLocaleDateString(),
     };
     const annCollection = await announcement();
@@ -41,7 +41,7 @@ const exportedMethods = {
     courseId = validId(courseId);
     const annCollection = await announcement();
     let annList = await annCollection
-      .find({ courseId: new ObjectId(courseId) })
+      .find({ courseId: courseId })
       .sort({ _id: -1 })
       .toArray();
     if (!annList) throw "Could not get all announcements";

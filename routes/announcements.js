@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import { annsData } from "../data/index.js";
-import validation from "../helper.js";
+import { validStr, validId } from "../helper.js";
 
 router.route("/:courseId").get(async (req, res) => {
   try {
@@ -43,12 +43,11 @@ router
     if (!req.session.user || !req.session.user.role) {
       return res.redirect("/login");
     } else {
-      const courseId = req.params.courseId;
+      let courseId = req.params.courseId;
       if (req.session.user.role) {
         if (req.session.user.role == "faculty") {
-          return res.render("announcements/newAnnouncement", {
-            course: courseId,
-          });
+          const annList = await annsData.getAll(req.params.courseId);
+          return res.render(`announcements/newAnnouncement`, {course: courseId, annList:annList});
         } else {
           return res.redirect(`/announcement/${courseId}`);
         }
@@ -63,19 +62,20 @@ router
         .json({ error: "There are no fields in the request body" });
     }
     try {
-      req.params.courseId = validation.checkId(
-        req.params.courseId,
-        "Id URL Param"
+      req.params.courseId = validId(
+        req.params.courseId
       );
       if (!anninfo.ann_title || !anninfo.ann_description)
         throw "All fields need to have valid values";
-      anninfo.ann_title = validation.checkString(anninfo.ann_title, "title");
+      anninfo.ann_title = validStr(anninfo.ann_title);
+      
       // anninfo.userId = validation.checkId(anninfo.userId, 'userId');
       // anninfo.description
     } catch (e) {
+      const annList = await annsData.getAll(course);
       return res
         .status(400)
-        .render("announcements/allAnnouncements", { error: e });
+        .render("announcements/allAnnouncements", { annList: annList,error: e });
     }
 
     try {
@@ -84,17 +84,18 @@ router
       let course = req.params.courseId;
       let description = req.body.ann_description;
       // let user= req.session.user.firstname;
-      let user = "user demo";
+     
 
-      const newAnn = await annsData.create(title, user, description, course);
+      const newAnn = await annsData.create(title, description, course);
+      console.log(newAnn);
       if (!newAnn) {
         throw "Could not post announcement";
       }
-      return res.redirect("/announcement");
+      return res.redirect(`/announcement/${course}`);
     } catch (e) {
       res
         .status(400)
-        .render("announcements/allAnnouncements", { error: `${e}` });
+        .render("announcements/allAnnouncements", {annList: annList,error: `${e}` });
     }
   });
 
@@ -111,7 +112,8 @@ router.route("/detail/:id").get(async (req, res) => {
       course: ann.courseId,
     });
   } catch (e) {
-    res.status(404).render("announcements/allAnnouncements", { error: `${e}` });
+    const annList = await annsData.getAll(course);
+    res.status(404).render("announcements/allAnnouncements", {annList:annList, error: `${e}` });
   }
 });
 // .delete(async (req, res) => {
@@ -140,12 +142,14 @@ router.route("/detail/:id").get(async (req, res) => {
 //     res.status(404).render('allAnnouncements',{ error: `${e}`})
 //   }
 // })
-router.route(":courseId/delete/:id").get(async (req, res) => {
+router.route("/:courseId/delete/:id").get(async (req, res) => {
   //code here for DELETE
   try {
-    req.params.id = validation.checkId(req.params.id, "Id URL Param");
+    req.params.id = validId(req.params.id);
+    req.params.courseId = validId(req.params.courseId)
   } catch (e) {
-    res.status(404).render("announcements/allAnnouncements", { error: `${e}` });
+    const annList = await annsData.getAll(course);
+    res.status(404).render("announcements/allAnnouncements", {annList:annList,courseId:req.params.courseId, error: `${e}` });
   }
   try {
     let Ann = await annsData.get(req.params.id);
@@ -153,7 +157,8 @@ router.route(":courseId/delete/:id").get(async (req, res) => {
       throw "Announcement not found";
     }
   } catch (e) {
-    res.status(404).render("announcements/allAnnouncements", { error: `${e}` });
+    const annList = await annsData.getAll(course);
+    res.status(404).render("announcements/allAnnouncements", {annList:annList,courseId:req.params.courseId, error: `${e}` });
   }
   try {
     if (!req.session.user) {
@@ -163,22 +168,25 @@ router.route(":courseId/delete/:id").get(async (req, res) => {
       return res.render("error");
     }
     let deletedAnn = await annsData.remove(req.params.id);
-    const annList = await annsData.getAll();
+    const annList = await annsData.getAll(req.params.courseId);
     if (deletedAnn) {
       res.render("announcements/allAnnouncements", {
         annList: annList,
         faculty: true,
+        courseId:req.params.courseId,
         message: "Deleted Announcement",
       });
     } else {
       res.render("announcements/allAnnouncements", {
         annList: annList,
         faculty: true,
+        courseId:req.params.courseId,
         message: "Could not delete Announcement",
       });
     }
   } catch (e) {
-    res.status(404).render("announcements/allAnnouncements", { error: `${e}` });
+    const annList = await annsData.getAll(course);
+    res.status(404).render("announcements/allAnnouncements", {annList:annList,courseId:req.params.courseId, error: `${e}` });
   }
 });
 export default router;
