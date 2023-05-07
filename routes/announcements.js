@@ -1,4 +1,5 @@
 import { Router } from "express";
+import xss from 'xss';
 const router = Router();
 import { annsData, coursesFunc } from "../data/index.js";
 import { validStr, validId } from "../helper.js";
@@ -91,7 +92,7 @@ router
     }
 
     try {
-      const anninfo = req.body;
+      const anninfo = xss(req.body);
       if (!anninfo || Object.keys(anninfo).length === 0)
         throw "All fields need to have valid values";
       var title = validStr(anninfo.ann_title);

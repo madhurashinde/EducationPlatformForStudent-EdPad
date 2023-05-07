@@ -1,4 +1,5 @@
 import { Router } from "express";
+import xss from 'xss';
 const router = Router();
 import { coursesFunc } from "../data/index.js";
 

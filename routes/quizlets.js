@@ -1,4 +1,5 @@
 import {Router} from 'express';
+import xss from 'xss';
 const router = Router();
 import axios from 'axios';
 
@@ -16,8 +17,8 @@ router
 .post(async (req, res) => {
     try{
         let categoryIdInput;
-        if(req.body){
-            categoryIdInput=req.body.quizletCategoryInput;
+        if(xss(req.body)){
+            categoryIdInput=xss(req.body.quizletCategoryInput);
         }
 
       if (!/^(9|10|19|20|21|22|23|24|25|27|28|30)$/.test(categoryIdInput)) {
