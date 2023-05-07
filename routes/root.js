@@ -19,7 +19,7 @@ router
     if (req.session.user && req.session.user.role) {
       return res.redirect("/course");
     }
-    return res.render("login/register");
+    return res.render("login/register",{title: "Register Page"});
   })
   //check
   .post(async (req, res) => {
