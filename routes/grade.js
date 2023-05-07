@@ -19,7 +19,8 @@ router.route("/:id").get(async (req, res) => {
     for (let i = 0; i < currentCourse.length; i++) {
       if (currentCourse[i]._id.toString() === courseId) {
         break;
-      } else {
+      }
+      if (i === currentCourse.length - 1) {
         return res.redirect("/course");
       }
     }
@@ -80,7 +81,8 @@ router.route("/detail/:id").post(async (req, res) => {
     for (let i = 0; i < currentCourse.length; i++) {
       if (currentCourse[i]._id.toString() === course) {
         break;
-      } else {
+      }
+      if (i === currentCourse.length - 1) {
         return res.redirect(`grade/${course}`);
       }
     }

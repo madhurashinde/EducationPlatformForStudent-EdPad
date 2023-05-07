@@ -3,12 +3,7 @@ import { ObjectId } from "mongodb";
 import { assignmentFunc } from "./index.js";
 import { validStr, validId } from "../helper.js";
 
-const createSubmission = async (
-  assignmentId,
-  studentId,
-  submitFile,
-  comment
-) => {
+const createSubmission = async (assignmentId, studentId, submitFile) => {
   assignmentId = validId(assignmentId);
   studentId = validId(studentId);
   submitFile = validStr(submitFile);
@@ -41,17 +36,12 @@ const createSubmission = async (
   }
 
   const submissionId = new ObjectId();
-  let commentList = [];
-  if (comment && comment.trim().length > 0) {
-    comment = validStr(comment);
-    commentList.push([comment, studentId]);
-  }
 
   let newSubmission = {
     _id: submissionId,
     studentId: newStudentId,
     submitFile: submitFile,
-    comment: commentList,
+    comment: "",
     scoreGet: null,
   };
 
@@ -97,66 +87,6 @@ const getAllSubmission = async (assignmentId) => {
   return [assignment.score, res];
 };
 
-// Student can resubmit their assignment
-const resubmitSubmission = async (
-  assignmentId,
-  studentId,
-  submitFile,
-  comment
-) => {
-  assignmentId = validId(assignmentId);
-  studentId = validId(studentId);
-  submitFile = validStr(submitFile);
-
-  const assignmentCollection = await assignment();
-  const newAssignmentId = new ObjectId(assignmentId);
-  const newStudentId = new ObjectId(studentId);
-
-  let submissionDetail = await assignmentCollection.findOne(
-    {
-      $and: [
-        { _id: newAssignmentId },
-        { "submission.studentId": newStudentId },
-      ],
-    },
-    { projection: { "submission.$": 1 } }
-  );
-  if (submissionDetail === null) throw "No submission yet";
-  if (
-    submitFile.trim() === submissionDetail.submission.submitFile &&
-    (!comment || comment.trim().length === 0)
-  )
-    throw "the file is not updated";
-
-  let commentList = [];
-  if (comment && comment.trim().length > 0) {
-    comment = validStr(comment);
-    commentList.push([comment, studentId]);
-  }
-
-  const createAssignmentId = submissionDetail._id.toString();
-  const createStudentId = submissionDetail.submission[0].studentId.toString();
-
-  const updatedInfo = await assignmentCollection.updateOne(
-    { _id: newAssignmentId },
-    { $pull: { submission: { studentId: newStudentId } } }
-  );
-
-  if (updatedInfo === null) {
-    throw "could not update submission successfully";
-  }
-
-  await createSubmission(
-    createAssignmentId,
-    createStudentId,
-    submitFile,
-    comment
-  );
-
-  const newSubmissionDetail = await getSubmission(assignmentId, studentId);
-  return newSubmissionDetail;
-};
-
 const getCourseId = async (id) => {
   id = validId(id);
   const assignmentCollection = await assignment();
@@ -175,6 +105,5 @@ export default {
   createSubmission,
   getAllSubmission,
   getSubmission,
-  resubmitSubmission,
   getCourseId,
 };

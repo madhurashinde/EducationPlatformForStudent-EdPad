@@ -13,7 +13,7 @@ export const validStr = (str) => {
 
 export const validId = (id) => {
   id = validStr(id);
-  console.log("!", ObjectId.isValid(id));
+  // console.log(ObjectId.isValid(id));
   if (!ObjectId.isValid(id)) throw new TypeError("Error: invalid object ID");
   return id;
 };
@@ -133,12 +133,12 @@ export const checkBirthDateFormat = (strVal) => {
   if (strVal.length === 0)
     throw `Error: Input cannot be an empty string or string with just spaces`;
 
-    if (strVal.slice(4, 5) !== "-" || strVal.slice(7, 8) !== "-")
+  if (strVal.slice(4, 5) !== "-" || strVal.slice(7, 8) !== "-")
     throw `Date must be in the dd/mm/yyyy format`;
 
-    let month = Number(strVal.slice(5,7));
-    let day = Number(strVal.slice(8));
-    let year = Number(strVal.slice(0,4));
+  let month = Number(strVal.slice(5, 7));
+  let day = Number(strVal.slice(8));
+  let year = Number(strVal.slice(0, 4));
 
   if (Number.isNaN(day) || Number.isNaN(month) || Number.isNaN(year))
     throw `day, month and year must be numbers`;
@@ -199,4 +199,3 @@ export default {
   validCWID,
   validGender,
 };
-

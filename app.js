@@ -189,21 +189,21 @@ app.post("/module/new", (req, res) => {
       }
     }
   });
+});
 
-  app.get("/module/download/:filename", (req, res) => {
-    const fileName = req.params.filename;
-    const filePath = path.join(
-      __dirname,
-      "public",
-      "uploads",
-      "module",
-      fileName
-    );
-    res.download(filePath, fileName, (err) => {
-      if (err) {
-        res.status(404).json({ message: "File not found" });
-      }
-    });
+app.get("/module/download/:filename", (req, res) => {
+  const fileName = req.params.filename;
+  const filePath = path.join(
+    __dirname,
+    "public",
+    "uploads",
+    "module",
+    fileName
+  );
+  res.download(filePath, fileName, (err) => {
+    if (err) {
+      res.status(404).json({ message: "File not found" });
+    }
   });
 });
 
@@ -313,32 +313,12 @@ app.post("/submission/:id/new", (req, res) => {
         return res.status(400).json({ msg: "Error: No file selected!" });
       } else {
         const submitFile = req.file.filename;
-        let comment = "";
-        if (req.comment) {
-          comment = req.comment;
-        }
-
         const studentId = req.session.user._id;
-        const submit = await submissionFunc.getSubmission(
+        let submission = await submissionFunc.createSubmission(
           assignmentId,
-          studentId
+          studentId,
+          submitFile
         );
-        let submission = null;
-        if (submit === null) {
-          submission = await submissionFunc.createSubmission(
-            assignmentId,
-            studentId,
-            submitFile,
-            comment
-          );
-        } else {
-          submission = await submissionFunc.resubmitSubmission(
-            assignmentId,
-            studentId,
-            submitFile,
-            comment
-          );
-        }
         return res.json({ submission: submission });
       }
     }

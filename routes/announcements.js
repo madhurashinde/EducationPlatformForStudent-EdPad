@@ -17,9 +17,8 @@ router.route("/:courseId").get(async (req, res) => {
       for (let i = 0; i < currentCourse.length; i++) {
         if (currentCourse[i]._id.toString() === course) {
           break;
-        } else {
-          return res.redirect("/course");
         }
+        if (i === currentCourse.length - 1) return res.redirect("/course");
       }
     } catch (e) {
       return res.status(500).render("error", { error: `${e}` });

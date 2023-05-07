@@ -1,6 +1,5 @@
 import { Router } from "express";
 const router = Router();
-import path from "path";
 import { assignmentFunc, coursesFunc } from "../data/index.js";
 import { submissionFunc } from "../data/index.js";
 
@@ -12,7 +11,8 @@ router.route("/:id").post(async (req, res) => {
   for (let i = 0; i < studentList.length; i++) {
     if (studentList[i]._id.toString() === req.session.user._id) {
       break;
-    } else {
+    }
+    if (i === studentList.length - 1) {
       return res.redirect(`/assignment/detail/${id}`);
     }
   }
