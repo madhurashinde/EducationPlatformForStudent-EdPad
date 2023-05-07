@@ -1,4 +1,5 @@
 import { Router } from "express";
+import xss from 'xss';
 import express from "express";
 const router = Router();
 import { coursesFunc, modulesData } from "../data/index.js";

@@ -1,4 +1,5 @@
 import { Router } from "express";
+import xss from 'xss';
 
 const router = Router();
 import { coursesFunc, userFunc } from "../data/index.js";
@@ -30,14 +31,14 @@ router
     }
     let result = {};
     try {
-      checkNameFormat(req.body.firstNameInput);
-      checkNameFormat(req.body.lastNameInput);
-      checkEmailAddress(req.body.emailAddressInput);
-      validGender(req.body.genderInput);
-      checkBirthDateFormat(req.body.birthDateInput);
-      validPassword(req.body.passwordInput);
-      checkValidMajor(req.body.majorInput);
-      if (req.body.passwordInput !== req.body.confirmPasswordInput) {
+      checkNameFormat(xss(req.body.firstNameInput));
+      checkNameFormat(xss(req.body.lastNameInput));
+      checkEmailAddress(xss(req.body.emailAddressInput));
+      validGender(xss(req.body.genderInput));
+      checkBirthDateFormat(xss(req.body.birthDateInput));
+      validPassword(xss(req.body.passwordInput));
+      checkValidMajor(xss(req.body.majorInput));
+      if (xss(req.body.passwordInput) !== xss(req.body.confirmPasswordInput)) {
         res.status(400).render("register/register", {
           error: "Passwords do not match",
           title: "Register Page",
@@ -45,7 +46,7 @@ router
       }
       const facCollection = await user();
       const fac = await facCollection.findOne({
-        emailAddress: req.body.emailAddressInput,
+        emailAddress: xss(req.body.emailAddressInput),
       });
       if (fac) {
         if(fac.role === 'faculty')
@@ -56,13 +57,13 @@ router
         throw `Error: Email address is already registered as student`;
       }
       result = await userFunc.createUser(
-        req.body.firstNameInput,
-        req.body.lastNameInput,
-        req.body.emailAddressInput,
-        req.body.genderInput,
-        req.body.birthDateInput,
-        req.body.passwordInput,
-        req.body.majorInput,
+        xss(req.body.firstNameInput),
+        xss(req.body.lastNameInput),
+        xss(req.body.emailAddressInput),
+        xss(req.body.genderInput),
+        xss(req.body.birthDateInput),
+        xss(req.body.passwordInput),
+        xss(req.body.majorInput),
         "student"
       );
       if (result) {
@@ -95,15 +96,15 @@ router
       return res.redirect("/course");
     }
     try {
-      checkEmailAddress(req.body.emailAddressInput);
-      validPassword(req.body.passwordInput);
+      checkEmailAddress(xss(req.body.emailAddressInput));
+      validPassword(xss(req.body.passwordInput));
     } catch (e) {
       return res.render("error", { error: e, title: "Error" });
     }
     try {
       const result = await userFunc.checkUser(
-        req.body.emailAddressInput,
-        req.body.passwordInput
+        xss(req.body.emailAddressInput),
+        xss(req.body.passwordInput)
       );
       if (result) {
         req.session.user = result;

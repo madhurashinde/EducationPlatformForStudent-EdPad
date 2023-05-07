@@ -1,4 +1,5 @@
 import { Router } from "express";
+import xss from 'xss';
 const router = Router();
 import { adminFunc, coursesFunc, userFunc } from "../data/index.js";
 import {
@@ -53,14 +54,14 @@ router
   .post(async (req, res) => {
     let result = {};
     try {
-      checkNameFormat(req.body.firstNameInput);
-      checkNameFormat(req.body.lastNameInput);
-      checkEmailAddress(req.body.emailAddressInput);
-      validGender(req.body.genderInput);
-      checkBirthDateFormat(req.body.birthDateInput);
-      validPassword(req.body.passwordInput);
-      checkValidMajor(req.body.majorInput);
-      if (req.body.passwordInput !== req.body.confirmPasswordInput) {
+      checkNameFormat(xss(req.body.firstNameInput));
+      checkNameFormat(xss(req.body.lastNameInput));
+      checkEmailAddress(xss(req.body.emailAddressInput));
+      validGender(xss(req.body.genderInput));
+      checkBirthDateFormat(xss(req.body.birthDateInput));
+      validPassword(xss(req.body.passwordInput));
+      checkValidMajor(xss(req.body.majorInput));
+      if (xss(req.body.passwordInput) !== xss(req.body.confirmPasswordInput)) {
         res.status(400).render("admin/register", {
           error: "Passwords do not match",
           title: "Register Page",
@@ -69,7 +70,7 @@ router
       
       const facCollection = await user();
       const fac = await facCollection.findOne({
-        emailAddress: req.body.emailAddressInput,
+        emailAddress: xss(req.body.emailAddressInput),
       });
       if (fac) {
         console.log(fac.role)
@@ -81,13 +82,13 @@ router
         throw `Error: Email address is already registered as student`;
       }
       result = await userFunc.createUser(
-        req.body.firstNameInput,
-        req.body.lastNameInput,
-        req.body.emailAddressInput,
-        req.body.genderInput,
-        req.body.birthDateInput,
-        req.body.passwordInput,
-        req.body.majorInput,
+        xss(req.body.firstNameInput),
+        xss(req.body.lastNameInput),
+        xss(req.body.emailAddressInput),
+        xss(req.body.genderInput),
+        xss(req.body.birthDateInput),
+        xss(req.body.passwordInput),
+        xss(req.body.majorInput),
         "faculty"
       );
       if (result) {
@@ -110,10 +111,10 @@ router
   })
   //check
   .post(async (req, res) => {
-    let courseTitle = req.body.courseTitle;
-    let courseId = req.body.courseId;
-    let description = req.body.description;
-    let professorObjectId = req.body.facultyInput;
+    let courseTitle = xss(req.body.courseTitle);
+    let courseId = xss(req.body.courseId);
+    let description = xss(req.body.description);
+    let professorObjectId = xss(req.body.facultyInput);
 
     //validation for the same course
 
