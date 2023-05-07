@@ -138,13 +138,13 @@ export const checkBirthDateFormat = (strVal) => {
   if (strVal.length === 0)
     throw `Error: Input cannot be an empty string or string with just spaces`;
 
-  if (strVal.slice(2, 3) !== "/" || strVal.slice(5, 6) !== "/")
+    if (strVal.slice(4, 5) !== "-" || strVal.slice(7, 8) !== "-")
     throw `Date must be in the dd/mm/yyyy format`;
 
-  // let month = Number(strVal.slice(5, 7));
-  // let day = Number(strVal.slice(8));
-  // let year = Number(strVal.slice(0, 4));
-  let [month, day, year] = strVal.split('/').map(Number);
+    let month = Number(strVal.slice(5,7));
+    let day = Number(strVal.slice(8));
+    let year = Number(strVal.slice(0,4));
+  // let [month, day, year] = strVal.split('/').map(Number);
 
   if (Number.isNaN(day) || Number.isNaN(month) || Number.isNaN(year))
     throw `day, month and year must be numbers`;
