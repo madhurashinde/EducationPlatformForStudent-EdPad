@@ -2,6 +2,7 @@ import { Router } from "express";
 const router = Router();
 import { coursesFunc } from "../data/index.js";
 import createSurvey from "../data/survey.js";
+import { validStr, validId } from "../helper.js";
 
 //ok
 router.get("/", async (req, res) => {
@@ -32,7 +33,7 @@ router.get("/", async (req, res) => {
         });
       }
     } catch (e) {
-      return res.status(500).json({ error: e });
+      return res.status(500).render("error", { error: `${e}` });
     }
   }
 });
@@ -65,7 +66,11 @@ router
       );
       return res.redirect("/course");
     } catch (e) {
-      return res.status(400).json({ error: e });
+      let getAllCourses = await coursesFunc.getAll();
+      return res.status(400).render("courses/courseRegister", {
+        error: e,
+        allCourses: getAllCourses,
+      });
     }
   });
 
@@ -73,6 +78,12 @@ router
 router.get("/:id", async (req, res) => {
   // only student/faculty in this course allowed
   let courseId = req.params.id;
+  //validation
+  try {
+    courseId = validId(courseId);
+  } catch (e) {
+    return res.status(400).render("error", { error: `${e}` });
+  }
   if (
     req.session.user.role == "student" ||
     req.session.user.role == "faculty"
@@ -93,14 +104,20 @@ router.get("/:id", async (req, res) => {
       courseTitle: course.courseTitle,
     });
   } catch (e) {
-    return res.status(400).json({ error: `${e}` });
+    return res.status(400).render("error", { error: `${e}` });
   }
 });
 
 router
   .route("/:id/survey")
   .get(async (req, res) => {
-    const courseId = req.params.id;
+    let courseId = req.params.id;
+    //validation
+    try {
+      courseId = validId(courseId);
+    } catch (e) {
+      return res.status(400).render("error", { error: `${e}` });
+    }
     let course = await coursesFunc.getCourseByObjectID(courseId);
     return res.render("courses/survey", {
       courseObjectID: course._id,
@@ -108,7 +125,7 @@ router
   })
   .post(async (req, res) => {
     try {
-      const courseId = req.params.id;
+      let courseId = req.params.id;
       let user = req.session.user;
       let survey = req.body.surveyInput;
       const userWithSurvey = await createSurvey(courseId, user, survey);
