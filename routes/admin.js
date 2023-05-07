@@ -9,6 +9,7 @@ import {
   checkBirthDateFormat,
   validGender,
 } from "../helper.js";
+import { user } from "../config/mongoCollections.js";
 
 //ok
 router.route("/").get((req, res) => {
@@ -62,7 +63,20 @@ router
           title: "Register Page",
         });
       }
-
+      
+      const facCollection = await user();
+      const fac = await facCollection.findOne({
+        emailAddress: req.body.emailAddressInput,
+      });
+      if (fac) {
+        console.log(fac.role)
+        if(fac.role === 'faculty')
+        throw `Error: Email address is registered as a faculty`;
+      }
+      if(fac){
+        if(fac.role === 'student')
+        throw `Error: Email address is already registered as student`;
+      }
       result = await userFunc.createUser(
         req.body.firstNameInput,
         req.body.lastNameInput,
@@ -74,11 +88,15 @@ router
         "faculty"
       );
       if (result) {
+        console.log("inside result")
         return res.redirect("/admin/faculty");
       } else {
         res.status(500).send("Internal Server Error");
       }
-    } catch (e) { }
+    } catch (e) {
+      res.status(400).render('admin/register',{error: e, title: "Register Page"});
+      return;
+     }
   });
 
 router

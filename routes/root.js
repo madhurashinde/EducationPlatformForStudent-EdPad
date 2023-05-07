@@ -47,8 +47,12 @@ router
         emailAddress: req.body.emailAddressInput,
       });
       if (fac) {
-        console.log(fac.role);
+        if(fac.role === 'faculty')
         throw `Error: Email address is registered as a faculty`;
+      }
+      if(fac){
+        if(fac.role === 'student')
+        throw `Error: Email address is already registered as student`;
       }
       result = await userFunc.createUser(
         req.body.firstNameInput,
