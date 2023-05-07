@@ -116,7 +116,6 @@ router
       });
     }
   });
-
 router.route("/logout").get((req, res) => {
   // if one is not logged in, do not show this page
   if (!req.session.user) {

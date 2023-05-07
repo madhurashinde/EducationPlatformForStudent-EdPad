@@ -1,6 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import { coursesFunc } from "../data/index.js";
+import createSurvey from "../data/survey.js";
 
 //ok
 router.get("/", async (req, res) => {
@@ -97,5 +98,37 @@ router.get("/:id", async (req, res) => {
     return res.status(400).json({ error: `${e}` });
   }
 });
+
+router.route('/:id/survey')
+.get(async (req, res) => {
+  const courseId = req.params.id
+  let course = await coursesFunc.getCourseByObjectID(courseId);
+  console.log(course._id,'in get');
+  return res.render("courses/survey",{
+    courseObjectID: course._id});
+})
+.post( async (req,res)=>{
+  try {
+    console.log('herererere');
+  // res.render("courses/survey")
+  const courseId = req.params.id;
+  let user = req.session.user;
+  let survey = req.body.surveyInput;
+  console.log(survey,'in routes');
+  console.log(courseId,'courseId');
+   const userWithSurvey = await createSurvey(courseId , user ,survey);
+   let course = await coursesFunc.getCourseByObjectID(courseId);
+   return res.render("courses/coursedetail", {
+    courseObjectID: course._id,
+    courseTitle: course.courseTitle,
+  });
+  } catch (error) {
+    return res.render("courses/survey", {
+      error: error,
+      title: "Survey Form"
+    });
+  }
+  
+})
 
 export default router;
