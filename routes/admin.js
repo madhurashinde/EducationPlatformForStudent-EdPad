@@ -43,7 +43,7 @@ router
   .route("/register")
   //ok
   .get((req, res) => {
-    res.render("admin/register");
+    res.render("admin/register", {title: "Register Page"});
   })
   // check
   .post(async (req, res) => {
@@ -57,7 +57,7 @@ router
       validPassword(req.body.passwordInput);
       checkValidMajor(req.body.majorInput);
       if (req.body.passwordInput !== req.body.confirmPasswordInput) {
-        res.status(400).render("register/registerAdmin", {
+        res.status(400).render("admin/register", {
           error: "Passwords do not match",
           title: "Register Page",
         });
