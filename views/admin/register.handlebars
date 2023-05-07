@@ -1,52 +1,51 @@
 <button onclick="location.href='/admin/faculty'"> Back</button>
 <h2>Register Form</h2>
-  <div>{{error}}</div> 
-  <div id="error" class="error" hidden>I'm an error. I will change through Client-Side JS</div>  
-  <form action="/admin/register" method="POST" id="registration-form">
-          <label for="firstNameInput">
-            First Name: 
-            <input type="text" name="firstNameInput" id="firstNameInput">
-          </label>   
-          <br>
-          <label for="lastNameInput">
-            Last Name:
-            <input type="text" name="lastNameInput" id="lastNameInput">
-          </label>  
-          <br>
-          <label for="emailAddressInput">
-            Email Address:
-            <input type="email" name="emailAddressInput" id="emailAddressInput">
-          </label> 
-          <br>
-          <label for="passwordInput">
-            Password:
-            <input type="password" name="passwordInput" id="passwordInput">
-          </label> 
-          <br>
-           <label for="confirmPasswordInput">
-            Confirm Password
-            <input type="password" name="confirmPasswordInput" id="confirmPasswordInput">
-          </label>
-          <br>
-          <label for="birthDateInput">
-            Birth Date:
-            <input type="text" name="birthDateInput" id="birthDateInput">
-          </label>
-          <br> 
-            <label for="majorInput">
-            Major
-            <input type="text" name="majorInput" id="majorInput">
-          </label>
-          <br>
-          <label for="genderInput">
-            Gender:
-            <select id="genderInput" name="genderInput">
-            <option value="Female">Female</option>
-            <option value="Male">Male</option>
-            </select>
-          </label> 
-          <br>
-          <button type="submit">Submit</button>
-    </form>
-    {{!-- <a href="/login">Already have an account? Click here to log-in</a> --}}
-</main>
+<div>{{error}}</div>
+<div id="error" class="error" hidden>I'm an error. I will change through Client-Side JS</div>
+<form action="/admin/register" method="POST" id="registration-form">
+  <label for="firstNameInput">
+    First Name:
+    <input type="text" name="firstNameInput" id="firstNameInput">
+  </label>
+  <br>
+  <label for="lastNameInput">
+    Last Name:
+    <input type="text" name="lastNameInput" id="lastNameInput">
+  </label>
+  <br>
+  <label for="emailAddressInput">
+    Email Address:
+    <input type="email" name="emailAddressInput" id="emailAddressInput">
+  </label>
+  <br>
+  <label for="passwordInput">
+    Password:
+    <input type="password" name="passwordInput" id="passwordInput">
+  </label>
+  <br>
+  <label for="confirmPasswordInput">
+    Confirm Password
+    <input type="password" name="confirmPasswordInput" id="confirmPasswordInput">
+  </label>
+  <br>
+  <label for="birthDateInput">
+    Birth Date:
+    <input type="date" name="birthDateInput" id="birthDateInput">
+  </label>
+  <br>
+  <label for="majorInput">
+    Major
+    <input type="text" name="majorInput" id="majorInput">
+  </label>
+  <br>
+  <label for="genderInput">
+    Gender:
+    <select id="genderInput" name="genderInput">
+      <option value="Female">Female</option>
+      <option value="Male">Male</option>
+    </select>
+  </label>
+  <br>
+  <button type="submit">Submit</button>
+</form>
+  <script src="../../public/js/registerCheck.js"></script>

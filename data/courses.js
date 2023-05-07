@@ -88,6 +88,17 @@ const getStudentList = async (courseId) => {
   return studentInfo;
 };
 
+const getAllFaculty = async () => {
+
+  const userCollection = await user();
+  let allFaculty = await userCollection.find({ role: "faculty" }).toArray();
+  allFaculty = allFaculty.map((element) => {
+    element._id = element._id.toString();
+    return element;
+  });
+  return allFaculty;
+};
+
 const getFaculty = async (courseId) => {
   courseId = validId(courseId);
   const courseCollection = await course();
@@ -200,4 +211,5 @@ export default {
   registerCourse,
   getStudentList,
   getFaculty,
+  getAllFaculty
 };

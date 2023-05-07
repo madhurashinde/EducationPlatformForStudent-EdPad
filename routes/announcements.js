@@ -70,7 +70,7 @@ router
     try {
       const professor = await coursesFunc.getFaculty(courseId);
       if (req.session.user._id !== professor) {
-        return res.redirect(`/announcement/${courseId}`);
+         return res.render(`notallowed`);
       }
       return res.render(`announcements/newAnnouncement`, {
         course: courseId,
@@ -83,14 +83,9 @@ router
 
     try {
       courseId = validId(courseId);
-    } catch (e) {
-      return res.status(400).render("error", { error: `${e}` });
-    }
-
-    try {
       const professor = await coursesFunc.getFaculty(courseId);
       if (req.session.user._id !== professor) {
-        return res.redirect(`/announcement/${courseId}`);
+         return res.render('notallowed');
       }
     } catch (e) {
       return res.status(500).render("error", { error: `${e}` });
@@ -188,6 +183,9 @@ router
     try {
       let deletedAnn = await annsData.remove(id);
       return res.redirect(`/announcement/${courseId}`);
+      }else{
+        throw 'Error: Could not delete announcement'
+      }
     } catch (e) {
       return res.status(500).render("error", { error: `${e}` });
     }

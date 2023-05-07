@@ -1,6 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import { coursesFunc } from "../data/index.js";
+import createSurvey from "../data/survey.js";
 
 //ok
 router.get("/", async (req, res) => {
@@ -80,14 +81,10 @@ router.get("/:id", async (req, res) => {
       req.session.user._id
     );
 
-    for (let i = 0; i < currentCourse.length; i++) {
-      if (currentCourse[i]._id.toString() === courseId) {
-        break;
-      }
-      if (i === currentCourse.length - 1) {
-        return res.json({ error: "not allowed" });
-      }
+    if (!currentCourse.some(course => course._id.toString() === courseId)) {
+      return res.render("not allowed);
     }
+    // this will not let user to see the completed course when they have no current course.
   }
   try {
     let course = await coursesFunc.getCourseByObjectID(courseId);
@@ -99,5 +96,32 @@ router.get("/:id", async (req, res) => {
     return res.status(400).json({ error: `${e}` });
   }
 });
+
+router.route('/:id/survey')
+.get(async (req, res) => {
+  const courseId = req.params.id
+  let course = await coursesFunc.getCourseByObjectID(courseId);
+  return res.render("courses/survey",{
+    courseObjectID: course._id});
+})
+.post( async (req,res)=>{
+  try {
+  const courseId = req.params.id;
+  let user = req.session.user;
+  let survey = req.body.surveyInput;
+   const userWithSurvey = await createSurvey(courseId , user ,survey);
+   let course = await coursesFunc.getCourseByObjectID(courseId);
+   return res.render("courses/coursedetail", {
+    courseObjectID: course._id,
+    courseTitle: course.courseTitle,
+  });
+  } catch (error) {
+    return res.render("courses/survey", {
+      error: error,
+      title: "Survey Form"
+    });
+  }
+  
+})
 
 export default router;

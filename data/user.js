@@ -47,6 +47,7 @@ const createUser = async (
     courseCompleted: [],
     courseInProgress: [],
     role: role,
+    surveys:[],
   };
 
   const insertInfo = await userCollection.insertOne(newUser);

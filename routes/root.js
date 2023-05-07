@@ -20,7 +20,7 @@ router
     if (req.session.user && req.session.user.role) {
       return res.redirect("/course");
     }
-    return res.render("login/register");
+    return res.render("login/register",{title: "Register Page"});
   })
   //check
   .post(async (req, res) => {
@@ -48,8 +48,12 @@ router
         emailAddress: req.body.emailAddressInput,
       });
       if (fac) {
-        console.log(fac.role);
+        if(fac.role === 'faculty')
         throw `Error: Email address is registered as a faculty`;
+      }
+      if(fac){
+        if(fac.role === 'student')
+        throw `Error: Email address is already registered as student`;
       }
       result = await userFunc.createUser(
         req.body.firstNameInput,
@@ -116,7 +120,6 @@ router
       });
     }
   });
-
 router.route("/logout").get((req, res) => {
   // if one is not logged in, do not show this page
   if (!req.session.user) {

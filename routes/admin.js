@@ -1,6 +1,15 @@
 import { Router } from "express";
 const router = Router();
 import { adminFunc, coursesFunc, userFunc } from "../data/index.js";
+import {
+  checkValidMajor,
+  checkNameFormat,
+  checkEmailAddress,
+  validPassword,
+  checkBirthDateFormat,
+  validGender,
+} from "../helper.js";
+import { user } from "../config/mongoCollections.js";
 
 router.route("/").get((req, res) => {
   return res.render("admin/admin");
@@ -38,7 +47,7 @@ router.route("/course").get(async (req, res) => {
 router
   .route("/register")
   .get((req, res) => {
-    return res.render("admin/register");
+    return res.render("admin/register", {title: "Register Page"});
   })
   // check
   .post(async (req, res) => {
@@ -52,12 +61,25 @@ router
       validPassword(req.body.passwordInput);
       checkValidMajor(req.body.majorInput);
       if (req.body.passwordInput !== req.body.confirmPasswordInput) {
-        res.status(400).render("register/registerAdmin", {
+        res.status(400).render("admin/register", {
           error: "Passwords do not match",
           title: "Register Page",
         });
       }
-
+      
+      const facCollection = await user();
+      const fac = await facCollection.findOne({
+        emailAddress: req.body.emailAddressInput,
+      });
+      if (fac) {
+        console.log(fac.role)
+        if(fac.role === 'faculty')
+        throw `Error: Email address is registered as a faculty`;
+      }
+      if(fac){
+        if(fac.role === 'student')
+        throw `Error: Email address is already registered as student`;
+      }
       result = await userFunc.createUser(
         req.body.firstNameInput,
         req.body.lastNameInput,
@@ -69,25 +91,29 @@ router
         "faculty"
       );
       if (result) {
-        return res.redirect("/admin");
+        console.log("inside result")
+        return res.redirect("/admin/faculty");
       } else {
         return res.status(500).send("Internal Server Error");
       }
-    } catch (e) {}
+    } catch (e) {
+      res.status(400).render('admin/register',{error: e, title: "Register Page"});
+      return;
+     }
   });
 
 router
   .route("/createcourse")
-  .get((req, res) => {
-    return res.render("admin/courseCreate");
+  .get(async (req, res) => {
+    let allFacultyGot = await coursesFunc.getAllFaculty();
+    return res.render("admin/courseCreate", { allFaculty: allFacultyGot });
   })
   //check
   .post(async (req, res) => {
     let courseTitle = req.body.courseTitle;
     let courseId = req.body.courseId;
     let description = req.body.description;
-    let professorId = req.body.professorId;
-    let professorName = req.body.professorName;
+    let professorObjectId = req.body.facultyInput;
 
     //validation for the same course
 
@@ -96,10 +122,9 @@ router
         courseTitle,
         courseId,
         description,
-        professorId,
-        professorName
+        professorObjectId
       );
-      return res.redirect("/course/admin");
+      return res.redirect("/admin/course");
     } catch (e) {
       res.status(400).json({ error: "having error" });
     }
