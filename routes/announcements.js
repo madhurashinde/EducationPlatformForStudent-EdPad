@@ -96,9 +96,9 @@ router
         throw "All fields need to have valid values";
       var title = validStr(anninfo.ann_title);
       var description = validStr(anninfo.ann_description);
-      var course = validId(anninfo.courseId);
+      var course = validId(courseId);
     } catch (e) {
-      return res.status(400).render(`announcements/${course}/newAnnouncement`, {
+      return res.status(400).render(`announcements/newAnnouncement`, {
         course: courseId,
         error: `${e}`,
       });
@@ -106,9 +106,12 @@ router
 
     try {
       const newAnn = await annsData.create(title, description, course);
+      if(!newAnn){
+        throw 'Could not delete announcement'
+      }
       return res.redirect(`/announcement/${course}`);
     } catch (e) {
-      return res.status(500).render(`announcements/${course}/newAnnouncement`, {
+      return res.status(500).render(`announcements/newAnnouncement`, {
         course: courseId,
         error: `${e}`,
       });
@@ -159,7 +162,7 @@ router
   })
   // only the professor of this course is allowed
   .delete(async (req, res) => {
-    const id = req.params.id;
+    let id = req.params.id;
     //validation
     try {
       id = validId(id);
@@ -167,20 +170,25 @@ router
       return res.status(400).redirect(`/course`);
     }
     // authorization
+    let courseId;
     try {
       const announcement = await annsData.get(id);
-      var courseId = announcement.courseId;
+      courseId = announcement.courseId;
       const professor = await coursesFunc.getFaculty(courseId);
       if (req.session.user._id !== professor) {
         return res.redirect(`/announcement/detail/${id}`);
       }
-    } catch (e) {
+    } catch (e) {      
       return res.status(500).redirect(`/announcement/${courseId}`);
     }
 
     // operation
     try {
+      // let courseId = announcement.courseId;
       let deletedAnn = await annsData.remove(id);
+      if(!deletedAnn){
+        throw 'could not delete announcement'
+      }
       return res.redirect(`/announcement/${courseId}`);
     } catch (e) {
       return res.status(500).render("error", { error: `${e}` });
