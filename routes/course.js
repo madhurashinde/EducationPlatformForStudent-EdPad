@@ -79,13 +79,11 @@ router.get("/:id", async (req, res) => {
     const currentCourse = await coursesFunc.getCurrentCourse(
       req.session.user._id
     );
-    for (let i = 0; i < currentCourse.length; i++) {
-      if (currentCourse[i]._id.toString() === courseId) {
-        break;
-      } else {
-        return res.redirect("/course");
-      }
+
+    if (!currentCourse.some(course => course._id.toString() === courseId)) {
+      return res.redirect('/course');
     }
+    // this will not let user to see the completed course when they have no current course.
   }
   try {
     let course = await coursesFunc.getCourseByObjectID(courseId);
