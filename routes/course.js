@@ -81,8 +81,8 @@ router.get("/:id", async (req, res) => {
       req.session.user._id
     );
 
-    if (!currentCourse.some(course => course._id.toString() === courseId)) {
-      return res.render("not allowed);
+    if (!currentCourse.some((course) => course._id.toString() === courseId)) {
+      return res.render("not allowed");
     }
     // this will not let user to see the completed course when they have no current course.
   }
@@ -97,31 +97,32 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.route('/:id/survey')
-.get(async (req, res) => {
-  const courseId = req.params.id
-  let course = await coursesFunc.getCourseByObjectID(courseId);
-  return res.render("courses/survey",{
-    courseObjectID: course._id});
-})
-.post( async (req,res)=>{
-  try {
-  const courseId = req.params.id;
-  let user = req.session.user;
-  let survey = req.body.surveyInput;
-   const userWithSurvey = await createSurvey(courseId , user ,survey);
-   let course = await coursesFunc.getCourseByObjectID(courseId);
-   return res.render("courses/coursedetail", {
-    courseObjectID: course._id,
-    courseTitle: course.courseTitle,
-  });
-  } catch (error) {
+router
+  .route("/:id/survey")
+  .get(async (req, res) => {
+    const courseId = req.params.id;
+    let course = await coursesFunc.getCourseByObjectID(courseId);
     return res.render("courses/survey", {
-      error: error,
-      title: "Survey Form"
+      courseObjectID: course._id,
     });
-  }
-  
-})
+  })
+  .post(async (req, res) => {
+    try {
+      const courseId = req.params.id;
+      let user = req.session.user;
+      let survey = req.body.surveyInput;
+      const userWithSurvey = await createSurvey(courseId, user, survey);
+      let course = await coursesFunc.getCourseByObjectID(courseId);
+      return res.render("courses/coursedetail", {
+        courseObjectID: course._id,
+        courseTitle: course.courseTitle,
+      });
+    } catch (error) {
+      return res.render("courses/survey", {
+        error: error,
+        title: "Survey Form",
+      });
+    }
+  });
 
 export default router;
