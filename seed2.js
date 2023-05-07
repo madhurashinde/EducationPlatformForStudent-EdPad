@@ -33,7 +33,7 @@ for (let i = 0; i < 5; i++) {
     `Test${i}`,
     `faculty${i}@faculty${i}.com`,
     gender[i % 3],
-    `0${i + 1}/2${i}/197${i}`,
+    `199${i}-0${i + 1}-2${i}`,
     "Password123!",
     major[i % 3],
     "faculty"
@@ -49,7 +49,7 @@ for (let i = 0; i < 5; i++) {
     `Test${i}`,
     `student${i}@student${i}.com`,
     gender[i % 3],
-    `0${i + 1}/2${i}/199${i}`,
+    `199${i}-0${i + 1}-2${i}`,
     "Password123!",
     major[i % 3],
     "student"
@@ -62,7 +62,7 @@ const admin1 = await userFunc.createUser(
   "Dunn",
   "admin1@admin1.com",
   "male",
-  "05/05/1990",
+  "1990-05-05",
   "Password123!",
   "Computer Science",
   "admin"

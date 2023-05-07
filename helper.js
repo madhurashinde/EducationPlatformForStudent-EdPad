@@ -134,7 +134,7 @@ export const checkBirthDateFormat = (strVal) => {
     throw `Error: Input cannot be an empty string or string with just spaces`;
 
   if (strVal.slice(4, 5) !== "-" || strVal.slice(7, 8) !== "-")
-    throw `Date must be in the dd/mm/yyyy format`;
+    throw `Date must be in the dd-mm-yyyy format`;
 
   let month = Number(strVal.slice(5, 7));
   let day = Number(strVal.slice(8));

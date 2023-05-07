@@ -84,9 +84,11 @@ router
     if (req.session.user && req.session.user.role) {
       return res.redirect("/course");
     }
+    else{
     return res.render("login/login", {
       title: "Login Page",
-    });
+    }); 
+  }
   })
   //check
   .post(async (req, res) => {
