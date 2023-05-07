@@ -76,7 +76,7 @@ const exportedMethods = {
       {
         _id: new ObjectId(id),
       },
-      { projection: { courseId: id } }
+      { projection: { courseId: 1 } }
     );
     if (annInfo === null) throw "can not find the announcement";
     const courseId = annInfo.courseId;

@@ -185,28 +185,6 @@ if (Form) {
 //I dont know where to add this code part
 
 
-// let annForm = document.getElementById('new-ann');
-// let annTitleError = document.getElementById('no-desc');
-// let annDescError = document.getElementById('no-desc')
-// if(annForm){
-//     annForm.addEventListener('submit',(event)=>{
-//         event.preventDefault();
-//         if(annTitleError && annDescError){
-//             annDescError.hidden = true;
-//             annTitleError.hidden = true;
-//             annForm.submit();
-//         }else if(!annTitleError && annDescError){
-//             annTitleError.hidden = false;
-//             annDescError.hidden = true;
-//         }else if(annTitleError && !annDescError){
-//             annTitleError.hidden = true;
-//             annDescError.hidden = false;    
-//         }else{
-//             annTitleError.hidden = false;
-//             annDescError.hidden = false;
-//         }
-//     })
-// }
 
 
 // let modForm = document.getElementById('new-mod');
