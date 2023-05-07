@@ -16,8 +16,17 @@
     <p>Grade:{{this.[3]}}/{{this.[2]}}</p>
     {{#if ../faculty}}
     {{else}}
-    <form></form>
+    <form id="form" method="post" action="/submission">
+        <label for="comment">Comment: </label>
+        <textarea id="comment" name="comment"></textarea>
+        <input type="submit">
+    </form>
+    <div id="error">Please giev valid input</div>
     {{/if}}
 </div>
 {{/each}}
 <h3>Total Score: {{totalScore}} / 100</h3>
+
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+    crossorigin="anonymous"></script>
+<script src="../../public/js/commentCheck.js"></script>

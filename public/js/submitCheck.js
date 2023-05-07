@@ -18,25 +18,16 @@ if (startSubmission) {
     fileInput.attr("type", "file");
     fileInput.attr("id", "submitFile");
     fileInput.attr("name", "submitFile");
-    const commentLabel = $("<label></label>");
-    commentLabel.html("Comment (Optional):");
-    commentLabel.attr("for", "comment");
-    const commentInput = $("<textarea></textarea>");
-    commentInput.attr("id", "comment");
-    commentInput.attr("name", "comment");
     const submitButton = $("<button></button>");
     submitButton.attr("type", "submit");
     submitButton.text("Submit");
 
     form.append(fileLabel);
     form.append(fileInput);
-    form.append(commentLabel);
-    form.append(commentInput);
     form.append(submitButton);
     formContainer.append($(form).get(0));
 
-    const error =
-      "<p>Please enter valid input. File is the link to your uploaded file: www.example.com</p>";
+    const error = "<p>Please select a file</p>";
     errorContainer.append($(error).get(0));
 
     // add form submit event listener
@@ -50,9 +41,6 @@ if (startSubmission) {
       const inputForm = $("#submitFile")[0];
 
       formData.append("submitFile", inputForm.files[0]);
-      formData.append("comment", $("#comment").val());
-
-      console.log(inputForm.files[0]);
 
       if ($("#submitFile").val().trim()) {
         // set up AJAX request config
@@ -66,13 +54,11 @@ if (startSubmission) {
         };
 
         $.ajax(requestConfig).then(function (responseMessage) {
-          console.log(responseMessage);
           let element = $(`<div id="start-submission-container">
                 <p>Submitted</p>
                 <p>Your File Link:</p>
-                <a target="_blank" href="//${responseMessage.submission.submitFile}"> ${responseMessage.submission.submitFile}</a>
+                <a target="_blank" href="/${responseMessage.submission.submitFile}"> DownLoad File</a>
             </div>`);
-
           $("#form-container").empty();
           $("#error-container").empty();
           $("#start-submission-container").replaceWith(element);

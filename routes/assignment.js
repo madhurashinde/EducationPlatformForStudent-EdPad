@@ -18,7 +18,8 @@ router.get("/:id", async (req, res) => {
       for (let i = 0; i < currentCourse.length; i++) {
         if (currentCourse[i]._id.toString() === courseId) {
           break;
-        } else {
+        }
+        if (i === currentCourse.length - 1) {
           return res.redirect("/course");
         }
       }
@@ -95,7 +96,8 @@ router
         for (let i = 0; i < currentCourse.length; i++) {
           if (currentCourse[i]._id.toString() === courseId) {
             break;
-          } else {
+          }
+          if (i === currentCourse.length - 1) {
             return res.redirect(`/assignment/${courseId}`);
           }
         }
