@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import { major } from "./config/mongoCollections.js";
 
 export const validStr = (str) => {
-  if (!str) throw `Error: You must supply an input!`;
+  if (!str) throw new TypeError(`Error: You must supply an input!`);
   if (typeof str !== "string") throw `Error: input must be a string!`;
   str = str.trim();
   if (str === "")
@@ -13,15 +13,9 @@ export const validStr = (str) => {
 
 export const validId = (id) => {
   id = validStr(id);
-  if (!ObjectId.isValid(id)) throw `Error: invalid object ID`;
+  console.log("!", ObjectId.isValid(id));
+  if (!ObjectId.isValid(id)) throw new TypeError("Error: invalid object ID");
   return id;
-};
-
-export const validWeblink = (str) => {
-  str = validStr(str);
-  const web = /^www\..+\.com$/;
-  if (!web.test(str.trim())) throw "not in a valid weblink format";
-  return str;
 };
 
 export const validDate = (str) => {
@@ -72,6 +66,7 @@ const currentTime = () => {
 export const validDueTime = (dueDate, dueTime) => {
   const due = new Date(dueDate + " " + dueTime);
   const current = new Date(currentDate() + " " + currentTime());
+  if (due.getTime() < current.getTime()) throw "not valid due time";
   return current.getTime() < due.getTime();
 };
 
@@ -196,23 +191,7 @@ export default {
   checkNameFormat,
   checkEmailAddress,
   validPassword,
-  // validRole,
+  validRole,
   checkBirthDateFormat,
-  // checkNumberFormat,
-  validCWID,
   validGender,
 };
-
-// checkStringArray(arr, varName) {
-//   //We will allow an empty array for this,
-//   //if it's not empty, we will make sure all tags are strings
-//   if (!arr || !Array.isArray(arr))
-//     throw `You must provide an array of ${varName}`;
-//   for (let i in arr) {
-//     if (typeof arr[i] !== 'string' || arr[i].trim().length === 0) {
-//       throw `One or more elements in ${varName} array is not a string or is an empty string`;
-//     }
-//     arr[i] = arr[i].trim();
-//   }
-
-//   return arr;

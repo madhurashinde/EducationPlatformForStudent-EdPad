@@ -20,9 +20,8 @@ const constructorMethod = (app) => {
   app.use("/announcement", AnnouncementRoutes);
   app.use("/module", ModuleRoutes);
   app.use("/quizlet", QuizletRoutes);
-
   app.use("*", (req, res) => {
-    res.status(404);
+    res.status(404).render("error", { error: "Page Not Found" });
   });
 };
 

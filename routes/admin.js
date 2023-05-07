@@ -2,24 +2,28 @@ import { Router } from "express";
 const router = Router();
 import { adminFunc, coursesFunc, userFunc } from "../data/index.js";
 
-//ok
 router.route("/").get((req, res) => {
   return res.render("admin/admin");
 });
 
-//ok
 router.route("/faculty").get(async (req, res) => {
-  const faculties = await userFunc.allFaculty();
-  return res.render("admin/faculty", { faculties: faculties });
+  try {
+    const faculties = await userFunc.allFaculty();
+    return res.render("admin/faculty", { faculties: faculties });
+  } catch (e) {
+    return res.status(500).render("error", { error: `${e}` });
+  }
 });
 
-//ok
 router.route("/student").get(async (req, res) => {
-  const students = await userFunc.allStudent();
-  return res.render("admin/student", { students: students });
+  try {
+    const students = await userFunc.allStudent();
+    return res.render("admin/student", { students: students });
+  } catch (e) {
+    return res.status(500).render("error", { error: `${e}` });
+  }
 });
 
-//ok
 router.route("/course").get(async (req, res) => {
   try {
     const allCourses = await coursesFunc.getAll();
@@ -27,15 +31,14 @@ router.route("/course").get(async (req, res) => {
       allCourses: allCourses,
     });
   } catch (e) {
-    res.status(500).json({ error: e });
+    return res.status(500).render("error", { error: `${e}` });
   }
 });
 
 router
   .route("/register")
-  //ok
   .get((req, res) => {
-    res.render("admin/register");
+    return res.render("admin/register");
   })
   // check
   .post(async (req, res) => {
@@ -68,13 +71,12 @@ router
       if (result) {
         return res.redirect("/admin");
       } else {
-        res.status(500).send("Internal Server Error");
+        return res.status(500).send("Internal Server Error");
       }
     } catch (e) {}
   });
 
 router
-  //ok
   .route("/createcourse")
   .get((req, res) => {
     return res.render("admin/courseCreate");
@@ -105,24 +107,36 @@ router
 
 router
   .route("/openregister")
-  //ok
   .get(async (req, res) => {
-    const status = await adminFunc.registrationStatus();
-    return res.render("admin/openRegister", { status: status });
+    try {
+      const status = await adminFunc.registrationStatus();
+      return res.render("admin/openRegister", { status: status });
+    } catch (e) {
+      res.status(500).render("error", { error: `${e}` });
+    }
   })
-  //ok
   .post(async (req, res) => {
-    await adminFunc.changeStatus();
-    return res.redirect("/admin/openregister");
+    try {
+      await adminFunc.changeStatus();
+      return res.redirect("/admin/openregister");
+    } catch (e) {
+      res.status(500).render("error", { error: `${e}` });
+    }
   });
 
 router
-  //ok
   .route("/archive")
   .get((req, res) => {
     return res.render("admin/archive");
   })
-  // pending
-  .post(async (req, res) => {});
+  //check
+  .post(async (req, res) => {
+    try {
+      await adminFunc.archive();
+      return res.redirect("/admin/archive");
+    } catch (e) {
+      res.status(500).render("error", { error: `${e}` });
+    }
+  });
 
 export default router;

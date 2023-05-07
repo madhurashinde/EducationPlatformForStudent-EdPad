@@ -1,6 +1,6 @@
 import { assignment, course, user } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
-import { validStr, validId, nonNegInt } from "../helper.js";
+import { validId, nonNegInt } from "../helper.js";
 
 const grade = async (submissionId, grade) => {
   submissionId = validId(submissionId);

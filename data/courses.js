@@ -1,4 +1,4 @@
-import { course, user } from "../config/mongoCollections.js";
+import { course, user, registration } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import { validId, validStr } from "../helper.js";
 
@@ -142,6 +142,11 @@ const getCompletedCourse = async (id) => {
 };
 
 const registerCourse = async (studentId, courseId) => {
+  const registrationCollection = await registration();
+  const status = await registrationCollection.findOne({});
+  if (status.Enableregistration === false) {
+    throw "Admin closed registration ";
+  }
   studentId = validId(studentId);
   courseId = validId(courseId);
 
@@ -153,17 +158,16 @@ const registerCourse = async (studentId, courseId) => {
   if (userInfo === null) throw "invalid student ID";
   if (userInfo.role !== "student")
     throw "Only student can register for courses";
-
+  if (userInfo.courseInProgress === 4)
+    throw "You can register for 4 courses at most";
   const courseCollection = await course();
   const courseInfo = await courseCollection.findOne({
     _id: new ObjectId(courseId),
   });
   if (courseInfo === null) throw "invalid course ID";
-  // already enrolled or completed
   if (userInfo.courseCompleted.includes(courseId)) {
     throw "You have already completed this course";
   }
-
   if (userInfo.courseInProgress.includes(courseId)) {
     throw "You have already registered for this course";
   }

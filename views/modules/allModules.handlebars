@@ -9,6 +9,7 @@
         <div><a href='/module/detail/{{_id}}'>{{title}}</a></div>    
 
         <div>{{description}}</div>
+        <a href="/module/download/{{filePath}}">Download Module</a>
 
         {{#if ../faculty}}
         <form onsubmit="return confirm('Confirm?');" action="/module/detail/{{_id}}" method="post">

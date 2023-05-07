@@ -59,7 +59,31 @@ const changeStatus = async () => {
 //pending
 const archive = async () => {
   const userCollection = await user();
-  const faculty = await userCollection.find({ role: "faculty" }).toArray();
+  const userList = await userCollection
+    .find({ role: { $in: ["student", "faculty"] } }, { projection: { _id: 1 } })
+    .toArray();
+  for (let i = 0; i < userList.length; i++) {
+    const thisUser = await userCollection.findOne(
+      { _id: userList[0]._id },
+      { projection: { courseInProgress: 1, courseCompleted: 1 } }
+    );
+    const courseInProgress = thisUser.courseInProgress;
+    const courseCompleted = thisUser.courseCompleted;
+
+    const updateInfo = await userCollection.findOneAndUpdate(
+      { _id: userList[0]._id },
+      {
+        $set: {
+          courseInProgress: [],
+          courseCompleted: courseCompleted.concat(courseInProgress),
+        },
+      }
+    );
+    if (updateInfo.lastErrorObject.n === 0) {
+      throw "could not update profile successfully";
+    }
+  }
+  return "Successfully Archived";
 };
 
 export default {
@@ -68,4 +92,5 @@ export default {
   changeStatus,
   archive,
   addMajor,
+  archive,
 };

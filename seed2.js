@@ -14,6 +14,7 @@ await db.dropDatabase();
 
 // initialze registration status
 await adminFunc.initRegistrationStatus();
+await adminFunc.changeStatus();
 
 // create major
 const major = ["Computer Science", "Business Analysis", "Chemistry"];
