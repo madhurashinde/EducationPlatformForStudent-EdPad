@@ -5,7 +5,7 @@ Due Date: {{assignment.dueDate}} at {{assignment.dueTime}}
 Total Score: {{assignment.score}}
 <br>
 <p>{{assignment.content}}</p>
-Instruction File: <a target="_blank" href="//{{assignment.file}}">{{assignment.file}}</a>
+Instruction File: <a target="_blank" href="/assignment/download/{{assignment.file}}">Download File</a>
 
 {{#if faculty}}
 <form onsubmit="return confirm('Confirm?');" action="/assignment/detail/{{assignment._id}}" method="post">
@@ -20,7 +20,7 @@ Instruction File: <a target="_blank" href="//{{assignment.file}}">{{assignment.f
             <div id="start-submission-container">
                 <p>Submitted</p>
                 <p>Your File Link:</p>
-                <a target="_blank" href="//{{submission.submitFile}}">{{{submission.submitFile}}}</a>
+                <a target="_blank" href="/submission/download/{{submission.submitFile}}">Download File</a>
             </div>
             <button id="start-submission">New Attempt</button>
             <div id="form-container"></div>

@@ -32,7 +32,7 @@ router.get("/", async (req, res) => {
         });
       }
     } catch (e) {
-      return res.status(400).json({ error: e });
+      return res.status(500).json({ error: e });
     }
   }
 });
@@ -82,7 +82,7 @@ router.get("/:id", async (req, res) => {
     );
 
     if (!currentCourse.some(course => course._id.toString() === courseId)) {
-      return res.redirect('/course');
+      return res.render("not allowed);
     }
     // this will not let user to see the completed course when they have no current course.
   }

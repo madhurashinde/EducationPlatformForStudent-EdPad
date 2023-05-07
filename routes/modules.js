@@ -1,4 +1,5 @@
 import { Router } from "express";
+import express from "express";
 const router = Router();
 import { coursesFunc, modulesData } from "../data/index.js";
 import { validId, validStr } from "../helper.js";
@@ -44,58 +45,15 @@ router.route("/:courseId").get(async (req, res) => {
 });
 
 //ok
-router
-  .route("/:courseId/newModule")
-  .get(async (req, res) => {
-    // only the professor of this course is allowed
-    let courseId = req.params.courseId;
-    const professor = await coursesFunc.getFaculty(courseId);
-    if (req.session.user._id !== professor) {
-      return res.redirect(`/module/${courseId}`);
-    }
-    return res.render("modules/newModule", { course: courseId });
-  })
-  .post(async (req, res) => {
-    // only the professor of this course is allowed
-    let courseId = req.params.courseId;
-    const professor = await coursesFunc.getFaculty(courseId);
-    if (req.session.user._id !== professor) {
-      return res.redirect(`/module/${courseId}`);
-    }
-
-    const moduleinfo = req.body;
-    if (!moduleinfo || Object.keys(moduleinfo).length === 0) {
-      return res
-        .status(400)
-        .json({ error: "There are no fields in the request body" });
-    }
-    try {
-      courseId = validId(courseId);
-      if (!moduleinfo.mod_title || !moduleinfo.mod_description)
-        throw "All fields need to have valid values";
-      moduleinfo.mod_title = validStr(moduleinfo.mod_title);
-    } catch (e) {
-      return res
-        .status(400)
-        .render("modules/newModule", { course: courseId, error: `${e}` });
-    }
-
-    try {
-      let title = req.body.mod_title;
-      let course = req.params.courseId;
-      let description = req.body.mod_description;
-      let user = "www.userdemo.com";
-      const newModule = await modulesData.create(
-        title,
-        description,
-        user,
-        course
-      );
-      return res.redirect(`/module/${course}`);
-    } catch (e) {
-      res.status(400).render("error", { error: e });
-    }
-  });
+router.route("/:courseId/newModule").get(async (req, res) => {
+  // only the professor of this course is allowed
+  let courseId = req.params.courseId;
+  const professor = await coursesFunc.getFaculty(courseId);
+  if (req.session.user._id !== professor) {
+    return res.redirect(`/module/${courseId}`);
+  }
+  return res.render("modules/newModule", { course: courseId });
+});
 
 // ok
 router

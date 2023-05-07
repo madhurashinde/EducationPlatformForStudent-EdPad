@@ -1,17 +1,21 @@
 const startSubmission = document.getElementById("start-submission");
 const formContainer = document.getElementById("form-container");
 const errorContainer = document.getElementById("error-container");
+const assignment = document.getElementById("assignment-id");
+const assignmentId = assignment.innerHTML;
 
 if (startSubmission) {
   startSubmission.addEventListener("click", function () {
     $("#start-submission").prop("disabled", true);
     const form = $("<form></form>");
     form.attr("id", "form");
+    form.attr("enctype", "multipart/form-data");
     const fileLabel = $("<label></label>");
     fileLabel.html("File:");
     fileLabel.attr("for", "submitFile");
     const fileInput = $("<input></input>");
-    fileInput.attr("type", "text");
+    // fileInput.attr("type", "file");
+    fileInput.attr("type", "file");
     fileInput.attr("id", "submitFile");
     fileInput.attr("name", "submitFile");
     const commentLabel = $("<label></label>");
@@ -42,25 +46,27 @@ if (startSubmission) {
       $("#submitFile").removeClass("inputClass");
       $("#error-container").hide();
 
-      const web = /^www\..+\.com$/;
-      if (
-        $("#submitFile").val().trim() &&
-        web.test($("#submitFile").val().trim())
-      ) {
+      const formData = new FormData();
+      const inputForm = $("#submitFile")[0];
+
+      formData.append("submitFile", inputForm.files[0]);
+      formData.append("comment", $("#comment").val());
+
+      console.log(inputForm.files[0]);
+
+      if ($("#submitFile").val().trim()) {
         // set up AJAX request config
         let requestConfig = {
           method: "POST",
-          url: `/assignment/detail/${$("#assignment-id")
-            .html()
-            .trim()}/newSubmission`,
-          contentType: "application/json",
-          data: JSON.stringify({
-            file: $("#submitFile").val(),
-            comment: $("#comment").val(),
-          }),
+          url: `/submission/${assignmentId}/new`,
+          contentType: false,
+          processData: false,
+          enctype: "multipart/form-data",
+          data: formData,
         };
 
         $.ajax(requestConfig).then(function (responseMessage) {
+          console.log(responseMessage);
           let element = $(`<div id="start-submission-container">
                 <p>Submitted</p>
                 <p>Your File Link:</p>

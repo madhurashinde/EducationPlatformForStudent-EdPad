@@ -1,7 +1,7 @@
 import { user, assignment } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import { assignmentFunc } from "./index.js";
-import { validStr, validId, validWeblink } from "../helper.js";
+import { validStr, validId } from "../helper.js";
 
 const createSubmission = async (
   assignmentId,
@@ -11,7 +11,7 @@ const createSubmission = async (
 ) => {
   assignmentId = validId(assignmentId);
   studentId = validId(studentId);
-  submitFile = validWeblink(submitFile);
+  submitFile = validStr(submitFile);
 
   const newAssignmentId = new ObjectId(assignmentId);
   const newStudentId = new ObjectId(studentId);
@@ -106,7 +106,7 @@ const resubmitSubmission = async (
 ) => {
   assignmentId = validId(assignmentId);
   studentId = validId(studentId);
-  submitFile = validWeblink(submitFile);
+  submitFile = validStr(submitFile);
 
   const assignmentCollection = await assignment();
   const newAssignmentId = new ObjectId(assignmentId);

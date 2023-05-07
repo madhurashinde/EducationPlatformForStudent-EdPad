@@ -66,14 +66,6 @@ if (form) {
         dueDate.classList.add("inputClass");
         dueTime.classList.add("inputClass");
       }
-      if (file.value) {
-        const web = /^www\..+\.com$/;
-        if (!web.test(file.value.trim())) {
-          event.preventDefault();
-          errorDiv.hidden = false;
-          file.classList.add("inputClass");
-        }
-      }
       const num_score = parseInt(score.value);
       if (num_score === NaN || num_score < 0) {
         event.preventDefault();

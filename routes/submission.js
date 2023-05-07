@@ -9,9 +9,14 @@ router.route("/:id").post(async (req, res) => {
   let assignmentId = req.params.id;
   const courseId = assignmentFunc.getCourseId(assignmentId);
   const studentList = coursesFunc.getStudentList(courseId);
-  if (!studentList.includes(req.session.user.role)) {
-    return res.redirect(`/assignment/detail/${id}`);
+  for (let i = 0; i < studentList.length; i++) {
+    if (studentList[i]._id.toString() === req.session.user._id) {
+      break;
+    } else {
+      return res.redirect(`/assignment/detail/${id}`);
+    }
   }
+
   try {
     const id = req.params.id;
     const submitFile = req.body.submitFile;

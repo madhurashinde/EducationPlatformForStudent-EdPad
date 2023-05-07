@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import { major } from "./config/mongoCollections.js";
 
 export const validStr = (str) => {
-  if (!str) throw `Error: You must supply an input!`;
+  if (!str) throw new TypeError(`Error: You must supply an input!`);
   if (typeof str !== "string") throw `Error: input must be a string!`;
   str = str.trim();
   if (str === "")
@@ -13,15 +13,9 @@ export const validStr = (str) => {
 
 export const validId = (id) => {
   id = validStr(id);
-  if (!ObjectId.isValid(id)) throw `Error: invalid object ID`;
+  console.log("!", ObjectId.isValid(id));
+  if (!ObjectId.isValid(id)) throw new TypeError("Error: invalid object ID");
   return id;
-};
-
-export const validWeblink = (str) => {
-  str = validStr(str);
-  const web = /^www\..+\.com$/;
-  if (!web.test(str.trim())) throw "not in a valid weblink format";
-  return str;
 };
 
 export const validDate = (str) => {
@@ -72,6 +66,7 @@ const currentTime = () => {
 export const validDueTime = (dueDate, dueTime) => {
   const due = new Date(dueDate + " " + dueTime);
   const current = new Date(currentDate() + " " + currentTime());
+  if (due.getTime() < current.getTime()) throw "not valid due time";
   return current.getTime() < due.getTime();
 };
 
@@ -199,6 +194,7 @@ export default {
   checkNameFormat,
   checkEmailAddress,
   validPassword,
+  validRole,
   checkBirthDateFormat,
   validCWID,
   validGender,

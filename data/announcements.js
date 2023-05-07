@@ -79,7 +79,7 @@ const exportedMethods = {
       { projection: { courseId: 1 } }
     );
     if (annInfo === null) throw "can not find the announcement";
-    const courseId = annInfo.courseId;
+    const courseId = annInfo.courseId.toString();
     return courseId;
   },
 };

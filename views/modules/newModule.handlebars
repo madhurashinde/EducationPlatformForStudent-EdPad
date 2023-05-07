@@ -1,22 +1,27 @@
 <button onclick="location.href='/module/{{course}}'">Cancel</button>
 
 
-<form class="newModForm" id="new-mod" method="post" action="/module/{{course}}/newModule">
-    <div>
-        <label for="mod_title">Enter title</label>
-        <textarea name="mod_title" id="mod_title"></textarea>
-    </div>
+<form id="new-mod" method="post" action="/module/new" enctype="multipart/form-data">
+    <label for="courseId" hidden>CourseId</label>
+    <input id="courseId" name="courseId" value="{{course}}" hidden>
+    <label for="mod_title">Module title</label>
+    <textarea name="mod_title" id="mod_title"></textarea>
     <div class="error" id="no-title-mod" hidden>Please provide a title</div>
-    <div>
-        <label for="mod_description">Enter Description</label>
-        <textarea id="mod_description" name="mod_description"></textarea>
-    </div>
+    <br>
+    <label for="mod_description">Module Description</label>
+    <textarea id="mod_description" name="mod_description"></textarea>
     <div class="error" id="no-desc-mod" hidden>Please provide a description</div>
     </br>
-    <button class="submit" type="submit">Create Module</button>
+    <label for="mod_file">Upload File</label>
+    <input id="mod_file" name="mod_file" type="file">
+    <div class="error" id="no-desc-mod" hidden>Please provide a file</div>
+    </br>
+    <button type="submit">Create Module</button>
     </br>
 
 </form>
 <div>
     {{error}}
 </div>
+
+<script src="../../public/js/test.js"></script>

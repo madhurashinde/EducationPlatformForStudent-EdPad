@@ -1,5 +1,7 @@
 <button onClick="location.href='/assignment/{{courseId}}';">Back</button>
-<form id="form" onsubmit="return confirm('Confirm?');" action="/course/{{courseId}}/newAssignment" method="post">
+<form id="form" onsubmit="return confirm('Confirm?');" action="/assignment/new" method="post" enctype="multipart/form-data">
+    <label for="courseId" hidden>CourseId:</label>
+    <input type="text" name="courseId" value="{{courseId}}" hidden><br>
     <label for="title">Title:</label>
     <input type="text" id="title" name="title"><br>
     <label for="dueDate">Due Date:</label>
@@ -9,7 +11,7 @@
     <label for="content">Assignment Instruction:</label>
     <input type="text" id="content" name="content"><br>
     <label for="file">Instruction File:</label>
-    <input type="text" id="file" name="file"><br>
+    <input type="file" id="file" name="file"><br>
     <label for="score">Total Score:</label>
     <input type="number" id="score" name="score"><br>
     <button type="submit">Submit</button>

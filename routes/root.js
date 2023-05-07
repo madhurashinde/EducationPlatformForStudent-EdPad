@@ -1,4 +1,5 @@
 import { Router } from "express";
+
 const router = Router();
 import { coursesFunc, userFunc } from "../data/index.js";
 import {
@@ -99,7 +100,6 @@ router
     } catch (e) {
       return res.render("error", { error: e, title: "Error" });
     }
-
     try {
       const result = await userFunc.checkUser(
         req.body.emailAddressInput,

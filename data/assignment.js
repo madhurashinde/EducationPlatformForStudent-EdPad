@@ -4,7 +4,6 @@ import { ObjectId } from "mongodb";
 import {
   validStr,
   validId,
-  validWeblink,
   nonNegInt,
   validDueTime,
   validDate,
@@ -28,11 +27,10 @@ const createAssignment = async (
   if (!validDueTime(dueDate, dueTime)) {
     throw "invalid dueDate";
   }
+  content = content.trim();
+  file = file.trim();
   if (!validStr(content) && !validStr(file))
     throw "must provide instruction of the assignment by text or file";
-  if (validStr(file) && !validWeblink(file)) {
-    throw "the link of file is not valid";
-  }
   score = nonNegInt(score);
 
   const newAssignment = {
@@ -117,7 +115,7 @@ const updateAssignment = async (
   if (!validDueTime(dueDate.trim(), dueTime.trim())) {
     throw "invalid dueDate";
   }
-  if (!validStr(content) && !validWeblink(file))
+  if (!validStr(content) && !validStr(file))
     throw "must provide instruction of the assignment by text or file";
   score = nonNegInt(score);
 

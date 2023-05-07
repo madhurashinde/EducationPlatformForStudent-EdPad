@@ -1,6 +1,6 @@
 import { module, course } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
-import { validStr, validId, validWeblink } from "../helper.js";
+import { validStr, validId } from "../helper.js";
 
 const exportedMethods = {
   async get(id) {
@@ -14,10 +14,10 @@ const exportedMethods = {
     return moduleInfo;
   },
 
-  async create(title, description, fileURL, courseId) {
+  async create(title, description, filePath, courseId) {
     title = validStr(title);
     description = validStr(description);
-    fileURL = validWeblink(fileURL);
+    filePath = validStr(filePath);
     courseId = validId(courseId);
 
     const courseCollection = await course();
@@ -29,7 +29,7 @@ const exportedMethods = {
     let newModule = {
       title: title,
       description: description,
-      fileURL: fileURL,
+      filePath: filePath,
       courseId: new ObjectId(courseId),
     };
     const moduleCollection = await module();
