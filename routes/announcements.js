@@ -15,7 +15,6 @@ router.route("/:courseId").get(async (req, res) => {
       req.session.user._id
     );
     for (let i = 0; i < currentCourse.length; i++) {
-      console.log(currentCourse[i]._id.toString(), course);
       if (currentCourse[i]._id.toString() === course) {
         break;
       } else {
@@ -56,21 +55,28 @@ router
   //ok
   .get(async (req, res) => {
     // only the professor of this course is allowed
+    if(!req.session.user){
+      res.redirect('/');
+    }
     let courseId = req.params.courseId;
     const professor = await coursesFunc.getFaculty(courseId);
+    if(req.session.user){
     if (req.session.user._id !== professor) {
-      return res.redirect(`/announcement/${courseId}`);
+      return res.render(`notallowed`);
     }
     return res.render(`announcements/newAnnouncement`, {
       course: courseId,
     });
+  }
   })
   //ok
   .post(async (req, res) => {
     // only the professor of this course is allowed
-    const professor = await coursesFunc.getFaculty(courseId);
+
+    let course_id = req.params.courseId;
+    const professor = await coursesFunc.getFaculty(course_id);
     if (req.session.user._id !== professor) {
-      return res.redirect(`/announcement/${courseId}`);
+      return res.render('notallowed');
     }
     const anninfo = req.body;
     if (!anninfo || Object.keys(anninfo).length === 0) {
@@ -117,11 +123,18 @@ router
       req.session.user.role == "faculty"
     ) {
       const id = req.params.id;
-      const courseId = annsData.getCourseId(id);
+      const courseId = await annsData.getCourseId(id);
       const currentCourse = await coursesFunc.getCurrentCourse(
         req.session.user._id
       );
-      if (!currentCourse.includes(courseId)) {
+      let temp=false;
+      for(let i in currentCourse){
+        if(currentCourse[i]._id==courseId){
+          temp=true;
+        }
+      }
+      
+      if (!temp) {
         return res.redirect(`/announcement/${courseId}`);
       }
     }
@@ -151,7 +164,11 @@ router
 
     try {
       let deletedAnn = await annsData.remove(req.params.id);
+      if(deletedAnn){
       return res.redirect(`/announcement/${courseId}`);
+      }else{
+        throw 'Error: Could not delete announcement'
+      }
     } catch (e) {
       return res.status(404).render("error", { e: e });
     }
