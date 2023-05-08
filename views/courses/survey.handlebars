@@ -1,13 +1,14 @@
 <main>
   <h2>Survey Form</h2>
-  <div>{{error}}</div> 
-  <div id="error" class="error" hidden>I'm an error. I will change through Client-Side JS</div>  
+  <div>{{error}}</div>
+  <div id="error" class="error" hidden>I'm an error. I will change through Client-Side JS</div>
   <form action="/course/{{courseObjectID}}/survey" method="POST" id="survey-form">
-          <label for="surveyInput">
-            How was this course and how has it helped you?
-            <textarea type="text" name="surveyInput" id="surveyInput"></textarea>
-          </label>   
-          <br>
-          <button type="submit">Submit</button>
-    </form>
+    <label for="surveyInput">
+      How was this course and how has it helped you?
+      <textarea type="text" name="surveyInput" id="surveyInput"></textarea>
+    </label>
+    <br>
+    <button type="submit">Submit</button>
+  </form>
 </main>
+<script src="../../public/js/surveyCheck.js"></script>
