@@ -86,3 +86,6 @@
 //     console.log("500");
 //   }
 // }
+
+import { adminFunc } from "./data/index.js";
+console.log(await adminFunc.getAllMajors());

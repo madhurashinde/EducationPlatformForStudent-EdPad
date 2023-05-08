@@ -14,6 +14,16 @@ const addMajor = async (str) => {
   return "success";
 };
 
+const getAllMajors = async () => {
+  const majorCollection = await major();
+  const majorInfo = await majorCollection.find({}).toArray();
+  let majors = [];
+  for (let i = 0; i < majorInfo.length; i++) {
+    majors.push(majorInfo[i].major);
+  }
+  return majors;
+};
+
 const initRegistrationStatus = async () => {
   const regCollection = await registration();
   const registrationStatus = await regCollection.find({}).toArray();
@@ -93,4 +103,5 @@ export default {
   archive,
   addMajor,
   archive,
+  getAllMajors,
 };

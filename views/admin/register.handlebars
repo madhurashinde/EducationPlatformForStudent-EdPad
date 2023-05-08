@@ -31,12 +31,15 @@
   <label for="birthDateInput">
     Birth Date:
     <input type="date" name="birthDateInput" id="birthDateInput">
-  </label>
+  </label> 
   <br>
-  <label for="majorInput">
-    Major
-    <input type="text" name="majorInput" id="majorInput">
-  </label>
+  <label for="majorInput"> Major</label>
+    <select id="majorInput" name="majorInput" required>
+        {{#each allMajors}}
+        <option value="{{this}}">{{this}}</option>
+        {{/each}}
+    </select>
+ </label> 
   <br>
   <label for="genderInput">
     Gender:

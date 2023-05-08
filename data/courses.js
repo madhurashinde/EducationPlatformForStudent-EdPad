@@ -89,7 +89,6 @@ const getStudentList = async (courseId) => {
 };
 
 const getAllFaculty = async () => {
-
   const userCollection = await user();
   let allFaculty = await userCollection.find({ role: "faculty" }).toArray();
   allFaculty = allFaculty.map((element) => {
@@ -169,7 +168,8 @@ const registerCourse = async (studentId, courseId) => {
   if (userInfo === null) throw "invalid student ID";
   if (userInfo.role !== "student")
     throw "Only student can register for courses";
-  if (userInfo.courseInProgress === 4)
+  console.log(userInfo);
+  if (userInfo.courseInProgress.length === 4)
     throw "You can register for 4 courses at most";
   const courseCollection = await course();
   const courseInfo = await courseCollection.findOne({
@@ -211,5 +211,5 @@ export default {
   registerCourse,
   getStudentList,
   getFaculty,
-  getAllFaculty
+  getAllFaculty,
 };
