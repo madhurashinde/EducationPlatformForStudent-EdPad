@@ -21,7 +21,7 @@ router
     if (req.session.user && req.session.user.role) {
       return res.redirect("/course");
     }
-    return res.render("login/register",{title: "Register Page"});
+    return res.render("login/register", { title: "Register Page" });
   })
   //check
   .post(async (req, res) => {
@@ -49,12 +49,12 @@ router
         emailAddress: xss(req.body.emailAddressInput),
       });
       if (fac) {
-        if(fac.role === 'faculty')
-        throw `Error: Email address is registered as a faculty`;
+        if (fac.role === 'faculty')
+          throw `Error: Email address is registered as a faculty`;
       }
-      if(fac){
-        if(fac.role === 'student')
-        throw `Error: Email address is already registered as student`;
+      if (fac) {
+        if (fac.role === 'student')
+          throw `Error: Email address is already registered as student`;
       }
       result = await userFunc.createUser(
         xss(req.body.firstNameInput),
@@ -92,9 +92,10 @@ router
   //check
   .post(async (req, res) => {
     // if one is logged in, do not show this page
-    if (req.session.user && req.session.user.role) {
-      return res.redirect("/course");
-    }
+    // if (req.session.user) req.session.destroy();
+    // if (req.session.user && req.session.user.role) {
+    //   return res.redirect("/course");
+    // }
     try {
       checkEmailAddress(xss(req.body.emailAddressInput));
       validPassword(xss(req.body.passwordInput));
