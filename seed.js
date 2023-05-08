@@ -1,273 +1,316 @@
 import { dbConnection, closeConnection } from "./config/mongoConnection.js";
 import {
-  studFunc,
-  facultyFunc,
+  userFunc,
   adminFunc,
   assignmentFunc,
   submissionFunc,
+  annsData,
+  modulesData,
   coursesFunc,
+  gradeFunc,
 } from "./data/index.js";
 
 const db = await dbConnection();
 await db.dropDatabase();
 
-const faculty1 = await facultyFunc.createFaculty(
-  "Lori",
-  "Test",
-  "66666666",
-  "test@test.com",
-  "female",
-  "02/29/1976",
-  "Password123*",
-  "Computer Science",
-  ["CS546"],
-  ["CS554"],
-  "faculty"
+// initialze registration status
+await adminFunc.initRegistrationStatus();
+await adminFunc.changeStatus();
+
+// create major
+const major = ["Computer Science", "Business Analysis", "Chemistry"];
+for (let i = 0; i < major.length; i++) {
+  await adminFunc.addMajor(major[i]);
+}
+// create faculty
+
+const gender = ["Male", "FEMALE", "prefer not to say"];
+
+// create faculty
+const facultynames = [
+  ["Emily", "Johnson"],
+  ["Oliver", "Brown"],
+  ["Sophia", "Lee"],
+  ["William", "Garcia"],
+  ["Charlotte", "Taylor"],
+];
+
+const facultyEmailAddresses = facultynames.map(
+  (name) => `${name[0].toLowerCase()}@${name[1].toLowerCase()}.com`
 );
 
-const faculty2 = await facultyFunc.createFaculty(
-  "Patrick",
-  "Hill",
-  "20011456",
-  "patrick.hill@stevens.edu",
-  "Male",
-  "02/07/1976",
-  "TestingPass123@",
-  "Computer Science",
-  ["CS546", "CS554"],
-  ["CS554"],
-  "faculty"
-);
+let faculty = [];
+for (let i = 0; i < 5; i++) {
+  const f = await userFunc.createUser(
+    facultynames[i][0],
+    facultynames[i][1],
+    facultyEmailAddresses[i],
+    gender[i % 3],
+    `197${i}-0${i + 1}-2${i}`,
+    "Password123!",
+    major[i % 3],
+    "faculty"
+  );
+  faculty.push(f);
+}
 
-const faculty3 = await facultyFunc.createFaculty(
-  "Samuel",
-  "Kim",
-  "20193735",
-  "samuel.kim@stevens.edu",
-  "Male",
-  "02/27/1980",
-  "ManagePass123@",
-  "Computer Science",
-  ["CS541", "CS 102"],
-  ["CS541"],
-  "faculty"
-);
+// create student
+const studentnames = [
+  ["Michael", "Davis"],
+  ["Isabella", "Anderson"],
+  ["Ethan", "Wilson"],
+  ["Ava", "Smith"],
+  ["Alexander", "Jones"],
+];
 
-const faculty4 = await facultyFunc.createFaculty(
-  "Edward",
-  "Amoroso",
-  "20193745",
-  "edward.amoroso@stevens.edu",
-  "Male",
-  "10/17/1964",
-  "GivethePass@123",
-  "Computer Science",
-  ["CS573"],
-  ["CS573"],
-  "faculty"
+const studentEmailAddresses = studentnames.map(
+  (name) => `${name[0].toLowerCase()}@${name[1].toLowerCase()}.com`
 );
+let student = [];
+for (let i = 0; i < 5; i++) {
+  student[i] = await userFunc.createUser(
+    studentnames[i][0],
+    studentnames[i][1],
+    studentEmailAddresses[i],
+    gender[i % 3],
+    `199${i}-0${i + 1}-2${i}`,
+    "Password123!",
+    major[i % 3],
+    "student"
+  );
+}
 
-const faculty5 = await facultyFunc.createFaculty(
-  "Michael",
-  "Greenberg",
-  "20022002",
-  "michael.greenberg@stevens.edu",
-  "Male",
-  "06/20/1973",
-  "LetsPartyTonight@123",
-  "Computer Science",
-  ["CS515"],
-  ["CS515"],
-  "faculty"
-);
-
-const student1 = await studFunc.createStudent(
-  "John",
-  "Doe",
-  "12345678",
-  "johndoe@example.com",
-  "Male",
-  "05/20/1998",
-  "Password123!",
-  "Computer Science",
-  ["JS101", "CS554"],
-  ["JS101"],
-  "student"
-);
-
-const student2 = await studFunc.createStudent(
-  "Madhura",
-  "Shinde",
-  "20114380",
-  "madhura.shinde@stevens.edu",
-  "Female",
-  "04/23/1998",
-  "Wefindyoucute123!",
-  "Computer Science",
-  ["CS513", "CS570", "CS555"],
-  ["CS546", "CS573", "CS513"],
-  "student"
-);
-
-const student3 = await studFunc.createStudent(
-  "Rishabh",
-  "Shirur",
-  "20113450",
-  "rishabh.shirur@stevens.edu",
-  "Male",
-  "05/31/2000",
-  "Thisisnotthepassword123!",
-  "Computer Science",
-  ["CS583", "CS590", "CS559"],
-  ["CS546", "CS561", "CS586"],
-  "student"
-);
-
-const student4 = await studFunc.createStudent(
-  "Jiaqi",
-  "Tu",
-  "20012340",
-  "jiaqi.tu@stevens.edu",
-  "Male",
-  "05/13/2000",
-  "Keptthrowinganerror123!",
-  "Computer Science",
-  ["CS583", "CS590", "CS559"],
-  ["CS546", "CS561", "CS586"],
-  "student"
-);
-
-const student5 = await studFunc.createStudent(
-  "Luoyi",
-  "Fu",
-  "20143210",
-  "luoyi.fu@stevens.edu",
-  "Female",
-  "11/09/2001",
-  "Testingeverything!123",
-  "Computer Science",
-  ["CS583", "CS590", "CS559"],
-  [],
-  "student"
-);
-
-const admin1 = await adminFunc.createAdmin(
+// create admin
+const admin1 = await userFunc.createUser(
   "Enrique",
   "Dunn",
-  "10202020",
-  "enriqye.dunn@stevens.edu",
-  "Iamtheadmin@123",
+  "admin1@admin1.com",
+  "male",
+  "1990-05-05",
+  "Password123!",
   "Computer Science",
   "admin"
 );
-const admin2 = await adminFunc.createAdmin(
-  "Janine",
-  "Cucchiara",
-  "22301836",
-  "jannine.cucchiara@stevens.edu",
-  "Letsnotbeanadmin@123",
-  "Business Analytics",
-  "admin"
-);
 
-const assignment1 = await assignmentFunc.createAssignment(
-  "Assignment 1",
-  "643895a8b3ee41b54432b77b",
-  "2023-05-10",
-  "00:00:00",
-  "please read the instruction",
-  "www.file.com",
-  "50"
-);
+//create course
 
-const assignment2 = await assignmentFunc.createAssignment(
-  "Assignment 2",
-  "643895a8b3ee41b54432b77b",
-  "2023-06-01",
-  "00:00:00",
-  "please read the instruction",
-  "www.file2.com",
-  "50"
-);
+const courseName = [
+  "Web Porgramming 2",
+  "Data Structures and Algorithms",
+  "Operating Systems",
+  "Computer Networks",
+  "Database Systems",
+  "Web Porgramming",
+];
+const courseDescription = [
+  "Introduction to web technologies, HTML, CSS, JavaScript, server-side programming, database integration, web frameworks, and web security.",
+  "This course covers advanced data structures and algorithms for problem-solving and analysis, including topics such as recursion, sorting and searching, graph algorithms, and dynamic programming.",
+  "This course covers the design and implementation of operating systems, including topics such as process and memory management, file systems, and device drivers.",
+  "This course covers the principles and technologies of computer networking, including topics such as network protocols, routing, congestion control, and network security.",
+  "This course covers the design, implementation, and management of database systems, including topics such as data modeling, SQL programming, transaction management, and database security.",
+  "Introduction to web technologies, HTML, CSS, JavaScript, server-side programming, database integration, web frameworks, and web security.",
+];
+let course = [];
+for (let i = 0; i < 6; i++) {
+  const c = await coursesFunc.createCourse(
+    courseName[i],
+    `CS50${i}`,
+    courseDescription[i],
+    faculty[i % 5]._id
+  );
+  course.push(c);
+}
 
-const assignment3 = await assignmentFunc.createAssignment(
-  "Assignment 3",
-  "643895a8b3ee41b54432b77b",
-  "2023-07-01",
-  "00:00:00",
-  "this is instruction",
-  "www.file2.com",
-  "50"
-);
+// create announcement
+//course5 has no announcement
+for (let i = 0; i < 5; i++) {
+  await annsData.create(
+    `Announcement ${parseInt(i / 6) + 1}`,
+    `This is announcement ${parseInt(i / 6) + 1}`,
+    course[i % 6]._id
+  );
+}
 
-await assignmentFunc.getAllAssignment("643895a8b3ee41b54432b77b");
-await assignmentFunc.removeAssignment(assignment1._id.toString());
-await assignmentFunc.getAllAssignment("643895a8b3ee41b54432b77b");
-await assignmentFunc.updateAssignment(
-  assignment2._id.toString(),
-  "Assignment 2",
-  "2023-06-02",
-  "00:00:00",
-  "please read the instruction",
-  "www.google.com",
-  "50"
-);
-await assignmentFunc.getAllAssignment("643895a8b3ee41b54432b77b");
+for (let i = 6; i < 9; i++) {
+  await annsData.create(
+    `Announcement ${parseInt(i / 6) + 1}`,
+    `This is announcement ${parseInt(i / 6) + 1}`,
+    course[i % 6]._id
+  );
+}
 
-const submission1 = await submissionFunc.createSubmission(
-  assignment2._id.toString(),
-  "643895a8b3ee41b54432b773",
-  "www.submission.com"
-);
+for (let i = 12; i < 13; i++) {
+  await annsData.create(
+    `Announcement ${parseInt(i / 6) + 1}`,
+    `This is announcement ${parseInt(i / 6) + 1}`,
+    course[i % 6]._id
+  );
+}
 
-const submission2 = await submissionFunc.createSubmission(
-  assignment2._id.toString(),
-  student1._id.toString(),
-  "www.submission2.com",
-  "this is a comment"
-);
+// create modules
+for (let i = 0; i < 5; i++) {
+  await modulesData.create(
+    `Material ${parseInt(i / 6) + 1}`,
+    `This is material ${parseInt(i / 6) + 1}`,
+    `module${i + 1}.txt`,
+    course[i % 6]._id
+  );
+}
 
-await submissionFunc.getSubmission(
-  assignment2._id.toString(),
-  "643895a8b3ee41b54432b773"
-);
+for (let i = 6; i < 9; i++) {
+  await modulesData.create(
+    `Material ${parseInt(i / 6) + 1}`,
+    `This is material ${parseInt(i / 6) + 1}`,
+    `module${i}.txt`,
+    course[i % 6]._id
+  );
+}
 
-await submissionFunc.getAllSubmission(assignment2._id.toString());
+for (let i = 12; i < 13; i++) {
+  await modulesData.create(
+    `Material ${parseInt(i / 6) + 1}`,
+    `This is material ${parseInt(i / 6) + 1}`,
+    `module${i - 2}.txt`,
+    course[i % 6]._id
+  );
+}
 
-await submissionFunc.resubmitSubmission(
-  assignment2._id.toString(),
-  student1._id.toString(),
-  "www.submission2.com"
-);
+// create assignment
+let assignment = [];
+for (let i = 0; i < 5; i++) {
+  const a = await assignmentFunc.createAssignment(
+    `Assignment ${parseInt(i / 5) + 1}`,
+    course[i % 5]._id,
+    `2023-05-1${i}`,
+    "00:00:00",
+    "please read the instruction",
+    `assignmentsample${i + 1}.txt`,
+    Number(`${50 + i * 10}`).toString()
+  );
+  assignment.push(a);
+}
 
-const submission3 = await submissionFunc.createSubmission(
-  assignment3._id.toString(),
-  "643895a8b3ee41b54432b774",
-  "www.submission2.com",
-  "this is a comment"
-);
+for (let i = 6; i < 9; i++) {
+  const a = await assignmentFunc.createAssignment(
+    `Assignment ${parseInt(i / 5) + 1}`,
+    course[i % 5]._id,
+    `2023-05-2${i}`,
+    "00:00:00",
+    "please read the instruction",
+    `assignmentsample${i + 1}.txt`,
+    Number(`${i * 10}`).toString()
+  );
+  assignment.push(a);
+}
 
-let newCourse = await coursesFunc.createCourse(
-  "Introduction to JavaScript3",
-  "JS101",
-  "Learn the basics of JavaScript programming language",
-  "PROF001",
-  "John Smith"
-);
+// no attachment
+for (let i = 12; i < 13; i++) {
+  const a = await assignmentFunc.createAssignment(
+    `Assignment ${parseInt(i / 5) + 1}`,
+    course[i % 5]._id,
+    `2023-05-${i}`,
+    "00:00:00",
+    "please list all you hobbies",
+    "",
+    Number(`${i * 10}`).toString()
+  );
+  assignment.push(a);
+}
 
-let newCourse2 = await coursesFunc.createCourse(
-  "Introduction to JavaScript3",
-  "CS554",
-  "Learn the basics of JavaScript programming language",
-  "PROF001",
-  "John Smith"
-);
+//student register for courses (past course)
+await coursesFunc.registerCourse(student[0]._id, course[0]._id);
+await coursesFunc.registerCourse(student[0]._id, course[1]._id);
+await coursesFunc.registerCourse(student[1]._id, course[0]._id);
+await coursesFunc.registerCourse(student[2]._id, course[0]._id);
+await coursesFunc.registerCourse(student[2]._id, course[1]._id);
+await coursesFunc.registerCourse(student[2]._id, course[2]._id);
+await coursesFunc.registerCourse(student[3]._id, course[3]._id);
+await coursesFunc.registerCourse(student[3]._id, course[4]._id);
+await coursesFunc.registerCourse(student[3]._id, course[5]._id);
 
-let newCourse3 = await coursesFunc.createCourse(
-  "Introduction to JavaScript3",
-  "CS573",
-  "Learn the basics of JavaScript programming language",
-  "PROF001",
-  "John Smith"
+// start a new semester
+await adminFunc.archive();
+
+// student register for courses (current course)
+// student0 cannot register more courses
+// student3 has registered no course
+// student4 is a new student
+await coursesFunc.registerCourse(student[0]._id, course[2]._id);
+await coursesFunc.registerCourse(student[0]._id, course[3]._id);
+await coursesFunc.registerCourse(student[0]._id, course[4]._id);
+await coursesFunc.registerCourse(student[0]._id, course[5]._id);
+await coursesFunc.registerCourse(student[1]._id, course[1]._id);
+// await coursesFunc.registerCourse(student[1]._id, course[2]._id);
+// await coursesFunc.registerCourse(student[1]._id, course[3]._id);
+// await coursesFunc.registerCourse(student[1]._id, course[4]._id);
+// await coursesFunc.registerCourse(student[1]._id, course[5]._id);
+// await coursesFunc.registerCourse(student[2]._id, course[3]._id);
+await coursesFunc.registerCourse(student[2]._id, course[4]._id);
+await coursesFunc.registerCourse(student[2]._id, course[5]._id);
+// await coursesFunc.registerCourse(student[3]._id, course[0]._id);
+// await coursesFunc.registerCourse(student[3]._id, course[1]._id);
+// await coursesFunc.registerCourse(student[3]._id, course[2]._id);
+await coursesFunc.registerCourse(student[4]._id, course[0]._id);
+await coursesFunc.registerCourse(student[4]._id, course[1]._id);
+// await coursesFunc.registerCourse(student[4]._id, course[2]._id);
+// await coursesFunc.registerCourse(student[4]._id, course[3]._id);
+// await coursesFunc.registerCourse(student[4]._id, course[4]._id);
+// await coursesFunc.registerCourse(student[4]._id, course[5]._id);
+
+// create submission
+const submission = [];
+let sub = await submissionFunc.createSubmission(
+  assignment[2]._id,
+  student[0]._id,
+  `submission1.txt`
 );
+submission.push(sub);
+
+sub = await submissionFunc.createSubmission(
+  assignment[6]._id,
+  student[0]._id,
+  `submission2.txt`
+);
+submission.push(sub);
+
+sub = await submissionFunc.createSubmission(
+  assignment[1]._id,
+  student[1]._id,
+  `submission3.txt`
+);
+submission.push(sub);
+
+sub = await submissionFunc.createSubmission(
+  assignment[4]._id,
+  student[2]._id,
+  `submission4.txt`
+);
+submission.push(sub);
+
+sub = await submissionFunc.createSubmission(
+  assignment[0]._id,
+  student[4]._id,
+  `submission5.txt`
+);
+submission.push(sub);
+
+sub = await submissionFunc.createSubmission(
+  assignment[5]._id,
+  student[4]._id,
+  `submission6.txt`
+);
+submission.push(sub);
+
+sub = await submissionFunc.createSubmission(
+  assignment[1]._id,
+  student[4]._id,
+  `submission7.txt`
+);
+submission.push(sub);
+
+//grade assignment
+for (let i = 0; i < submission.length - 1; i++) {
+  await gradeFunc.grade(submission[i]._id.toString(), "10");
+}
+
 await closeConnection();
