@@ -165,7 +165,11 @@ app.post("/module/new", (req, res) => {
   }).single("mod_file");
 
   upload(req, res, async (err) => {
-    if (!mod_title || !mod_description)
+    const title = validStr(req.body.mod_title);
+    const description = validStr(req.body.mod_description);
+    const mod_file = validStr(req.file.filename);
+    const courseId = validId(req.body.courseId);
+    if (!title || !description || !courseId || !mod_file)
       throw "All fields need to have valid values";
     if (err) {
       return res.status(400).json({ msg: err });
@@ -174,11 +178,6 @@ app.post("/module/new", (req, res) => {
         return res.status(400).json({ msg: "Error: No file selected!" });
       } else {
         try {
-          const title = validStr(req.body.mod_title);
-          const description = validStr(req.body.mod_description);
-          const mod_file = validStr(req.file.filename);
-          const courseId = validId(req.body.courseId);
-
           const professor = coursesFunc.getFaculty(courseId);
           if (professor !== req.session.user._id) {
             return res.redirect(`/module/${courseId}`);
@@ -245,9 +244,10 @@ app.post("/assignment/new", (req, res) => {
           if (!validStr(content) && !validStr(file))
             throw "must provide instruction of the assignment by text or file";
           const score = nonNegInt(req.body.score);
-          const professor = coursesFunc.getFaculty(id);
+          const professor = await coursesFunc.getFaculty(id);
+          console.log(professor, req.session.user._id);
           if (professor !== req.session.user._id) {
-            return res.redirect(`/module/${id}`);
+            return res.redirect(`/assignment/${id}`);
           }
 
           await assignmentFunc.createAssignment(
