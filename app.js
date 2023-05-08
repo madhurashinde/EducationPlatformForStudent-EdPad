@@ -130,7 +130,7 @@ app.use("/module/detail/:id", async (req, res, next) => {
 // upload and download file
 function checkFileType(file, cb) {
   // Allowed extensions
-  const filetypes = /jpeg|jpg|png|gif|pdf|log/;
+  const filetypes = /jpeg|jpg|png|gif|pdf|txt|doc/;
   // Check extension
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
   // Check MIME type

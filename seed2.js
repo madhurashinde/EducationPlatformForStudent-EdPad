@@ -94,7 +94,7 @@ for (let i = 0; i < 7; i++) {
   await modulesData.create(
     `Material ${parseInt(i / 6) + 1}`,
     `This is material ${parseInt(i / 6) + 1}`,
-    `www.module${parseInt(i / 6) + 1}.com`,
+    `module${i + 1}.txt`,
     course[i % 6]._id
   );
 }
@@ -108,7 +108,7 @@ for (let i = 0; i < 10; i++) {
     `2023-05-1${i}`,
     "00:00:00",
     "please read the instruction",
-    "",
+    `assignmentsample${i + 1}.txt`,
     Number(`${50 + i * 10}`).toString()
   );
   assignment.push(a);
@@ -132,19 +132,19 @@ await coursesFunc.registerCourse(student[4]._id, course[5]._id);
 await submissionFunc.createSubmission(
   assignment[0]._id,
   student[0]._id,
-  `www.submission.com`
+  `submission1.txt`
 );
 
 await submissionFunc.createSubmission(
   assignment[1]._id,
   student[2]._id,
-  `www.submission.com`
+  `submission2.txt`
 );
 
 await submissionFunc.createSubmission(
   assignment[0]._id,
   student[2]._id,
-  `www.submission.com`
+  `submission3.txt`
 );
 
 await closeConnection();
