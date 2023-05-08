@@ -29,7 +29,6 @@ const createCourse = async (
   };
 
   const courseCollection = await course();
-  // if course exist?
   const insertInfo = await courseCollection.insertOne(newCourse);
   if (!insertInfo.acknowledged || !insertInfo.insertedId)
     throw "Could not add newCourse";

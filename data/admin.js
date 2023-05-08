@@ -78,14 +78,14 @@ const archive = async () => {
     .toArray();
   for (let i = 0; i < userList.length; i++) {
     const thisUser = await userCollection.findOne(
-      { _id: userList[0]._id },
+      { _id: userList[i]._id },
       { projection: { courseInProgress: 1, courseCompleted: 1 } }
     );
     const courseInProgress = thisUser.courseInProgress;
     const courseCompleted = thisUser.courseCompleted;
 
     const updateInfo = await userCollection.findOneAndUpdate(
-      { _id: userList[0]._id },
+      { _id: userList[i]._id },
       {
         $set: {
           courseInProgress: [],
@@ -119,6 +119,5 @@ export default {
   changeStatus,
   archive,
   addMajor,
-  archive,
   getAllMajors,
 };
