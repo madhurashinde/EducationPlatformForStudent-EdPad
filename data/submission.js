@@ -26,15 +26,6 @@ const createSubmission = async (assignmentId, studentId, submitFile) => {
   if (!inCourse.courseInProgress.includes(assignmentInfo.courseId.toString()))
     throw "you are not in this course";
 
-  // Students are not allowed to submit for multiple times. They can resubmit.
-
-  const info = await assignmentCollection.findOne({
-    $and: [{ _id: newAssignmentId }, { "submission.studentId": newStudentId }],
-  });
-  if (info !== null) {
-    throw "You already submitted assignment and can only resubmit";
-  }
-
   const submissionId = new ObjectId();
 
   let newSubmission = {
@@ -101,9 +92,41 @@ const getCourseId = async (id) => {
   return courseId;
 };
 
+const addComment = async (assignmentId, studentId, comment) => {
+  assignmentId = validId(assignmentId);
+  studentId = validId(studentId);
+  comment = validStr(comment);
+  const assignmentCollection = await assignment();
+
+  const submission = await assignmentCollection.findOne({
+    $and: [
+      { _id: new ObjectId(assignmentId) },
+      { "submission.studentId": new ObjectId(studentId) },
+    ],
+  });
+  if (!submission) {
+    throw "You have not submitted assignment";
+  }
+
+  const update = await assignmentCollection.findOneAndUpdate(
+    {
+      $and: [
+        { _id: new ObjectId(assignmentId) },
+        { "submission.studentId": new ObjectId(studentId) },
+      ],
+    },
+    { $set: { "submission.$.comment": comment } }
+  );
+  if (update.lastErrorObject.n === 0) {
+    throw "could not update comment successfully";
+  }
+  return comment;
+};
+
 export default {
   createSubmission,
   getAllSubmission,
   getSubmission,
   getCourseId,
+  addComment,
 };

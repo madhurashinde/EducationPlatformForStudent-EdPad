@@ -1,4 +1,5 @@
 import { Router } from "express";
+import xss from 'xss';
 const router = Router();
 import { ObjectId } from "mongodb";
 import { assignment } from "../config/mongoCollections.js";
@@ -54,10 +55,12 @@ router.route("/:id").get(async (req, res) => {
         afterCalTotalScoreGet =
           Math.round((totalScoreGet / totalScore) * 10000) / 100;
       }
+      console.log(allGrade);
       return res.render("grade/grade", {
         courseId: course._id,
         course: course.courseTitle,
         student: studentName,
+        studentId: studentId,
         allGrade: allGrade,
         totalScore: afterCalTotalScoreGet,
       });
