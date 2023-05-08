@@ -12,11 +12,11 @@ const validStr = (str) => {
 };
 
 if (surveyForm) {
-  surveyForm.addEventListener("submit", async (event) => {
+  surveyForm.addEventListener("submit", (event) => {
     surveyInput.classList.remove("inputClass");
     let survey = surveyInput.value;
     try {
-      validStr(survey)
+      validStr(survey);
     } catch (e) {
       event.preventDefault();
       const message = typeof e === "string" ? e : e.message;
