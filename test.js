@@ -88,4 +88,4 @@
 // }
 
 import { adminFunc } from "./data/index.js";
-console.log(await adminFunc.getAllMajors());
+console.log(await adminFunc.archive());
