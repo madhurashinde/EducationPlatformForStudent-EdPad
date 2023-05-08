@@ -133,8 +133,14 @@ export const checkBirthDateFormat = (strVal) => {
   if (strVal.length === 0)
     throw `Error: Input cannot be an empty string or string with just spaces`;
   if (!moment(strVal, "YYYY-MM-DD", true).isValid()) {
-    throw "Date must be in format of YYY-MM-DD";
+    throw "Date must be in format of YYYY-MM-DD";
   }
+
+  const currentTime = new Date();
+  const date = currentTime.getFullYear().toString()
+  if (strVal.slice(0, 4) > date - 15)
+    throw "Age should larger than 15 years"
+
   return strVal;
 };
 

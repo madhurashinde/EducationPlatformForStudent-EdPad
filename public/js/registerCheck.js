@@ -75,6 +75,7 @@ const validPassword = (strVal) => {
 
 const checkBirthDateFormat = (strVal) => {
   let error_message = "";
+
   if (!strVal) error_message = `Error: You must supply a string}!`;
   if (typeof strVal !== "string")
     error_message = `Error: Each value must be a string!`;
@@ -101,6 +102,25 @@ const checkBirthDateFormat = (strVal) => {
   if (month === 4 || month === 6 || month === 9 || month === 11) {
     if (day > 30) error_message = `Date can not be 31 for this month `;
   }
+  return error_message;
+};
+
+export const checkBirthDateFormat2 = (strVal) => {
+  let error_message = '';
+  if (!strVal) error_message = `Error: You must supply a string}!`;
+  if (typeof strVal !== "string") error_message = `Error: Each value must be a string!`;
+  strVal = strVal.trim();
+  if (strVal.length === 0)
+    error_message = `Error: Input cannot be an empty string or string with just spaces`;
+  if (!moment(strVal, "YYYY-MM-DD", true).isValid()) {
+    error_message = "Date must be in format of YYYY-MM-DD";
+  }
+
+  const currentTime = new Date();
+  const date = currentTime.getFullYear().toString()
+  if (strVal.slice(0, 4) > date - 15)
+    error_message = "Age should larger than 15 years"
+
   return error_message;
 };
 
@@ -201,8 +221,8 @@ if (registerForm) {
       majorInput.classList.add("inputClass");
     }
 
-    if (checkBirthDateFormat(birthDate)) {
-      errorDiv.innerText = checkBirthDateFormat(birthDate);
+    if (checkBirthDateFormat2(birthDate)) {
+      errorDiv.innerText = checkBirthDateFormat2(birthDate);
       errorDiv.removeAttribute("hidden");
       birthDateInput.classList.add("inputClass");
     }
