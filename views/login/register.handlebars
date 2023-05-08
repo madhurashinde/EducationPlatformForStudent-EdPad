@@ -1,7 +1,6 @@
-
+<main>
     <h2>Register Form</h2>
-    <div>{{error}}</div> 
-    <div id="error" class="error" hidden>I'm an error. I will change through Client-Side JS</div>  
+     <div id="error">{{error}}</div> 
     <form action="/register" method="POST" id="registration-form">
             <label for="firstNameInput">
               First Name: 
@@ -48,5 +47,6 @@
             <br>
             <button type="submit">Submit</button>
       </form>
-      <a href="/login">Already have an account? Click here to log-in</a>
+  </main>
+  <a href="/login">Already have an account? Click here to log-in</a>
   <script src="../../public/js/registerCheck.js"></script>

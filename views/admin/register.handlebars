@@ -1,7 +1,6 @@
 <button onclick="location.href='/admin/faculty'"> Back</button>
 <h2>Register Form</h2>
-<div>{{error}}</div>
-<div id="error" class="error" hidden>I'm an error. I will change through Client-Side JS</div>
+ <div id="error">{{error}}</div> 
 <form action="/admin/register" method="POST" id="registration-form">
   <label for="firstNameInput">
     First Name:
@@ -24,7 +23,7 @@
   </label>
   <br>
   <label for="confirmPasswordInput">
-    Confirm Password
+    Confirm Password:
     <input type="password" name="confirmPasswordInput" id="confirmPasswordInput">
   </label>
   <br>
