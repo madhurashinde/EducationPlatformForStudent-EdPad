@@ -63,7 +63,10 @@ router
       validPassword(xss(req.body.passwordInput));
       checkValidMajor(xss(req.body.majorInput));
       if (xss(req.body.passwordInput) !== xss(req.body.confirmPasswordInput)) {
+        const allMajors = await adminFunc.getAllMajors();
+
         res.status(400).render("admin/register", {
+          allMajors: allMajors,
           error: "Passwords do not match",
         });
       }

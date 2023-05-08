@@ -166,10 +166,10 @@ app.post("/module/new", (req, res) => {
 
   upload(req, res, async (err) => {
     try {
-      const title = validStr(req.body.mod_title);
-      const description = validStr(req.body.mod_description);
-      const mod_file = validStr(req.file.filename);
-      const courseId = validId(req.body.courseId);
+      var title = validStr(req.body.mod_title);
+      var description = validStr(req.body.mod_description);
+      var mod_file = validStr(req.file.filename);
+      var courseId = validId(req.body.courseId);
       if (!title || !description || !courseId || !mod_file)
         throw "All fields need to have valid values";
     } catch (e) {}
