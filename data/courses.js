@@ -168,7 +168,6 @@ const registerCourse = async (studentId, courseId) => {
   if (userInfo === null) throw "invalid student ID";
   if (userInfo.role !== "student")
     throw "Only student can register for courses";
-  console.log(userInfo);
   if (userInfo.courseInProgress.length === 4)
     throw "You can register for 4 courses at most";
   const courseCollection = await course();
