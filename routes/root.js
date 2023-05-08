@@ -1,5 +1,5 @@
 import { Router } from "express";
-import xss from 'xss';
+import xss from "xss";
 
 const router = Router();
 import { coursesFunc, userFunc } from "../data/index.js";
@@ -49,11 +49,19 @@ router
         emailAddress: xss(req.body.emailAddressInput),
       });
       if (fac) {
+<<<<<<< HEAD
         if (fac.role === 'faculty')
           throw `Error: Email address is registered as a faculty`;
       }
       if (fac) {
         if (fac.role === 'student')
+=======
+        if (fac.role === "faculty")
+          throw `Error: Email address is registered as a faculty`;
+      }
+      if (fac) {
+        if (fac.role === "student")
+>>>>>>> ff11ef597b8bf8ae1f1bc5ea13259e3cb00a7ff1
           throw `Error: Email address is already registered as student`;
       }
       result = await userFunc.createUser(
@@ -122,6 +130,11 @@ router
       });
     }
   });
+
+router.route("/library").get((req, res) => {
+  return res.render("library");
+});
+
 router.route("/logout").get((req, res) => {
   // if one is not logged in, do not show this page
   if (!req.session.user) {

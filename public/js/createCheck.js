@@ -9,8 +9,6 @@ let errorDiv = document.getElementById("error");
 
 if (form) {
   form.addEventListener("submit", async (event) => {
-    console.log("Form submission fired");
-
     title.classList.remove("inputClass");
     dueDate.classList.remove("inputClass");
     dueTime.classList.remove("inputClass");
@@ -44,7 +42,9 @@ if (form) {
       if (!score.value.trim()) {
         score.classList.add("inputClass");
       }
-    } else {
+    }
+
+    if (dueDate.value.trim() && dueTime.value.trim()) {
       const currentTime = new Date();
       const date =
         currentTime.getFullYear().toString() +
@@ -66,8 +66,10 @@ if (form) {
         dueDate.classList.add("inputClass");
         dueTime.classList.add("inputClass");
       }
-      const num_score = parseInt(score.value);
-      if (num_score === NaN || num_score < 0) {
+    }
+    if (score.value.trim()) {
+      const num_score = Number(score.value);
+      if (num_score === NaN || num_score < 0 || !Number.isInteger(num_score)) {
         event.preventDefault();
         errorDiv.hidden = false;
         score.classList.add("inputClass");

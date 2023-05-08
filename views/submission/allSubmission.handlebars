@@ -4,6 +4,7 @@
 
 <p id="totalScore" hidden>{{totalScore}}</p>
 
+{{#if allSubmission.length}}
 <ul>
 {{#each allSubmission}}
 <li>
@@ -40,5 +41,8 @@
 </li>
 {{/each}}
 </ul>
+{{else}}
+<p>No submission yet</p>
+{{/if   }}
  
 <script src="../../public/js/gradeCheck.js"></script>

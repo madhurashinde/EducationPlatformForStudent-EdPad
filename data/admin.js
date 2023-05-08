@@ -1,4 +1,9 @@
-import { registration, major, user } from "../config/mongoCollections.js";
+import {
+  registration,
+  major,
+  user,
+  course,
+} from "../config/mongoCollections.js";
 import { validStr } from "../helper.js";
 
 const addMajor = async (str) => {
@@ -12,6 +17,16 @@ const addMajor = async (str) => {
   if (!insertInfo.acknowledged || !insertInfo.insertedId)
     throw "Could not add major";
   return "success";
+};
+
+const getAllMajors = async () => {
+  const majorCollection = await major();
+  const majorInfo = await majorCollection.find({}).toArray();
+  let majors = [];
+  for (let i = 0; i < majorInfo.length; i++) {
+    majors.push(majorInfo[i].major);
+  }
+  return majors;
 };
 
 const initRegistrationStatus = async () => {
@@ -56,7 +71,6 @@ const changeStatus = async () => {
   return { Enableregistration: newStatus };
 };
 
-//pending
 const archive = async () => {
   const userCollection = await user();
   const userList = await userCollection
@@ -83,6 +97,19 @@ const archive = async () => {
       throw "could not update profile successfully";
     }
   }
+
+  const courseCollection = await course();
+  const allCourses = await courseCollection.find({}).toArray();
+  for (let i = 0; i < allCourses.length; i++) {
+    const updateInfo = await courseCollection.findOneAndUpdate(
+      { _id: allCourses[i]._id },
+      { $set: { studentlist: [] } }
+    );
+    if (updateInfo.lastErrorObject.n === 0) {
+      throw "could not update course successfully";
+    }
+  }
+
   return "Successfully Archived";
 };
 
@@ -93,4 +120,5 @@ export default {
   archive,
   addMajor,
   archive,
+  getAllMajors,
 };

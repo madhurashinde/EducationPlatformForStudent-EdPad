@@ -2,7 +2,7 @@
 
 
 <form id="new-mod" method="post" action="/module/new" enctype="multipart/form-data">
-    <label for="courseId" hidden>CourseId</label>
+    <label for="courseId" hidden> CourseId</label>
     <input id="courseId" name="courseId" value="{{course}}" hidden>
     <label for="mod_title">Module title</label>
     <textarea name="mod_title" id="mod_title"></textarea>
@@ -14,7 +14,7 @@
     </br>
     <label for="mod_file">Upload File</label>
     <input id="mod_file" name="mod_file" type="file">
-    <div class="error" id="no-desc-mod" hidden>Please provide a file</div>
+    <div class="error" id="no-file-mod" hidden>Please provide a file</div>
     </br>
     <button type="submit">Create Module</button>
     </br>
@@ -24,5 +24,9 @@
     {{error}}
 </div>
 
+<<<<<<< HEAD
 
 <script src="../../public/js/test.js"></script>
+=======
+<script src="../../public/js/modTest.js"></script>
+>>>>>>> ff11ef597b8bf8ae1f1bc5ea13259e3cb00a7ff1

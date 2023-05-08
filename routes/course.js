@@ -2,39 +2,37 @@ import { Router } from "express";
 const router = Router();
 import { coursesFunc } from "../data/index.js";
 import createSurvey from "../data/survey.js";
-import { validStr, validId } from "../helper.js";
+import { validId, validStr } from "../helper.js";
 
 //ok
 router.get("/", async (req, res) => {
-  if (req.session.user) {
-    if (req.session.user.role === "admin") {
-      return res.redirect("/admin");
+  if (req.session.user.role === "admin") {
+    return res.redirect("/admin");
+  }
+  try {
+    const CurrentCourses = await coursesFunc.getCurrentCourse(
+      req.session.user._id
+    );
+    const CompletedCourses = await coursesFunc.getCompletedCourse(
+      req.session.user._id
+    );
+    if (req.session.user.role === "student") {
+      return res.render("courses/courses", {
+        title: "Student courses",
+        CompletedCourses: CompletedCourses,
+        CurrentCourses: CurrentCourses,
+        student: true,
+      });
+    } else {
+      return res.render("courses/courses", {
+        title: "Faculty courses",
+        CompletedCourses: CompletedCourses,
+        CurrentCourses: CurrentCourses,
+        student: false,
+      });
     }
-    try {
-      const CurrentCourses = await coursesFunc.getCurrentCourse(
-        req.session.user._id
-      );
-      const CompletedCourses = await coursesFunc.getCompletedCourse(
-        req.session.user._id
-      );
-      if (req.session.user.role === "student") {
-        return res.render("courses/courses", {
-          title: "Student courses",
-          CompletedCourses: CompletedCourses,
-          CurrentCourses: CurrentCourses,
-          student: true,
-        });
-      } else {
-        return res.render("courses/courses", {
-          title: "Faculty courses",
-          CompletedCourses: CompletedCourses,
-          CurrentCourses: CurrentCourses,
-          student: false,
-        });
-      }
-    } catch (e) {
-      return res.status(500).render("error", { error: `${e}` });
-    }
+  } catch (e) {
+    return res.status(500).render("error", { error: `${e}` });
   }
 });
 
@@ -99,18 +97,27 @@ router.get("/:id", async (req, res) => {
   }
   try {
     let course = await coursesFunc.getCourseByObjectID(courseId);
+    let student = false;
+    if (req.session.user.role == "student") {
+      student = true;
+    }
     return res.render("courses/coursedetail", {
       courseObjectID: course._id,
       courseTitle: course.courseTitle,
+      student: student,
     });
   } catch (e) {
     return res.status(400).render("error", { error: `${e}` });
   }
 });
 
+//only students are allowed
 router
   .route("/:id/survey")
   .get(async (req, res) => {
+    if (req.session.user.role !== "student") {
+      return res.render("notallowed", { redirectTo: `/course/${courseId}` });
+    }
     let courseId = req.params.id;
     //validation
     try {
@@ -118,26 +125,37 @@ router
     } catch (e) {
       return res.status(400).render("error", { error: `${e}` });
     }
-    let course = await coursesFunc.getCourseByObjectID(courseId);
     return res.render("courses/survey", {
-      courseObjectID: course._id,
+      courseObjectID: courseId,
     });
   })
   .post(async (req, res) => {
+    if (req.session.user.role !== "student") {
+      return res.render("notallowed", { redirectTo: `/course/${courseId}` });
+    }
+    let courseId = req.params.id;
+    let user = req.session.user;
+    let survey = req.body.surveyInput;
+
     try {
-      let courseId = req.params.id;
-      let user = req.session.user;
-      let survey = req.body.surveyInput;
-      const userWithSurvey = await createSurvey(courseId, user, survey);
-      let course = await coursesFunc.getCourseByObjectID(courseId);
-      return res.render("courses/coursedetail", {
-        courseObjectID: course._id,
-        courseTitle: course.courseTitle,
+      survey = validStr(survey);
+    } catch (e) {
+      res.render("courses/survey", {
+        courseObjectID: courseId,
+        error: e,
       });
+    }
+    try {
+      const userWithSurvey = await createSurvey(courseId, user, survey);
+
+      if (userWithSurvey.error) {
+        return res.render("notallowed", { redirectTo: `/course/${courseId}` });
+      }
+      return res.redirect(`/courses/${courseId}`);
     } catch (error) {
       return res.render("courses/survey", {
+        courseObjectID: courseId,
         error: error,
-        title: "Survey Form",
       });
     }
   });
