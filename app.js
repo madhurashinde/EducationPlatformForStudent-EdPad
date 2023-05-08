@@ -165,12 +165,14 @@ app.post("/module/new", (req, res) => {
   }).single("mod_file");
 
   upload(req, res, async (err) => {
-    const title = validStr(req.body.mod_title);
-    const description = validStr(req.body.mod_description);
-    const mod_file = validStr(req.file.filename);
-    const courseId = validId(req.body.courseId);
-    if (!title || !description || !courseId || !mod_file)
-      throw "All fields need to have valid values";
+    try {
+      const title = validStr(req.body.mod_title);
+      const description = validStr(req.body.mod_description);
+      const mod_file = validStr(req.file.filename);
+      const courseId = validId(req.body.courseId);
+      if (!title || !description || !courseId || !mod_file)
+        throw "All fields need to have valid values";
+    } catch (e) {}
     if (err) {
       return res.status(400).json({ msg: err });
     } else {
@@ -178,7 +180,7 @@ app.post("/module/new", (req, res) => {
         return res.status(400).json({ msg: "Error: No file selected!" });
       } else {
         try {
-          const professor = coursesFunc.getFaculty(courseId);
+          const professor = await coursesFunc.getFaculty(courseId);
           if (professor !== req.session.user._id) {
             return res.redirect(`/module/${courseId}`);
           }
