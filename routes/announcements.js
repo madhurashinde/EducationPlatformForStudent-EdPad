@@ -92,11 +92,13 @@ router
     }
 
     try {
-      const anninfo = xss(req.body);
-      if (!anninfo || Object.keys(anninfo).length === 0)
+      let anntitle=xss(req.body.ann_title);
+      let anndesc=xss(req.body.ann_description)
+      if (!anntitle || !anndesc){
         throw "All fields need to have valid values";
-      var title = validStr(anninfo.ann_title);
-      var description = validStr(anninfo.ann_description);
+      }
+      var title = validStr(anntitle);
+      var description = validStr(anndesc);
       var course = validId(courseId);
     } catch (e) {
       return res.status(400).render(`announcements/newAnnouncement`, {
