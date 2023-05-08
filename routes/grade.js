@@ -54,10 +54,12 @@ router.route("/:id").get(async (req, res) => {
         afterCalTotalScoreGet =
           Math.round((totalScoreGet / totalScore) * 10000) / 100;
       }
+      console.log(allGrade);
       return res.render("grade/grade", {
         courseId: course._id,
         course: course.courseTitle,
         student: studentName,
+        studentId: studentId,
         allGrade: allGrade,
         totalScore: afterCalTotalScoreGet,
       });

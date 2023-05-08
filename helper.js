@@ -3,18 +3,18 @@ import { ObjectId } from "mongodb";
 import { major } from "./config/mongoCollections.js";
 
 export const validStr = (str) => {
-  if (!str) throw new TypeError(`Error: You must supply an input!`);
+  if (!str) throw `Error: You must supply an input!`;
   if (typeof str !== "string") throw `Error: input must be a string!`;
   str = str.trim();
   if (str === "")
-    `Error: input cannot be an empty string or string with just spaces`;
+    throw `Error: input cannot be an empty string or string with just spaces`;
   return str;
 };
 
 export const validId = (id) => {
   id = validStr(id);
   // console.log(ObjectId.isValid(id));
-  if (!ObjectId.isValid(id)) throw new TypeError("Error: invalid object ID");
+  if (!ObjectId.isValid(id)) throw "Error: invalid object ID";
   return id;
 };
 
@@ -132,25 +132,8 @@ export const checkBirthDateFormat = (strVal) => {
   strVal = strVal.trim();
   if (strVal.length === 0)
     throw `Error: Input cannot be an empty string or string with just spaces`;
-
-  if (strVal.slice(4, 5) !== "-" || strVal.slice(7, 8) !== "-")
-    throw `Date must be in the dd/mm/yyyy format`;
-
-  let month = Number(strVal.slice(5, 7));
-  let day = Number(strVal.slice(8));
-  let year = Number(strVal.slice(0, 4));
-
-  if (Number.isNaN(day) || Number.isNaN(month) || Number.isNaN(year))
-    throw `day, month and year must be numbers`;
-  const date = new Date();
-  const currentYear = date.getFullYear();
-  if (year > currentYear - 15) throw `Must be at least 15 years old`;
-  if (month < 1 || month > 12) throw `Month must be between 1-12`;
-  if (day < 1 || day > 31) throw `Day must be between 1-31`;
-  if (month === 2 && day > 28)
-    throw `February can not contain more than 28 days`;
-  if (month === 4 || month === 6 || month === 9 || month === 11) {
-    if (day > 30) throw `Date can not be 31 for this month `;
+  if (!moment(strVal, "YYYY-MM-DD", true).isValid()) {
+    throw "Date must be in format of YYY-MM-DD";
   }
   return strVal;
 };

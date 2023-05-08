@@ -10,11 +10,6 @@
     <p>Student Id: {{studentId}}</p>
     <p>File address:</p>
     <a href="{{submitFile}}" target="_blank"> {{submitFile}}</a>
-    {{#if comment}}
-        {{#each comment}}
-            <p>{{this.[1]}}: {{this.[0]}} </p>
-        {{/each}}
-    {{/if}}
     {{#if scoreGet}}
      <p>Score: {{scoreGet}}</p>
      <form class="grade" onsubmit="return confirm('Confirm?');" action="/grade/detail/{{_id}}" method="post">

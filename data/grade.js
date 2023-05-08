@@ -38,11 +38,13 @@ const getCourseGrade = async (courseId) => {
 
   //get students' names
   const userCollection = await user();
+  let studentIdList = [];
   let studentName = [];
   for (let i = 0; i < students.length; i++) {
     const studInfo = await userCollection.findOne({
       _id: new ObjectId(students[i]),
     });
+    studentIdList.push(studInfo._id.toString());
     studentName.push(studInfo.firstName + " " + studInfo.lastName);
   }
 
@@ -97,25 +99,62 @@ const getCourseGrade = async (courseId) => {
       // assignment Id, title, total score, his score
       if (hisAssignment === null) {
         grades[assignments[j][0]] = [
+          studentIdList[i],
           studentName[i],
           assignments[j][1],
           assignments[j][2],
           "not yet submitted",
+          false,
+          false,
+          "",
         ];
       } else if (hisAssignment.submission[0].scoreGet === null) {
         grades[assignments[j][0]] = [
+          studentIdList[i],
           studentName[i],
           assignments[j][1],
           assignments[j][2],
           "not yet graded",
+          false,
+          false,
+          "",
         ];
       } else {
-        grades[assignments[j][0]] = [
-          studentName[i],
-          assignments[j][1],
-          assignments[j][2],
-          hisAssignment.submission[0].scoreGet,
-        ];
+        const comment = await assignmentCollection.findOne(
+          {
+            $and: [
+              { _id: new ObjectId(students[i]) },
+              { "submission.studentId": studentIdList[i] },
+            ],
+          },
+          { projection: { "submission.comment": 1 } }
+        );
+        if (!comment) {
+          throw "can not access comment content";
+        }
+        if (comment.comment.trim() === "") {
+          grades[assignments[j][0]] = [
+            studentIdList[i],
+            studentName[i],
+            assignments[j][1],
+            assignments[j][2],
+            hisAssignment.submission[0].scoreGet,
+            true,
+            false,
+            comment.comment,
+          ];
+        } else {
+          grades[assignments[j][0]] = [
+            studentIdList[i],
+            studentName[i],
+            assignments[j][1],
+            assignments[j][2],
+            hisAssignment.submission[0].scoreGet,
+            true,
+            true,
+            comment.comment,
+          ];
+        }
       }
       res[students[i]] = grades;
     }
@@ -159,11 +198,3 @@ const getStudentScore = async (courseId, studentId) => {
   return thisGrade;
 };
 export default { grade, getClassScore, getStudentScore };
-
-// console.log(await getCourseGrade("64558c7e1f1b16f3b1cbefe3"));
-// console.log("=============");
-
-// console.log(await getClassScore("64558c7e1f1b16f3b1cbefe3"));
-// console.log(
-//   await getStudentScore("64558c7e1f1b16f3b1cbefe3", "64558c7d1f1b16f3b1cbefdd")
-// );
