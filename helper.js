@@ -2,6 +2,11 @@ import moment from "moment";
 import { ObjectId } from "mongodb";
 import { major } from "./config/mongoCollections.js";
 
+const specialCharsWithoutNumbers = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/g;
+const checkSpaces = /\s/g;
+const upperCase = /[A-Z]/g;
+const numbers = /[0-9]/g;
+
 export const validStr = (str) => {
   if (!str) throw `Error: You must supply an input!`;
   if (typeof str !== "string") throw `Error: input must be a string!`;
@@ -85,6 +90,8 @@ export const checkNameFormat = (strVal) => {
     throw `Error: Input cannot be an empty string or string with just spaces`;
   if (strVal.length < 2 || strVal.length > 25)
     throw `Error: Input should be at least 2 characters long with a max of 25 characters`;
+    if (strVal.match(specialCharsWithoutNumbers))
+    throw `Error: Input cannot contain special characters`;
   return strVal;
 };
 
@@ -98,10 +105,6 @@ export const checkEmailAddress = (strVal) => {
   return strVal;
 };
 
-const specialCharsWithoutNumbers = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/g;
-const checkSpaces = /\s/g;
-const upperCase = /[A-Z]/g;
-const numbers = /[0-9]/g;
 
 export const validPassword = (strVal) => {
   if (!strVal) throw "Password can not be empty";
