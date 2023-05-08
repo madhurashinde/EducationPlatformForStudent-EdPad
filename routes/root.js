@@ -12,16 +12,22 @@ import {
   validGender,
 } from "../helper.js";
 import { user } from "../config/mongoCollections.js";
+import { adminFunc } from "../data/index.js"
 
 router
   .route("/register")
   // ok
-  .get((req, res) => {
+  .get(async (req, res) => {
     // if one is logged in, do not show this page
     if (req.session.user && req.session.user.role) {
       return res.redirect("/course");
     }
-    return res.render("login/register", { title: "Register Page" });
+
+    let all_majors = await adminFunc.getAllMajors();
+    return res.render("login/register", {
+      title: "Register Page",
+      allMajors: all_majors
+    });
   })
   //check
   .post(async (req, res) => {
