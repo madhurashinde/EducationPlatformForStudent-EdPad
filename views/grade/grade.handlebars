@@ -12,17 +12,30 @@
 
 {{#each allGrade}}
 <div> 
-    <h4>{{this.[1]}}</h4>
-    <p>Grade:{{this.[3]}}/{{this.[2]}}</p>
+    <h4>{{this.[2]}}</h4>
+    <p>Grade:{{this.[4]}}/{{this.[3]}}</p>
     {{#if ../faculty}}
     {{else}}
-    <form id="form" method="post" action="/submission">
-        <label for="comment">Comment: </label>
-        <textarea id="comment" name="comment"></textarea>
-        <input type="submit">
-    </form>
-    <div id="error">Please giev valid input</div>
+        {{#if this.[5]}}
+            {{#if this.[6]}}
+            <button class="add-comment">Edit Comment</button>
+            <p>Comment: {{this.[7]}}</p>
+            {{else}}
+            <button class="add-comment">Add Comment</button>
+            <p class="content" hidden></p>
+            <div class="add-comment-form">
+                <p class="assignmentId" hidden>{{@key}} </p>
+                <form class="form" hidden>
+                    <label for="comment">Comment: </label>
+                    <textarea class="comment" name="comment"></textarea>
+                    <input type="submit">
+                </form>
+                <div class="error" hidden>Please give valid input</div>
+            </div>
+            {{/if}}
+        {{/if}}
     {{/if}}
+
 </div>
 {{/each}}
 <h3>Total Score: {{totalScore}} / 100</h3>

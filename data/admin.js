@@ -4,7 +4,7 @@ import { validStr } from "../helper.js";
 const addMajor = async (str) => {
   str = validStr(str).toLowerCase();
   const majorCollection = await major();
-  const majorInfo = majorCollection.findOne({ major: strVal });
+  const majorInfo = await majorCollection.findOne({ major: str });
   if (majorInfo !== null) throw "Major already exists";
   const insertInfo = await majorCollection.insertOne({
     major: str,
