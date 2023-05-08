@@ -47,8 +47,9 @@ router.route("/course").get(async (req, res) => {
 
 router
   .route("/register")
-  .get((req, res) => {
-    return res.render("admin/register", { title: "Register Page" });
+  .get(async (req, res) => {
+    const allMajors = await adminFunc.getAllMajors();
+    return res.render("admin/register", { allMajors: allMajors });
   })
   // check
   .post(async (req, res) => {
