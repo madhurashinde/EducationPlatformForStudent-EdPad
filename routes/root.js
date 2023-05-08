@@ -1,5 +1,5 @@
 import { Router } from "express";
-import xss from 'xss';
+import xss from "xss";
 
 const router = Router();
 import { coursesFunc, userFunc } from "../data/index.js";
@@ -122,6 +122,11 @@ router
       });
     }
   });
+
+router.route("/library").get((req, res) => {
+  return res.render("library");
+});
+
 router.route("/logout").get((req, res) => {
   // if one is not logged in, do not show this page
   if (!req.session.user) {

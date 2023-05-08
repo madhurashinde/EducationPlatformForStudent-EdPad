@@ -77,9 +77,9 @@ const getCourseGrade = async (courseId) => {
 
   // get each student's grade for each assignment
 
-  let grades = {};
   let res = {};
   for (let i = 0; i < students.length; i++) {
+    let grades = {};
     for (let j = 0; j < assignments.length; j++) {
       const hisAssignment = await assignmentCollection.findOne(
         {
@@ -91,22 +91,22 @@ const getCourseGrade = async (courseId) => {
           ],
         },
         {
-          projection: {
-            "submission.scoreGet.$": 1,
-          },
+          projection: { "submission.$": 1 },
         }
       );
+
       // assignment Id, title, total score, his score
+
       if (hisAssignment === null) {
         grades[assignments[j][0]] = [
           studentIdList[i],
           studentName[i],
           assignments[j][1],
           assignments[j][2],
-          "not yet submitted",
-          false,
-          false,
-          "",
+          "not yet submitted", // not submission
+          false, // no grade
+          false, // no comment
+          "", // comment content
         ];
       } else if (hisAssignment.submission[0].scoreGet === null) {
         grades[assignments[j][0]] = [
@@ -114,34 +114,22 @@ const getCourseGrade = async (courseId) => {
           studentName[i],
           assignments[j][1],
           assignments[j][2],
-          "not yet graded",
-          false,
-          false,
-          "",
+          "not yet graded", // not graded
+          false, // no grade
+          false, // no comment
+          "", // comment content
         ];
       } else {
-        const comment = await assignmentCollection.findOne(
-          {
-            $and: [
-              { _id: new ObjectId(students[i]) },
-              { "submission.studentId": studentIdList[i] },
-            ],
-          },
-          { projection: { "submission.comment": 1 } }
-        );
-        if (!comment) {
-          throw "can not access comment content";
-        }
-        if (comment.comment.trim() === "") {
+        if (hisAssignment.submission[0].comment.trim() === "") {
           grades[assignments[j][0]] = [
             studentIdList[i],
             studentName[i],
             assignments[j][1],
             assignments[j][2],
             hisAssignment.submission[0].scoreGet,
-            true,
-            false,
-            comment.comment,
+            true, // graded
+            false, // comment not exist
+            "", // comment content
           ];
         } else {
           grades[assignments[j][0]] = [
@@ -150,14 +138,14 @@ const getCourseGrade = async (courseId) => {
             assignments[j][1],
             assignments[j][2],
             hisAssignment.submission[0].scoreGet,
-            true,
-            true,
-            comment.comment,
+            true, // graded
+            true, // comment exist
+            hisAssignment.submission[0].comment, // comment content
           ];
         }
       }
-      res[students[i]] = grades;
     }
+    res[students[i]] = grades;
   }
   return res;
 };
@@ -165,21 +153,22 @@ const getCourseGrade = async (courseId) => {
 const getClassScore = async (courseId) => {
   courseId = validId(courseId);
   const allGrade = await getCourseGrade(courseId);
+
   const students = Object.keys(allGrade);
   let res = {};
   for (let i = 0; i < students.length; i++) {
     let total = 0;
     let get = 0;
     const allscore = allGrade[students[i]];
-    for (let j = 0; j < allscore.length; j++) {
-      if (typeof allscore[j][2] === "string") {
-        total += allscore[j][1];
-        get += allscore[j][2];
+    const allAssignment = Object.keys(allscore);
+    for (let j = 0; j < allAssignment.length; j++) {
+      if (typeof allscore[allAssignment[j]][4] === "number") {
+        total += allscore[allAssignment[j]][3];
+        get += allscore[allAssignment[j]][4];
       }
     }
-    const keys = Object.keys(allGrade[students[i]]);
     if (total === 0) {
-      res[students[i]] = [0, allGrade[students[i]][keys[0]][0]];
+      res[students[i]] = [0, allGrade[students[i]][allAssignment[0]][2]];
     } else {
       res[students[i]] = [
         Math.round((get / total) * 10000) / 100,

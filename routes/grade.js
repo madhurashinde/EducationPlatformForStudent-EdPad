@@ -1,5 +1,5 @@
 import { Router } from "express";
-import xss from 'xss';
+import xss from "xss";
 const router = Router();
 import { ObjectId } from "mongodb";
 import { assignment } from "../config/mongoCollections.js";
@@ -42,9 +42,7 @@ router.route("/:id").get(async (req, res) => {
       let totalScore = 0;
       let afterCalTotalScoreGet = 0;
       const assignment = Object.keys(allGrade);
-
       let studentName = allGrade[assignment[0]][0];
-      console.log(studentName);
       for (let i = 0; i < assignment.length; i++) {
         if (typeof allGrade[assignment[i]][3] === "number") {
           totalScoreGet += allGrade[assignment[i]][3];
@@ -55,7 +53,6 @@ router.route("/:id").get(async (req, res) => {
         afterCalTotalScoreGet =
           Math.round((totalScoreGet / totalScore) * 10000) / 100;
       }
-      console.log(allGrade);
       return res.render("grade/grade", {
         courseId: course._id,
         course: course.courseTitle,
