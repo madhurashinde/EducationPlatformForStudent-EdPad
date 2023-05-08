@@ -74,11 +74,7 @@ const validPassword = (strVal) => {
 };
 
 const checkBirthDateFormat = (strVal) => {
-<<<<<<<< < Temporary merge branch 1
   let error_message = "";
-=========
-  let error_message = '';
->>>>>>>>> Temporary merge branch 2
   if (!strVal) error_message = `Error: You must supply a string}!`;
   if (typeof strVal !== "string")
     error_message = `Error: Each value must be a string!`;

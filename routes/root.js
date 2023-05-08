@@ -49,19 +49,11 @@ router
         emailAddress: xss(req.body.emailAddressInput),
       });
       if (fac) {
-<<<<<<< HEAD
         if (fac.role === 'faculty')
           throw `Error: Email address is registered as a faculty`;
       }
       if (fac) {
         if (fac.role === 'student')
-=======
-        if (fac.role === "faculty")
-          throw `Error: Email address is registered as a faculty`;
-      }
-      if (fac) {
-        if (fac.role === "student")
->>>>>>> ff11ef597b8bf8ae1f1bc5ea13259e3cb00a7ff1
           throw `Error: Email address is already registered as student`;
       }
       result = await userFunc.createUser(
