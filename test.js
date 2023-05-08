@@ -66,23 +66,26 @@
 //   console.log(i % 3);
 // }
 
-export const validStr = (str) => {
-  if (!str) throw new TypeError(`Error: You must supply an input!`);
-  if (typeof str !== "string")
-    throw new TypeError("Error: input must be a string!");
-  str = str.trim();
-  if (str === "")
-    throw new TypeError(
-      "Error: input cannot be an empty string or string with just spaces"
-    );
-  return str;
-};
-try {
-  validStr("");
-} catch (e) {
-  if (e instanceof TypeError) {
-    console.log("type error 400" + e.message);
-  } else {
-    console.log("500");
-  }
-}
+// export const validStr = (str) => {
+//   if (!str) throw new TypeError(`Error: You must supply an input!`);
+//   if (typeof str !== "string")
+//     throw new TypeError("Error: input must be a string!");
+//   str = str.trim();
+//   if (str === "")
+//     throw new TypeError(
+//       "Error: input cannot be an empty string or string with just spaces"
+//     );
+//   return str;
+// };
+// try {
+//   validStr("");
+// } catch (e) {
+//   if (e instanceof TypeError) {
+//     console.log("type error 400" + e.message);
+//   } else {
+//     console.log("500");
+//   }
+// }
+
+import { adminFunc } from "./data/index.js";
+console.log(await adminFunc.archive());

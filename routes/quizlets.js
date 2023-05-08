@@ -6,11 +6,13 @@ import axios from 'axios';
 router
 .route('/')
 .get(async (req,res) => {
+    if(!req.session.user){
+        return res.redirect('/');
+    }
     let data1= await axios.get(`https://opentdb.com/api.php?amount=15&type=multiple&category=9`);
     
-    // let categories= await axios.get(`https://opentdb.com/api_category.php`);
     let output= data1.data.results;
-    // console.log(categories.data.trivia_categories);
+
     return res.render('quizlets',{data:output});
 
 })

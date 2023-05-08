@@ -1,5 +1,5 @@
 import { Router } from "express";
-import xss from 'xss';
+import xss from "xss";
 const router = Router();
 import { adminFunc, coursesFunc, userFunc } from "../data/index.js";
 import {
@@ -47,8 +47,9 @@ router.route("/course").get(async (req, res) => {
 
 router
   .route("/register")
-  .get((req, res) => {
-    return res.render("admin/register", {title: "Register Page"});
+  .get(async (req, res) => {
+    const allMajors = await adminFunc.getAllMajors();
+    return res.render("admin/register", { allMajors: allMajors });
   })
   // check
   .post(async (req, res) => {
@@ -62,24 +63,25 @@ router
       validPassword(xss(req.body.passwordInput));
       checkValidMajor(xss(req.body.majorInput));
       if (xss(req.body.passwordInput) !== xss(req.body.confirmPasswordInput)) {
+        const allMajors = await adminFunc.getAllMajors();
+
         res.status(400).render("admin/register", {
+          allMajors: allMajors,
           error: "Passwords do not match",
-          title: "Register Page",
         });
       }
-      
+
       const facCollection = await user();
       const fac = await facCollection.findOne({
         emailAddress: xss(req.body.emailAddressInput),
       });
       if (fac) {
-        console.log(fac.role)
-        if(fac.role === 'faculty')
-        throw `Error: Email address is registered as a faculty`;
+        if (fac.role === "faculty")
+          throw `Error: Email address is registered as a faculty`;
       }
-      if(fac){
-        if(fac.role === 'student')
-        throw `Error: Email address is already registered as student`;
+      if (fac) {
+        if (fac.role === "student")
+          throw `Error: Email address is already registered as student`;
       }
       result = await userFunc.createUser(
         xss(req.body.firstNameInput),
@@ -92,15 +94,16 @@ router
         "faculty"
       );
       if (result) {
-        console.log("inside result")
         return res.redirect("/admin/faculty");
       } else {
         return res.status(500).send("Internal Server Error");
       }
     } catch (e) {
-      res.status(400).render('admin/register',{error: e, title: "Register Page"});
+      res
+        .status(400)
+        .render("admin/register", { error: e, title: "Register Page" });
       return;
-     }
+    }
   });
 
 router

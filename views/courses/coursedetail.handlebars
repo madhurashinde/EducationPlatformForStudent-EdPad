@@ -1,4 +1,5 @@
 <button onclick="location.href='/course';">Back</button>
+<button onclick="location.href='/logout';">Log Out</button>
 
 <div>{{error}}</div>
 
@@ -21,6 +22,9 @@
 <div>
     <a href='/people/{{courseObjectID}}'>People</a>
 </div>
+
+{{#if student}}
 <div>
     <a href='/course/{{courseObjectID}}/survey'>Give survey for the course</a>
 </div>
+{{/if}}

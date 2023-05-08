@@ -18,7 +18,7 @@ await adminFunc.changeStatus();
 
 // create major
 const major = ["Computer Science", "Business Analysis", "Chemistry"];
-for (let i = 0; i < major; i++) {
+for (let i = 0; i < major.length; i++) {
   await adminFunc.addMajor(major[i]);
 }
 // create faculty

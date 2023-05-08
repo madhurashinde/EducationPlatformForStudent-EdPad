@@ -14,7 +14,6 @@ if (startSubmission) {
     fileLabel.html("File:");
     fileLabel.attr("for", "submitFile");
     const fileInput = $("<input></input>");
-    // fileInput.attr("type", "file");
     fileInput.attr("type", "file");
     fileInput.attr("id", "submitFile");
     fileInput.attr("name", "submitFile");

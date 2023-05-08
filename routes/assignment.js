@@ -1,5 +1,5 @@
 import { Router } from "express";
-import xss from 'xss';
+import xss from "xss";
 const router = Router();
 import { assignmentFunc, submissionFunc, coursesFunc } from "../data/index.js";
 import { validId } from "../helper.js";
@@ -8,47 +8,42 @@ import { validId } from "../helper.js";
 router.get("/:id", async (req, res) => {
   let courseId = req.params.id;
   //authorization
-  if (
-    req.session.user.role == "student" ||
-    req.session.user.role == "faculty"
-  ) {
-    try {
-      const currentCourse = await coursesFunc.getCurrentCourse(
-        req.session.user._id
-      );
-      for (let i = 0; i < currentCourse.length; i++) {
-        if (currentCourse[i]._id.toString() === courseId) {
-          break;
-        }
-        if (i === currentCourse.length - 1) {
-          return res.redirect("/course");
-        }
+  try {
+    const currentCourse = await coursesFunc.getCurrentCourse(
+      req.session.user._id
+    );
+    for (let i = 0; i < currentCourse.length; i++) {
+      if (currentCourse[i]._id.toString() === courseId) {
+        break;
       }
-    } catch (e) {
-      return res.status(500).render("error", { error: `${e}` });
-    }
-    //validation
-    try {
-      courseId = validId(courseId);
-    } catch (e) {
-      return res.status(400).render("error", { error: `${e}` });
-    }
-    //operation
-    try {
-      const assignmentList = await assignmentFunc.getAllAssignment(courseId);
-      const role = req.session.user.role;
-      let faculty = false;
-      if (role === "faculty") {
-        faculty = true;
+      if (i === currentCourse.length - 1) {
+        return res.redirect("/course");
       }
-      return res.render("assignment/assignment", {
-        courseId: courseId,
-        assignmentList: assignmentList,
-        faculty: faculty,
-      });
-    } catch (e) {
-      return res.status(500).redirect("/course");
     }
+  } catch (e) {
+    return res.status(500).render("error", { error: `${e}` });
+  }
+  //validation
+  try {
+    courseId = validId(courseId);
+  } catch (e) {
+    return res.status(400).render("error", { error: `${e}` });
+  }
+  //operation
+  try {
+    const assignmentList = await assignmentFunc.getAllAssignment(courseId);
+    const role = req.session.user.role;
+    let faculty = false;
+    if (role === "faculty") {
+      faculty = true;
+    }
+    return res.render("assignment/assignment", {
+      courseId: courseId,
+      assignmentList: assignmentList,
+      faculty: faculty,
+    });
+  } catch (e) {
+    return res.status(500).redirect("/course");
   }
 });
 
@@ -85,49 +80,44 @@ router
       return res.status(400).redirect("/course");
     }
     //authorization
-    if (
-      req.session.user.role == "student" ||
-      req.session.user.role == "faculty"
-    ) {
-      try {
-        const courseId = await assignmentFunc.getCourseId(id);
-        const currentCourse = await coursesFunc.getCurrentCourse(
-          req.session.user._id
-        );
-        for (let i = 0; i < currentCourse.length; i++) {
-          if (currentCourse[i]._id.toString() === courseId) {
-            break;
-          }
-          if (i === currentCourse.length - 1) {
-            return res.redirect(`/assignment/${courseId}`);
-          }
+    try {
+      const courseId = await assignmentFunc.getCourseId(id);
+      const currentCourse = await coursesFunc.getCurrentCourse(
+        req.session.user._id
+      );
+      for (let i = 0; i < currentCourse.length; i++) {
+        if (currentCourse[i]._id.toString() === courseId) {
+          break;
         }
-      } catch (e) {
-        return res.status(500).render("error", { error: `${e}` });
-      }
-      try {
-        const assignmentDetail = await assignmentFunc.getAssignment(id);
-        const role = req.session.user.role;
-        let faculty = false;
-        let student = false;
-        let submission = null;
-        if (role === "faculty") {
-          faculty = true;
-        } else if (role === "student") {
-          student = true;
-          const studentId = req.session.user._id;
-          submission = await submissionFunc.getSubmission(id, studentId);
+        if (i === currentCourse.length - 1) {
+          return res.redirect(`/assignment/${courseId}`);
         }
-        return res.render("assignment/assignmentDetail", {
-          title: "Assignment Detail",
-          assignment: assignmentDetail,
-          faculty: faculty,
-          student: student,
-          submission: submission,
-        });
-      } catch (e) {
-        return res.status(500).render("error", { error: `${e}` });
       }
+    } catch (e) {
+      return res.status(500).render("error", { error: `${e}` });
+    }
+    try {
+      const assignmentDetail = await assignmentFunc.getAssignment(id);
+      const role = req.session.user.role;
+      let faculty = false;
+      let student = false;
+      let submission = null;
+      if (role === "faculty") {
+        faculty = true;
+      } else if (role === "student") {
+        student = true;
+        const studentId = req.session.user._id;
+        submission = await submissionFunc.getSubmission(id, studentId);
+      }
+      return res.render("assignment/assignmentDetail", {
+        title: "Assignment Detail",
+        assignment: assignmentDetail,
+        faculty: faculty,
+        student: student,
+        submission: submission,
+      });
+    } catch (e) {
+      return res.status(500).render("error", { error: `${e}` });
     }
   })
   // only the professor of this course is allowed

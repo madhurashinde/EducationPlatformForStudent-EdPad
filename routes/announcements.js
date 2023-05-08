@@ -1,5 +1,5 @@
 import { Router } from "express";
-import xss from 'xss';
+import xss from "xss";
 const router = Router();
 import { annsData, coursesFunc } from "../data/index.js";
 import { validStr, validId } from "../helper.js";
@@ -7,51 +7,42 @@ import { validStr, validId } from "../helper.js";
 // if the student/faculty is not in this course, do not let pass
 router.route("/:courseId").get(async (req, res) => {
   let course = req.params.courseId;
-  if (
-    req.session.user.role == "student" ||
-    req.session.user.role == "faculty"
-  ) {
-    try {
-      const currentCourse = await coursesFunc.getCurrentCourse(
-        req.session.user._id
-      );
-      for (let i = 0; i < currentCourse.length; i++) {
-        if (currentCourse[i]._id.toString() === course) {
-          break;
-        }
-        if (i === currentCourse.length - 1) return res.redirect("/course");
+  try {
+    const currentCourse = await coursesFunc.getCurrentCourse(
+      req.session.user._id
+    );
+    for (let i = 0; i < currentCourse.length; i++) {
+      if (currentCourse[i]._id.toString() === course) {
+        break;
       }
-    } catch (e) {
-      return res.status(500).render("error", { error: `${e}` });
+      if (i === currentCourse.length - 1) return res.redirect("/course");
     }
+  } catch (e) {
+    return res.status(500).render("error", { error: `${e}` });
+  }
 
-    try {
-      course = validId(course);
-      const annList = await annsData.getAll(course);
-      if (req.session.user.role == "student") {
-        return res.render("announcements/allAnnouncements", {
-          courseId: course,
-          annList: annList,
-          faculty: false,
-        });
-      }
-      if (req.session.user.role == "faculty") {
-        return res.render("announcements/allAnnouncements", {
-          courseId: course,
-          annList: annList,
-          faculty: true,
-        });
-      }
-      if (req.session.user.role == "admin") {
-        return res.render("announcements/allAnnouncements", {
-          courseId: course,
-          annList: annList,
-          faculty: false,
-        });
-      }
-    } catch (e) {
-      return res.status(500).render("error", { error: `${e}` });
+  try {
+    course = validId(course);
+    const annList = await annsData.getAll(course);
+    if (
+      req.session.user.role == "student" ||
+      req.session.user.role == "admin"
+    ) {
+      return res.render("announcements/allAnnouncements", {
+        courseId: course,
+        annList: annList,
+        faculty: false,
+      });
     }
+    if (req.session.user.role == "faculty") {
+      return res.render("announcements/allAnnouncements", {
+        courseId: course,
+        annList: annList,
+        faculty: true,
+      });
+    }
+  } catch (e) {
+    return res.status(500).render("error", { error: `${e}` });
   }
 });
 
@@ -92,11 +83,13 @@ router
     }
 
     try {
-      const anninfo = xss(req.body);
-      if (!anninfo || Object.keys(anninfo).length === 0)
+      let anntitle = xss(req.body.ann_title);
+      let anndesc = xss(req.body.ann_description);
+      if (!anntitle || !anndesc) {
         throw "All fields need to have valid values";
-      var title = validStr(anninfo.ann_title);
-      var description = validStr(anninfo.ann_description);
+      }
+      var title = validStr(anntitle);
+      var description = validStr(anndesc);
       var course = validId(courseId);
     } catch (e) {
       return res.status(400).render(`announcements/newAnnouncement`, {
@@ -107,8 +100,8 @@ router
 
     try {
       const newAnn = await annsData.create(title, description, course);
-      if(!newAnn){
-        throw 'Could not delete announcement'
+      if (!newAnn) {
+        throw "Could not delete announcement";
       }
       return res.redirect(`/announcement/${course}`);
     } catch (e) {
@@ -123,42 +116,37 @@ router
   .route("/detail/:id")
   // if the student/faculty is not in this course, do not let pass
   .get(async (req, res) => {
-    if (
-      req.session.user.role == "student" ||
-      req.session.user.role == "faculty"
-    ) {
-      const id = req.params.id;
+    const id = req.params.id;
 
-      try {
-        // id = validId(id);
-        const courseId = await annsData.getCourseId(id);
-        const currentCourse = await coursesFunc.getCurrentCourse(
-          req.session.user._id
-        );
-        for (let i = 0; i < currentCourse.length; i++) {
-          if (currentCourse[i]._id.toString() === courseId) {
-            break;
-          }
-          if (i === currentCourse.length - 1) {
-            return res.redirect("/course");
-          }
+    try {
+      // id = validId(id);
+      const courseId = await annsData.getCourseId(id);
+      const currentCourse = await coursesFunc.getCurrentCourse(
+        req.session.user._id
+      );
+      for (let i = 0; i < currentCourse.length; i++) {
+        if (currentCourse[i]._id.toString() === courseId) {
+          break;
         }
-      } catch (e) {
-        return res.status(500).redirect(`/course`);
+        if (i === currentCourse.length - 1) {
+          return res.redirect("/course");
+        }
       }
+    } catch (e) {
+      return res.status(500).redirect(`/course`);
+    }
 
-      try {
-        const ann = await annsData.get(id);
-        return res.render("announcements/announcementDetail", {
-          title: ann.title,
-          description: ann.description,
-          date: ann.createdAt,
-          course: ann.courseId,
-          id: ann._id,
-        });
-      } catch (e) {
-        return res.status(500).render("error", { error: `${e}` });
-      }
+    try {
+      const ann = await annsData.get(id);
+      return res.render("announcements/announcementDetail", {
+        title: ann.title,
+        description: ann.description,
+        date: ann.createdAt,
+        course: ann.courseId,
+        id: ann._id,
+      });
+    } catch (e) {
+      return res.status(500).render("error", { error: `${e}` });
     }
   })
   // only the professor of this course is allowed
@@ -179,7 +167,7 @@ router
       if (req.session.user._id !== professor) {
         return res.redirect(`/announcement/detail/${id}`);
       }
-    } catch (e) {      
+    } catch (e) {
       return res.status(500).redirect(`/announcement/${courseId}`);
     }
 
@@ -187,8 +175,8 @@ router
     try {
       // let courseId = announcement.courseId;
       let deletedAnn = await annsData.remove(id);
-      if(!deletedAnn){
-        throw 'could not delete announcement'
+      if (!deletedAnn) {
+        throw "could not delete announcement";
       }
       return res.redirect(`/announcement/${courseId}`);
     } catch (e) {
