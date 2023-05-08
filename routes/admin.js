@@ -76,7 +76,6 @@ router
         emailAddress: xss(req.body.emailAddressInput),
       });
       if (fac) {
-        console.log(fac.role);
         if (fac.role === "faculty")
           throw `Error: Email address is registered as a faculty`;
       }
@@ -95,7 +94,6 @@ router
         "faculty"
       );
       if (result) {
-        console.log("inside result");
         return res.redirect("/admin/faculty");
       } else {
         return res.status(500).send("Internal Server Error");

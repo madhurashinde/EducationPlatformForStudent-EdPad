@@ -54,7 +54,6 @@ router.route("/:id/newcomment").post(async (req, res) => {
     const submit = await submissionFunc.addComment(id, studentId, comment);
     return res.json({ comment: submit });
   } catch (e) {
-    console.log(e);
     return res.json({ error: e });
   }
 });
