@@ -66,13 +66,12 @@ Password: Password123!
 1. Check courses taught in previous semesters
 2. Access courses in the current semester
 3. After accessing a course, the faculty will be able to:
-
-- Create new announcements
-- Create new modules and upload lecture files
-- Create assignments
-- Check all submissions to assignments and grade them
-- View students' scores
-- View the list of students in the course
+    - Create new announcements
+    - Create new modules and upload lecture files
+    - Create assignments
+    - Check all submissions to assignments and grade them
+    - View students' scores
+    - View the list of students in the course
 
 **Student Features:**
 
@@ -81,16 +80,15 @@ Password: Password123!
 3. View their completed courses from previous semesters
 4. Access courses in the current semester
 5. After accessing a course, the student will be able to:
-
-- View announcements and download lecture materials from modules
-- Submit assignments
-- Add comments to graded submissions
-- Submit a survey to provide feedback on the course
+    - View announcements and download lecture materials from modules
+    - Submit assignments
+    - Add comments to graded submissions
+    - Submit a survey to provide feedback on the course
 
 **Other Features**
 
 1. School library with academic resources
-2. Quizlet section for studying and reviewing material.
+2. Quizlet section where students can select the topics they want to study and access corresponding flashcards to enhance their learning experience.
 
 ## Github Repo
 
