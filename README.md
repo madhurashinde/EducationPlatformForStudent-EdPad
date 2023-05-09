@@ -60,9 +60,10 @@ https://github.com/madhurashinde/EducationPlatformForStudent-EdPad
 **Student Features:**
 
 1. Create an account and log in
-2. Register for new courses 3. View their completed courses from previous semesters
-3. Access courses in the current semester
-4. After accessing a course, the student will be able to:
+2. Register for new courses 
+3. View their completed courses from previous semesters
+4. Access courses in the current semester
+5. After accessing a course, the student will be able to:
 
 - View announcements and download lecture materials from modules
 - Submit assignments
