@@ -131,7 +131,7 @@ router
     let professorObjectId = xss(req.body.facultyInput);
     try {
       courseTitle = validStr(courseTitle);
-      courseId = validId(courseId);
+      // courseId = validId(courseId);
       description = validStr(description);
       professorObjectId = validId(professorObjectId);
 
