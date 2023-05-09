@@ -146,7 +146,6 @@ const getCourseGrade = async (courseId) => {
     }
     res[students[i]] = grades;
   }
-  console.log("getCourseGrade", getCourseGrade);
   return res;
 };
 
@@ -160,7 +159,6 @@ const getClassScore = async (courseId) => {
     let total = 0;
     let get = 0;
     const allscore = allGrade[students[i]];
-    console.log("getClassScore", allscore);
     // if (allscore === {})
     const allAssignment = Object.keys(allscore);
     for (let j = 0; j < allAssignment.length; j++) {
@@ -186,7 +184,6 @@ const getStudentScore = async (courseId, studentId) => {
   courseId = validId(courseId);
   studentId = validId(studentId);
   const allGrade = await getCourseGrade(courseId);
-  console.log("getStudentScore", allGrade);
   const thisGrade = allGrade[studentId];
   return thisGrade;
 };

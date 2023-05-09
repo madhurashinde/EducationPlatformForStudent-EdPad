@@ -92,8 +92,7 @@ const admin1 = await userFunc.createUser(
   "admin"
 );
 
-//create course
-
+//create current course
 const courseName = [
   "Web Porgramming 2",
   "Data Structures and Algorithms",

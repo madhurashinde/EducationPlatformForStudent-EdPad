@@ -41,18 +41,51 @@ router.route("/:id").get(async (req, res) => {
     });
   } else {
     try {
+      //     const studentId = req.session.user._id;
+      //     const allGrade = await gradeFunc.getStudentScore(courseId, studentId);
+      //     const course = await coursesFunc.getCourseByObjectID(courseId);
+      //     let totalScoreGet = 0;
+      //     let totalScore = 0;
+      //     let afterCalTotalScoreGet = 0;
+      //     const assignment = Object.keys(allGrade);
+      //     let studentName = allGrade[assignment[0]][0];
+      //     for (let i = 0; i < assignment.length; i++) {
+      //       if (typeof allGrade[assignment[i]][3] === "number") {
+      //         totalScoreGet += allGrade[assignment[i]][3];
+      //         totalScore += allGrade[assignment[i]][2];
+      //       }
+      //     }
+      //     if (totalScore > 0) {
+      //       afterCalTotalScoreGet =
+      //         Math.round((totalScoreGet / totalScore) * 10000) / 100;
+      //     }
+      //     return res.render("grade/grade", {
+      //       courseId: course._id,
+      //       course: course.courseTitle,
+      //       student: studentName,
+      //       studentId: studentId,
+      //       allGrade: allGrade,
+      //       totalScore: afterCalTotalScoreGet,
+      //     });
+      //   } catch (e) {
+      //     return res.json({ error: e });
+      //   }
+      // }
+
+      // try {
       const studentId = req.session.user._id;
       const allGrade = await gradeFunc.getStudentScore(courseId, studentId);
+      let studentName = await userFunc.getNameById(studentId);
       const course = await coursesFunc.getCourseByObjectID(courseId);
       let totalScoreGet = 0;
       let totalScore = 0;
       let afterCalTotalScoreGet = 0;
       const assignment = Object.keys(allGrade);
-      let studentName = allGrade[assignment[0]][0];
+
       for (let i = 0; i < assignment.length; i++) {
-        if (typeof allGrade[assignment[i]][3] === "number") {
-          totalScoreGet += allGrade[assignment[i]][3];
-          totalScore += allGrade[assignment[i]][2];
+        if (typeof allGrade[assignment[i]][4] === "number") {
+          totalScoreGet += allGrade[assignment[i]][4];
+          totalScore += allGrade[assignment[i]][3];
         }
       }
       if (totalScore > 0) {
@@ -60,15 +93,15 @@ router.route("/:id").get(async (req, res) => {
           Math.round((totalScoreGet / totalScore) * 10000) / 100;
       }
       return res.render("grade/grade", {
-        courseId: course._id,
+        faculty: true,
+        courseId: courseId,
         course: course.courseTitle,
         student: studentName,
-        studentId: studentId,
         allGrade: allGrade,
         totalScore: afterCalTotalScoreGet,
       });
     } catch (e) {
-      return res.json({ error: e });
+      return res.json({ error: `${e}` });
     }
   }
 });
@@ -129,7 +162,6 @@ router.route("/:courseId/:studentId").get(async (req, res) => {
     const studentId = req.params.studentId;
     const courseId = req.params.courseId;
     const allGrade = await gradeFunc.getStudentScore(courseId, studentId);
-    console.log(allGrade);
     let studentName = await userFunc.getNameById(studentId);
     const course = await coursesFunc.getCourseByObjectID(courseId);
     let totalScoreGet = 0;
@@ -143,7 +175,6 @@ router.route("/:courseId/:studentId").get(async (req, res) => {
         totalScore += allGrade[assignment[i]][3];
       }
     }
-    console.log(totalScoreGet, totalScore);
     if (totalScore > 0) {
       afterCalTotalScoreGet =
         Math.round((totalScoreGet / totalScore) * 10000) / 100;
