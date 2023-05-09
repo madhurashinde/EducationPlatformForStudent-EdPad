@@ -18,7 +18,7 @@ await adminFunc.initRegistrationStatus();
 await adminFunc.changeStatus();
 
 // create major
-const major = ["Computer Science", "Business Analysis", "Chemistry"];
+const major = ["Computer Science", "Business Analysis", "Chemistry", "Physics", "Psychology", "English", "Mathematics", "Biology", "Environmental Science", "Sociology", "History", "Political Science", "Philosophy", "Art History"];
 for (let i = 0; i < major.length; i++) {
   await adminFunc.addMajor(major[i]);
 }
