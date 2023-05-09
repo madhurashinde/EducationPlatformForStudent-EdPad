@@ -15,6 +15,9 @@
     <h4>{{this.[2]}}</h4>
     <p>Grade:{{this.[4]}}/{{this.[3]}}</p>
     {{#if ../faculty}}
+        {{#if this.[7]}}
+        <p>Comment: {{this.[7]}}</p>
+        {{/if}}
     {{else}}
         {{#if this.[5]}}
             {{#if this.[6]}}
@@ -22,7 +25,7 @@
             <p>Comment: {{this.[7]}}</p>
             {{else}}
             <button class="add-comment">Add Comment</button>
-            <p class="content" hidden></p>
+            <p class="contentcomment" hidden></p>
             <div class="add-comment-form">
                 <p class="assignmentId" hidden>{{@key}} </p>
                 <form class="form" hidden>
