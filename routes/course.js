@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
-import { coursesFunc } from "../data/index.js";
-import createSurvey from "../data/survey.js";
+import { coursesFunc, surveyFunc } from "../data/index.js";
+
 import { validId, validStr } from "../helper.js";
 import xss from "xss";
 
@@ -84,16 +84,16 @@ router.get("/:id", async (req, res) => {
     return res.status(400).render("error", { error: `${e}` });
   }
   if (
-    req.session.user.role == "student" ||
-    req.session.user.role == "faculty"
+    req.session.user
   ) {
     const currentCourse = await coursesFunc.getCurrentCourse(
       req.session.user._id
     );
-
+    if(req.session.user.role!=="admin"){
     if (!currentCourse.some((course) => course._id.toString() === courseId)) {
       return res.status(403).render("notallowed", { redirectTo: "/course" });
     }
+  }
     // this will not let user to see the completed course when they have no current course.
   }
   try {
@@ -102,10 +102,16 @@ router.get("/:id", async (req, res) => {
     if (req.session.user.role == "student") {
       student = true;
     }
+    let admin=false;
+    if (req.session.user.role == "admin") {
+      admin = true;
+    }
+
     return res.render("courses/coursedetail", {
       courseObjectID: course._id,
       courseTitle: course.courseTitle,
       student: student,
+      admin:admin
     });
   } catch (e) {
     return res.status(400).render("error", { error: `${e}` });
@@ -117,16 +123,23 @@ router
   .route("/:id/survey")
   .get(async (req, res) => {
     let courseId = xss(req.params.id);
-    if (req.session.user.role !== "student") {
-      return res
-        .status(403)
-        .render("notallowed", { redirectTo: `/course/${courseId}` });
-    }
+
+    
+
     //validation
     try {
       courseId = validId(courseId);
+      
     } catch (e) {
       return res.status(400).render("error", { error: `${e}` });
+    }
+    if (req.session.user.role == "admin") {
+      let allSurveys= await surveyFunc.getAllsurvey(courseId);
+      return res.render('allSurveys',{allSurveys:allSurveys});
+    }
+    if (req.session.user.role == "admin") {
+      let allSurveys= await surveyFunc.getAllsurvey(courseId);
+      return res.render('allSurveys',{allSurveys:allSurveys});
     }
 
     const studentList = await coursesFunc.getStudentList(courseId);
@@ -167,14 +180,14 @@ router
       });
     }
     try {
-      const userWithSurvey = await createSurvey(courseId, user, survey);
+      const userWithSurvey = await surveyFunc.createSurvey(courseId, user, survey);
 
       if (userWithSurvey.error) {
         return res
           .status(403)
           .render("notallowed", { redirectTo: `/course/${courseId}` });
       }
-      return res.redirect(`/courses/${courseId}`);
+      return res.redirect(`/course/${courseId}`);
     } catch (error) {
       return res.render("courses/survey", {
         courseObjectID: courseId,
