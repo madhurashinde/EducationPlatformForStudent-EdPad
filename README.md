@@ -48,26 +48,26 @@ https://github.com/madhurashinde/EducationPlatformForStudent-EdPad
 
 1. Check courses taught in previous semesters
 2. Access courses in the current semester
-   After accessing a course, the faculty will be able to
+3. After accessing a course, the faculty will be able to
 
-- a. Create new announcements
-- b. Create new modules and upload lecture files
-- c. Create assignments
-- d. Check all submissions to assignments and grade them
-- e. View students' scores
-- f. View the list of students in the course
+- Create new announcements
+- Create new modules and upload lecture files
+- Create assignments
+- Check all submissions to assignments and grade them
+- View students' scores
+- View the list of students in the course
 
 **Student Features:**
 
 1.Create an account and log in
 2.Register for new courses 3. View their completed courses from previous semesters
-4.Access courses in the current semester
-After accessing a course, the student will be able to
+3.Access courses in the current semester
+4.fter accessing a course, the student will be able to
 
-a. View announcements and download lecture materials from modules
-b. Submit assignments
-c. Add comments to graded submissions
-d. Submit a survey to provide feedback on the course
+- View announcements and download lecture materials from modules
+- Submit assignments
+- Add comments to graded submissions
+- Submit a survey to provide feedback on the course
 
 **Other Features**
 
