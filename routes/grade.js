@@ -37,7 +37,6 @@ router.route("/:id").get(async (req, res) => {
       }
     }
   }
-
   try {
     const role = req.session.user.role;
     if (role !== "student") {
@@ -148,7 +147,7 @@ router.route("/:courseId/:studentId").get(async (req, res) => {
     const assignment = Object.keys(allGrade);
 
     for (let i = 0; i < assignment.length; i++) {
-      if (typeof allGrade[assignment[i]][3] === "number") {
+      if (typeof allGrade[assignment[i]][4] === "number") {
         totalScoreGet += allGrade[assignment[i]][4];
         totalScore += allGrade[assignment[i]][3];
       }

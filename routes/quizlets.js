@@ -5,7 +5,7 @@ import axios from "axios";
 
 router
   .route("/")
-  .get(async (req, res) => {
+  .get(async (req, res) => {   
     let data1 = await axios.get(
       `https://opentdb.com/api.php?amount=15&type=multiple&category=9`
     );
