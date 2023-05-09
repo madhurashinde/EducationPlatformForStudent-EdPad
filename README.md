@@ -50,12 +50,12 @@ https://github.com/madhurashinde/EducationPlatformForStudent-EdPad
 2. Access courses in the current semester
    After accessing a course, the faculty will be able to
 
-a. Create new announcements
-b. Create new modules and upload lecture files
-c. Create assignments
-d. Check all submissions to assignments and grade them
-e. View students' scores
-f. View the list of students in the course
+- a. Create new announcements
+- b. Create new modules and upload lecture files
+- c. Create assignments
+- d. Check all submissions to assignments and grade them
+- e. View students' scores
+- f. View the list of students in the course
 
 **Student Features:**
 
