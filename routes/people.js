@@ -10,7 +10,7 @@ router.get("/:id", async (req, res) => {
     req.session.user.role == "student" ||
     req.session.user.role == "faculty"
   ) {
-    const id = req.params.id;
+    const id = xss(req.params.id);
     const currentCourse = await coursesFunc.getCurrentCourse(
       req.session.user._id
     );
@@ -23,7 +23,7 @@ router.get("/:id", async (req, res) => {
       }
     }
   }
-  const courseId = req.params.id;
+  const courseId = xss(req.params.id);
   const students = await coursesFunc.getStudentList(courseId);
   return res.render("courses/people", {
     courseId: courseId,

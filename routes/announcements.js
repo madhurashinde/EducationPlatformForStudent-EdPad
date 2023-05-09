@@ -6,7 +6,7 @@ import { validStr, validId } from "../helper.js";
 
 // if the student/faculty is not in this course, do not let pass
 router.route("/:courseId").get(async (req, res) => {
-  let course = req.params.courseId;
+  let course = xss(req.params.courseId);
   try {
     const currentCourse = await coursesFunc.getCurrentCourse(
       req.session.user._id
@@ -50,7 +50,7 @@ router
   .route("/:courseId/newAnnouncement")
   // only the professor of this course is allowed
   .get(async (req, res) => {
-    let courseId = req.params.courseId;
+    let courseId = xss(req.params.courseId);
 
     try {
       courseId = validId(courseId);
@@ -70,7 +70,7 @@ router
   })
   // only the professor of this course is allowed
   .post(async (req, res) => {
-    let courseId = req.params.courseId;
+    let courseId = xss(req.params.courseId);
 
     try {
       courseId = validId(courseId);
@@ -116,7 +116,7 @@ router
   .route("/detail/:id")
   // if the student/faculty is not in this course, do not let pass
   .get(async (req, res) => {
-    const id = req.params.id;
+    const id = xss(req.params.id);
 
     try {
       // id = validId(id);
@@ -151,7 +151,7 @@ router
   })
   // only the professor of this course is allowed
   .delete(async (req, res) => {
-    let id = req.params.id;
+    let id = xss(req.params.id);
     //validation
     try {
       id = validId(id);

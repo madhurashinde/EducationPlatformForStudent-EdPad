@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
 import path from "path";
+import xss from "xss";
 
 import { coursesFunc, submissionFunc } from "./data/index.js";
 const app = express();
@@ -166,10 +167,10 @@ app.post("/module/new", (req, res) => {
 
   upload(req, res, async (err) => {
     try {
-      var title = validStr(req.body.mod_title);
-      var description = validStr(req.body.mod_description);
-      var mod_file = validStr(req.file.filename);
-      var courseId = validId(req.body.courseId);
+      var title = validStr(xss(req.body.mod_title));
+      var description = validStr(xss(req.body.mod_description));
+      var mod_file = validStr(xss(req.file.filename));
+      var courseId = validId(xss(req.body.courseId));
       if (!title || !description || !courseId || !mod_file)
         throw "All fields need to have valid values";
     } catch (e) {}
@@ -193,7 +194,7 @@ app.post("/module/new", (req, res) => {
 });
 
 app.get("/module/download/:filename", (req, res) => {
-  const fileName = req.params.filename;
+  const fileName = xss(req.params.filename);
   const filePath = path.join(
     __dirname,
     "public",
@@ -237,15 +238,15 @@ app.post("/assignment/new", (req, res) => {
         return res.status(400).json({ msg: "Error: No file selected!" });
       } else {
         try {
-          const id = validId(req.body.courseId);
-          const title = validStr(req.body.title);
-          const dueDate = validDate(req.body.dueDate);
-          const dueTime = validTime(req.body.dueTime);
-          const content = req.body.content.trim();
+          const id = validId(xss(req.body.courseId));
+          const title = validStr(xss(req.body.title));
+          const dueDate = validDate(xss(req.body.dueDate));
+          const dueTime = validTime(xss(req.body.dueTime));
+          const content = xss(req.body.content).trim();
           const file = req.file.filename;
           if (!validStr(content) && !validStr(file))
             throw "must provide instruction of the assignment by text or file";
-          const score = nonNegInt(req.body.score);
+          const score = nonNegInt(xss(req.body.score));
           const professor = await coursesFunc.getFaculty(id);
           console.log(professor, req.session.user._id);
           if (professor !== req.session.user._id) {
@@ -269,7 +270,7 @@ app.post("/assignment/new", (req, res) => {
 });
 
 app.get("/assignment/download/:filename", (req, res) => {
-  const fileName = req.params.filename;
+  const fileName = xss(req.params.filename);
   const filePath = path.join(
     __dirname,
     "public",
@@ -287,7 +288,7 @@ app.get("/assignment/download/:filename", (req, res) => {
 // submission
 // only current student in this course in allowed
 app.post("/submission/:id/new", (req, res) => {
-  const assignmentId = req.params.id;
+  const assignmentId = xss(req.params.id);
   const storage = multer.diskStorage({
     destination: "./public/uploads/submission",
     filename: function (req, file, cb) {
@@ -328,7 +329,7 @@ app.post("/submission/:id/new", (req, res) => {
 });
 
 app.get("/submission/download/:filename", (req, res) => {
-  const fileName = req.params.filename;
+  const fileName = xss(req.params.filename);
   const filePath = path.join(
     __dirname,
     "public",

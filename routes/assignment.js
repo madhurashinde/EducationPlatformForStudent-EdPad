@@ -6,7 +6,7 @@ import { validId } from "../helper.js";
 
 // if the student/faculty is not in this course, do not let pass
 router.get("/:id", async (req, res) => {
-  let courseId = req.params.id;
+  let courseId = xss(req.params.id);
   //authorization
   try {
     const currentCourse = await coursesFunc.getCurrentCourse(
@@ -51,7 +51,7 @@ router
   .route("/:id/newAssignment")
   // only the professor of this course is allowed
   .get(async (req, res) => {
-    let id = req.params.id;
+    let id = xss(req.params.id);
     try {
       id = validId(id);
     } catch (e) {
@@ -73,7 +73,7 @@ router
   .route("/detail/:id")
   // if the student/faculty is not in this course, do not let pass
   .get(async (req, res) => {
-    let id = req.params.id;
+    let id = xss(req.params.id);
     try {
       id = validId(id);
     } catch (e) {
@@ -122,7 +122,7 @@ router
   })
   // only the professor of this course is allowed
   .delete(async (req, res) => {
-    let id = req.params.id;
+    let id = xss(req.params.id);
     try {
       id = validId(id);
     } catch (e) {
@@ -143,7 +143,7 @@ router
   });
 
 router.route("/:id/allSubmission").get(async (req, res) => {
-  let id = req.params.id;
+  let id = xss(req.params.id);
   try {
     id = validId(id);
   } catch (e) {

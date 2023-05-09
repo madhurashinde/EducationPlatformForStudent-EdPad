@@ -6,7 +6,7 @@ import { validStr, validId } from "../helper.js";
 
 router.route("/:id").post(async (req, res) => {
   // only student in this course allowed
-  let assignmentId = req.params.id;
+  let assignmentId = xss(req.params.id);
   const courseId = assignmentFunc.getCourseId(assignmentId);
   const studentList = coursesFunc.getStudentList(courseId);
   for (let i = 0; i < studentList.length; i++) {
@@ -19,8 +19,8 @@ router.route("/:id").post(async (req, res) => {
   }
 
   try {
-    const id = req.params.id;
-    const submitFile = req.body.submitFile;
+    const id = xss(req.params.id);
+    const submitFile = xss(req.body.submitFile);
     const submit = await submissionFunc.createSubmission(
       id,
       req.session.user._id,
@@ -35,7 +35,7 @@ router.route("/:id").post(async (req, res) => {
 
 router.route("/:id/newcomment").post(async (req, res) => {
   // only student in this course allowed
-  let assignmentId = req.params.id;
+  let assignmentId = xss(req.params.id);
   const courseId = await assignmentFunc.getCourseId(assignmentId);
   const studentList = await coursesFunc.getStudentList(courseId);
   for (let i = 0; i < studentList.length; i++) {
@@ -48,9 +48,9 @@ router.route("/:id/newcomment").post(async (req, res) => {
   }
 
   try {
-    const id = validId(req.params.id);
-    const studentId = validId(req.session.user._id);
-    const comment = validStr(req.body.comment);
+    const id = validId(xss(req.params.id));
+    const studentId = validId(xss(req.session.user._id));
+    const comment = validStr(xss(req.body.comment));
     const submit = await submissionFunc.addComment(id, studentId, comment);
     return res.json({ comment: submit });
   } catch (e) {
