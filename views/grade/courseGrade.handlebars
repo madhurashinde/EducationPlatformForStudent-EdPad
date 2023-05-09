@@ -1,7 +1,7 @@
 <button onclick="location.href='/course/{{courseId}}'"> Back</button>
 
 
-{{!-- {{#if allGrades.length}} --}}
+{{#if allGrades.length}}
 <div>
     {{#each allGrades}}
 
@@ -12,8 +12,8 @@
     {{/each}}
 </div>
 
-{{!-- {{else}}
+{{else}}
 <div>
     <p>No grade exists yet</p>
 </div>
-{{/if}} --}}
+{{/if}}
