@@ -178,7 +178,7 @@ if (registerForm) {
       const message = typeof e === "string" ? e : e.message;
       errorDivs.textContent = message;
       errorDivs.hidden = false;
-      passwordInpu.valuet = '';
+      passwordInput.value = '';
       passwordInput.classList.add("inputClass");
     }
     try {
@@ -223,5 +223,18 @@ if (registerForm) {
       majorInput.value = '';
       majorInput.classList.add("inputClass");
     }
+    try{
+      if(password!== confirmPassword){
+        throw `Error: Password and Confirm Password do not match`
+      }
+    }catch(e){
+      event.preventDefault();
+      const message = typeof e === "string" ? e : e.message;
+      errorDivs.textContent = message;
+      errorDivs.hidden = false;
+      passwordInput.value = '';
+      confirmPasswordInput.value = '';
+    }
+    
   });
 }
