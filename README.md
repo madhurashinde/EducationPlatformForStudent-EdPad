@@ -16,7 +16,7 @@ Team Members
 seed data: npm run seed
 run project: npm start
 
-## Accounts cna beused to run the program
+## Accounts can be used to run the program
 
 **Admin:**
 emailAddress: admin1@admin1.com
