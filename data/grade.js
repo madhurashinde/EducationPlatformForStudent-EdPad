@@ -64,7 +64,6 @@ const getCourseGrade = async (courseId) => {
       }
     )
     .toArray();
-  if (!assignmentList) throw "Could not get assignment list";
 
   const assignments = [];
   for (let i = 0; i < assignmentList.length; i++) {
@@ -147,19 +146,22 @@ const getCourseGrade = async (courseId) => {
     }
     res[students[i]] = grades;
   }
+  console.log("getCourseGrade", getCourseGrade);
   return res;
 };
 
 const getClassScore = async (courseId) => {
   courseId = validId(courseId);
   const allGrade = await getCourseGrade(courseId);
-
+  if (allGrade === null) return {};
   const students = Object.keys(allGrade);
   let res = {};
   for (let i = 0; i < students.length; i++) {
     let total = 0;
     let get = 0;
     const allscore = allGrade[students[i]];
+    console.log("getClassScore", allscore);
+    // if (allscore === {})
     const allAssignment = Object.keys(allscore);
     for (let j = 0; j < allAssignment.length; j++) {
       if (typeof allscore[allAssignment[j]][4] === "number") {
@@ -167,6 +169,7 @@ const getClassScore = async (courseId) => {
         get += allscore[allAssignment[j]][4];
       }
     }
+
     if (total === 0) {
       res[students[i]] = [0, allGrade[students[i]][allAssignment[0]][2]];
     } else {
@@ -183,6 +186,7 @@ const getStudentScore = async (courseId, studentId) => {
   courseId = validId(courseId);
   studentId = validId(studentId);
   const allGrade = await getCourseGrade(courseId);
+  console.log("getStudentScore", allGrade);
   const thisGrade = allGrade[studentId];
   return thisGrade;
 };
