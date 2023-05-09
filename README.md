@@ -37,39 +37,39 @@ https://github.com/madhurashinde/EducationPlatformForStudent-EdPad
 ## Feature Introduction
 
 **Admin Features:**
-• Manage faculties: View faculty information and create new faculty accounts
-• Manage students: View student information
-• Manage courses: View course information and create new courses
-• Manage registration: Open and close course registration for students
-• Archive a semester: Archive all information from the previous semester and start a new semester
+
+1. Manage faculties: View faculty information and create new faculty accounts
+2. Manage students: View student information
+3. Manage courses: View course information and create new courses
+4. Manage registration: Open and close course registration for students
+5. Archive a semester: Archive all information from the previous semester and start a new semester
 
 **Faculty Features:**
 
-• Check courses taught in previous semesters
-• Access courses in the current semester
-After accessing a course, the faculty will be able to
+1. Check courses taught in previous semesters
+2. Access courses in the current semester
+   After accessing a course, the faculty will be able to
 
-1.  Create new announcements
-2.  Create new modules and upload lecture files
-3.  Create assignments
-4.  Check all submissions to assignments and grade them
-5.  View students' scores
-6.  View the list of students in the course
+a. Create new announcements
+b. Create new modules and upload lecture files
+c. Create assignments
+d. Check all submissions to assignments and grade them
+e. View students' scores
+f. View the list of students in the course
 
 **Student Features:**
 
-• Create an account and log in
-• Register for new courses
-• View their completed courses from previous semesters
-• Access courses in the current semester
+1.Create an account and log in
+2.Register for new courses 3. View their completed courses from previous semesters
+4.Access courses in the current semester
 After accessing a course, the student will be able to
 
-1.  View announcements and download lecture materials from modules
-2.  Submit assignments
-3.  Add comments to graded submissions
-4.  Submit a survey to provide feedback on the course
+a. View announcements and download lecture materials from modules
+b. Submit assignments
+c. Add comments to graded submissions
+d. Submit a survey to provide feedback on the course
 
 **Other Features**
 
-• School library with academic resources
-• Quizlet section for studying and reviewing material.
+1. School library with academic resources
+2. Quizlet section for studying and reviewing material.
