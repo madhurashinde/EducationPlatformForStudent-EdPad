@@ -45,7 +45,7 @@ emailAddress: emily@johnson.com
 
 Password: Password123!
 
-**Admin:**
+**Student:**
 
 emailAddress: michael@davis.com
 
