@@ -8,7 +8,7 @@ import { validId, validStr } from "../helper.js";
 //ok
 router.route("/:courseId").get(async (req, res) => {
   // if the student/faculty is not in this course, do not let pass
-  let course = req.params.courseId;
+  let course = xss(req.params.courseId);
   if (
     req.session.user.role == "student" ||
     req.session.user.role == "faculty"
@@ -49,7 +49,7 @@ router.route("/:courseId").get(async (req, res) => {
 //ok
 router.route("/:courseId/newModule").get(async (req, res) => {
   // only the professor of this course is allowed
-  let courseId = req.params.courseId;
+  let courseId = xss(req.params.courseId);
   const professor = await coursesFunc.getFaculty(courseId);
   if (req.session.user._id !== professor) {
     return res.redirect(`/module/${courseId}`);
@@ -62,7 +62,7 @@ router
   .route("/detail/:id")
   .get(async (req, res) => {
     // if the student/faculty is not in this course, do not let pass
-    const id = req.params.id;
+    const id = xss(req.params.id);
     if (
       req.session.user.role == "student" ||
       req.session.user.role == "faculty"
@@ -95,7 +95,7 @@ router
   })
   .delete(async (req, res) => {
     // only the professor of this course is allowed
-    let modId = req.params.id;
+    let modId = xss(req.params.id);
     const course = await modulesData.getCourseId(modId);
     const professor = await coursesFunc.getFaculty(course);
     if (req.session.user._id !== professor) {

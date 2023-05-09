@@ -3,6 +3,7 @@ const router = Router();
 import { coursesFunc } from "../data/index.js";
 import createSurvey from "../data/survey.js";
 import { validId, validStr } from "../helper.js";
+import xss from "xss";
 
 //ok
 router.get("/", async (req, res) => {
@@ -54,7 +55,7 @@ router
     if (req.session.user.role !== "student") {
       return res.redirect("/course");
     }
-    let courseRegisteredObjectID = req.body.courseInput;
+    let courseRegisteredObjectID = xss(req.body.courseInput);
     let studentObjectID = req.session.user._id;
 
     try {
@@ -75,7 +76,7 @@ router
 //ok
 router.get("/:id", async (req, res) => {
   // only student/faculty in this course allowed
-  let courseId = req.params.id;
+  let courseId = xss(req.params.id);
   //validation
   try {
     courseId = validId(courseId);
@@ -118,7 +119,7 @@ router
     if (req.session.user.role !== "student") {
       return res.render("notallowed", { redirectTo: `/course/${courseId}` });
     }
-    let courseId = req.params.id;
+    let courseId = xss(req.params.id);
     //validation
     try {
       courseId = validId(courseId);
@@ -133,9 +134,9 @@ router
     if (req.session.user.role !== "student") {
       return res.render("notallowed", { redirectTo: `/course/${courseId}` });
     }
-    let courseId = req.params.id;
+    let courseId = xss(req.params.id);
     let user = req.session.user;
-    let survey = req.body.surveyInput;
+    let survey = xss(req.body.surveyInput);
 
     try {
       survey = validStr(survey);

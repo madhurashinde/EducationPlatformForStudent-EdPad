@@ -15,7 +15,7 @@ import user from "../data/user.js";
 // id = courseId, to check student's grade
 router.route("/:id").get(async (req, res) => {
   // if the student/faculty is not in this course, do not let pass
-  let courseId = req.params.id;
+  let courseId = xss(req.params.id);
   if (
     req.session.user.role == "student" ||
     req.session.user.role == "faculty"
@@ -75,7 +75,7 @@ router.route("/:id").get(async (req, res) => {
 
 router.route("/detail/:id").post(async (req, res) => {
   // if the student/faculty is not in this course, do not let pass
-  let submissionId = req.params.id;
+  let submissionId = xss(req.params.id);
   const course = await submissionFunc.getCourseId(submissionId);
   if (
     req.session.user.role == "student" ||
@@ -95,9 +95,9 @@ router.route("/detail/:id").post(async (req, res) => {
   }
 
   try {
-    const assignmentId = validId(req.body.assignmentId);
-    const id = validId(req.body.submissionId);
-    const grade = nonNegInt(req.body.score);
+    const assignmentId = validId(xss(req.body.assignmentId));
+    const id = validId(xss(req.body.submissionId));
+    const grade = nonNegInt(xss(req.body.score));
     const assignmentDetail = await assignment();
     const newSubmissionId = new ObjectId(id);
     var submissionDetail = await assignmentDetail.findOne(
@@ -119,15 +119,15 @@ router.route("/detail/:id").post(async (req, res) => {
 
 router.route("/:courseId/:studentId").get(async (req, res) => {
   // only faculty of this course and admin allowed
-  let courseId = req.params.courseId;
+  let courseId = xss(req.params.courseId);
   const professor = await coursesFunc.getFaculty(courseId);
   if (req.session.user._id !== professor && req.session.user.role !== "admin") {
     return res.render("notallowed", { redirectTo: `/grade/${courseId}` });
   }
 
   try {
-    const studentId = req.params.studentId;
-    const courseId = req.params.courseId;
+    const studentId = xss(req.params.studentId);
+    const courseId = xss(req.params.courseId);
     const allGrade = await gradeFunc.getStudentScore(courseId, studentId);
     console.log(allGrade);
     let studentName = await userFunc.getNameById(studentId);
