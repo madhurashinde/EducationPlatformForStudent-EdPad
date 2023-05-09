@@ -55,7 +55,7 @@ router
     try {
       id = validId(id);
     } catch (e) {
-      return res.render("error", { error: "Page Not Found" });
+      return res.status(404).render("error", { error: "Page Not Found" });
     }
     // authorization
     try {
