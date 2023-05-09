@@ -45,7 +45,9 @@ router
       validPassword(xss(req.body.passwordInput));
       checkValidMajor(xss(req.body.majorInput));
       if (xss(req.body.passwordInput) !== xss(req.body.confirmPasswordInput)) {
+        let all_majors = await adminFunc.getAllMajors();
         res.status(400).render("login/register", {
+          allMajors: all_majors,
           error: "Passwords do not match",
           title: "Register Page",
         });
@@ -78,7 +80,8 @@ router
         res.status(500).send("Internal Server Error");
       }
     } catch (e) {
-      res.status(400).render("login/register", { error: e });
+      let all_majors = await adminFunc.getAllMajors();
+      res.status(400).render("login/register", {title: "Register Page",allMajors: all_majors, error: e });
       return;
     }
   });
