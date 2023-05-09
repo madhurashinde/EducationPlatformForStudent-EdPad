@@ -74,7 +74,8 @@ const changeStatus = async () => {
 const archive = async () => {
   const userCollection = await user();
   const userList = await userCollection
-    .find({ role: { $in: ["student", "faculty"] } }, { projection: { _id: 1 } })
+    // .find({ role: { $in: ["student", "faculty"] } }, { projection: { _id: 1 } })
+    .find({ role: { $in: ["student"] } }, { projection: { _id: 1 } })
     .toArray();
   for (let i = 0; i < userList.length; i++) {
     const thisUser = await userCollection.findOne(

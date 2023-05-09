@@ -7,7 +7,9 @@ import {
   checkValidMajor,
   validGender,
   validRole,
+  validId,
 } from "../helper.js";
+import { ObjectId } from "mongodb";
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
 
@@ -47,7 +49,7 @@ const createUser = async (
     courseCompleted: [],
     courseInProgress: [],
     role: role,
-    surveys:[],
+    surveys: [],
   };
 
   const insertInfo = await userCollection.insertOne(newUser);
@@ -105,9 +107,18 @@ const allStudent = async () => {
   return student;
 };
 
+const getNameById = async (id) => {
+  id = validId(id);
+  const userCollection = await user();
+  const info = await userCollection.findOne({ _id: new ObjectId(id) });
+  let name = info.firstName + " " + info.lastName;
+  return name;
+};
+
 export default {
   createUser,
   checkUser,
   allFaculty,
   allStudent,
+  getNameById,
 };

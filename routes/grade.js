@@ -3,8 +3,14 @@ import xss from "xss";
 const router = Router();
 import { ObjectId } from "mongodb";
 import { assignment } from "../config/mongoCollections.js";
-import { coursesFunc, gradeFunc, submissionFunc } from "../data/index.js";
+import {
+  coursesFunc,
+  gradeFunc,
+  submissionFunc,
+  userFunc,
+} from "../data/index.js";
 import { validId, nonNegInt } from "../helper.js";
+import user from "../data/user.js";
 
 // id = courseId, to check student's grade
 router.route("/:id").get(async (req, res) => {
@@ -22,16 +28,16 @@ router.route("/:id").get(async (req, res) => {
         break;
       }
       if (i === currentCourse.length - 1) {
-        return res.redirect("/course");
+        return res.render("notallowed", { redirectTo: "/course" });
       }
     }
   }
   const role = req.session.user.role;
   if (role !== "student") {
-    const allGrades = await gradeFunc.getClassScore(courseId);
+    const allStudent = await coursesFunc.getStudentList(courseId);
     return res.render("grade/courseGrade", {
       courseId: courseId,
-      allGrades: allGrades,
+      allStudent: allStudent,
     });
   } else {
     try {
@@ -116,25 +122,28 @@ router.route("/:courseId/:studentId").get(async (req, res) => {
   let courseId = req.params.courseId;
   const professor = await coursesFunc.getFaculty(courseId);
   if (req.session.user._id !== professor && req.session.user.role !== "admin") {
-    return res.redirect(`/grade/${courseId}`);
+    return res.render("notallowed", { redirectTo: `/grade/${courseId}` });
   }
 
   try {
     const studentId = req.params.studentId;
     const courseId = req.params.courseId;
     const allGrade = await gradeFunc.getStudentScore(courseId, studentId);
+    console.log(allGrade);
+    let studentName = await userFunc.getNameById(studentId);
     const course = await coursesFunc.getCourseByObjectID(courseId);
     let totalScoreGet = 0;
     let totalScore = 0;
     let afterCalTotalScoreGet = 0;
     const assignment = Object.keys(allGrade);
-    let studentName = allGrade[assignment[0]][0];
+
     for (let i = 0; i < assignment.length; i++) {
       if (typeof allGrade[assignment[i]][3] === "number") {
-        totalScoreGet += allGrade[assignment[i]][3];
-        totalScore += allGrade[assignment[i]][2];
+        totalScoreGet += allGrade[assignment[i]][4];
+        totalScore += allGrade[assignment[i]][3];
       }
     }
+    console.log(totalScoreGet, totalScore);
     if (totalScore > 0) {
       afterCalTotalScoreGet =
         Math.round((totalScoreGet / totalScore) * 10000) / 100;
