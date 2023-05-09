@@ -34,18 +34,21 @@ npm start
 ## Accounts can be used to run the program
 
 **Admin:**
+
 emailAddress: admin1@admin1.com
-<br>
+
 Password: Password123!
 
 **Faculty:**
+
 emailAddress: emily@johnson.com
-<br>
+
 Password: Password123!
 
 **Admin:**
+
 emailAddress: michael@davis.com
-<br>
+
 Password: Password123!
 
 ## Feature Introduction
