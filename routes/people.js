@@ -19,7 +19,7 @@ router.get("/:id", async (req, res) => {
         break;
       }
       if (i === currentCourse.length - 1) {
-        return res.render("notallowed", { redirectTo: "/course" });
+        return res.status(403).render("notallowed", { redirectTo: "/course" });
       }
     }
   }

@@ -21,7 +21,7 @@ router.route("/:courseId").get(async (req, res) => {
         break;
       }
       if (i === currentCourse.length - 1) {
-        return res.render("notallowed", { redirectTo: "/course" });
+        return res.status(403).render("notallowed", { redirectTo: "/course" });
       }
     }
   }
@@ -77,13 +77,13 @@ router
             break;
           }
           if (i === currentCourse.length - 1) {
-            return res.render("notallowed", {
+            return res.status(403).render("notallowed", {
               redirectTo: `/module/${courseId}`,
             });
           }
         }
       } catch (e) {
-        return res.render("error", {
+        return res.status(404).render("error", {
           error: "Page Not Found",
         });
       }

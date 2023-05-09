@@ -92,7 +92,7 @@ router.get("/:id", async (req, res) => {
     );
 
     if (!currentCourse.some((course) => course._id.toString() === courseId)) {
-      return res.render("notallowed", { redirectTo: "/course" });
+      return res.status(403).render("notallowed", { redirectTo: "/course" });
     }
     // this will not let user to see the completed course when they have no current course.
   }
@@ -118,7 +118,7 @@ router
   .get(async (req, res) => {
     let courseId = xss(req.params.id);
     if (req.session.user.role !== "student") {
-      return res.render("notallowed", { redirectTo: `/course/${courseId}` });
+      return res.status(403).render("notallowed", { redirectTo: `/course/${courseId}` });
     }
     //validation
     try {
@@ -129,7 +129,7 @@ router
 
     const studentList = await coursesFunc.getStudentList(courseId);
     if (studentList.length === 0)
-      return res.render("notallowed", {
+      return res.status(403).render("notallowed", {
         redirectTo: "/course",
       });
     for (let i = 0; i < studentList.length; i++) {
@@ -137,7 +137,7 @@ router
         break;
       }
       if (i === studentList.length - 1) {
-        return res.render("notallowed", {
+        return res.status(403).render("notallowed", {
           redirectTo: "/course",
         });
       }
@@ -148,7 +148,7 @@ router
   })
   .post(async (req, res) => {
     if (req.session.user.role !== "student") {
-      return res.render("notallowed", { redirectTo: `/course/${courseId}` });
+      return res.status(403).render("notallowed", { redirectTo: `/course/${courseId}` });
     }
     let courseId = xss(req.params.id);
     let user = req.session.user;
@@ -166,7 +166,7 @@ router
       const userWithSurvey = await createSurvey(courseId, user, survey);
 
       if (userWithSurvey.error) {
-        return res.render("notallowed", { redirectTo: `/course/${courseId}` });
+        return res.status(403).render("notallowed", { redirectTo: `/course/${courseId}` });
       }
       return res.redirect(`/courses/${courseId}`);
     } catch (error) {

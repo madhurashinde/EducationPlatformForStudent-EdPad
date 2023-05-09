@@ -16,7 +16,7 @@ router.route("/:courseId").get(async (req, res) => {
         break;
       }
       if (i === currentCourse.length - 1) {
-        return res.render("notallowed", { redirectTo: "/course" });
+        return res.status(403).render("notallowed", { redirectTo: "/course" });
       }
     }
   } catch (e) {
@@ -63,7 +63,7 @@ router
     try {
       const professor = await coursesFunc.getFaculty(courseId);
       if (req.session.user._id !== professor) {
-        return res.render(`notallowed`, {
+        return res.status(403).render(`notallowed`, {
           redirectTo: `/announcement/${courseId}`,
         });
       }
@@ -82,7 +82,7 @@ router
       courseId = validId(courseId);
       const professor = await coursesFunc.getFaculty(courseId);
       if (req.session.user._id !== professor) {
-        return res.render("notallowed");
+        return res.status(403).render("notallowed");
       }
     } catch (e) {
       return res.status(500).render("error", { error: e });
@@ -135,7 +135,7 @@ router
           break;
         }
         if (i === currentCourse.length - 1) {
-          return res.render("notallowed", { redirectTo: "/course" });
+          return res.status(403).render("notallowed", { redirectTo: "/course" });
         }
       }
     } catch (e) {
@@ -174,7 +174,7 @@ router
         return res.redirect(`/announcement/detail/${id}`);
       }
     } catch (e) {
-      return res.status(500).render("error");
+      return res.status(500).render("error", { error: `${e}` });
     }
 
     // operation

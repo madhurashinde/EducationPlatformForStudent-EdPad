@@ -109,7 +109,7 @@ router
       checkEmailAddress(xss(req.body.emailAddressInput));
       validPassword(xss(req.body.passwordInput));
     } catch (e) {
-      return res.render("error", { error: e, title: "Error" });
+      return res.status(400).render("error", { error: e, title: "Error" });
     }
     try {
       const result = await userFunc.checkUser(

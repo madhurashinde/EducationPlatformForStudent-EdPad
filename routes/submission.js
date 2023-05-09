@@ -14,7 +14,7 @@ router.route("/:id").post(async (req, res) => {
       break;
     }
     if (i === studentList.length - 1) {
-      return res.render("notallowed", {
+      return res.status(403).render("notallowed", {
         redirectTo: `/assignment/detail/${id}`,
       });
     }
@@ -45,7 +45,7 @@ router.route("/:id/newcomment").post(async (req, res) => {
       break;
     }
     if (i === studentList.length - 1) {
-      return res.render("notallowed", {
+      return res.status(403).render("notallowed", {
         redirectTo: `/assignment/detail/${id}`,
       });
     }

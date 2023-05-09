@@ -28,7 +28,7 @@ router.route("/:id").get(async (req, res) => {
         break;
       }
       if (i === currentCourse.length - 1) {
-        return res.render("notallowed", { redirectTo: "/course" });
+        return res.status(403).render("notallowed", { redirectTo: "/course" });
       }
     }
   }
@@ -90,7 +90,7 @@ router.route("/detail/:id").post(async (req, res) => {
         break;
       }
       if (i === currentCourse.length - 1) {
-        return res.render("notallowed", { redirectTo: `grade/${course}` });
+        return res.status(403).render("notallowed", { redirectTo: `grade/${course}` });
       }
     }
   }
@@ -123,7 +123,7 @@ router.route("/:courseId/:studentId").get(async (req, res) => {
   let courseId = xss(req.params.courseId);
   const professor = await coursesFunc.getFaculty(courseId);
   if (req.session.user._id !== professor && req.session.user.role !== "admin") {
-    return res.render("notallowed", { redirectTo: `/grade/${courseId}` });
+    return res.status(403).render("notallowed", { redirectTo: `/grade/${courseId}` });
   }
 
   try {
