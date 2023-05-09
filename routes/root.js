@@ -45,7 +45,7 @@ router
       validPassword(xss(req.body.passwordInput));
       checkValidMajor(xss(req.body.majorInput));
       if (xss(req.body.passwordInput) !== xss(req.body.confirmPasswordInput)) {
-        res.status(400).render("register/register", {
+        res.status(400).render("login/register", {
           error: "Passwords do not match",
           title: "Register Page",
         });
