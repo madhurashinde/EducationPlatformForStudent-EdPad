@@ -111,6 +111,16 @@ const getFaculty = async (courseId) => {
   return faculty;
 };
 
+const getFacultyObj = async (courseId) => {
+  courseId = validId(courseId);
+  const courseCollection = await course();
+  const courseInfo = await courseCollection.findOne(
+    { _id: new ObjectId(courseId) }
+  );
+
+  return courseInfo;
+}
+
 const getCurrentCourse = async (id) => {
   id = validId(id);
   const userCollection = await user();
@@ -213,4 +223,5 @@ export default {
   getStudentList,
   getFaculty,
   getAllFaculty,
+  getFacultyObj
 };
