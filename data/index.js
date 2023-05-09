@@ -6,7 +6,9 @@ import annsDataFunctions from "./announcements.js";
 import modsDataFunctions from "./modules.js";
 import coursesFunctions from "./courses.js";
 import userFunctions from "./user.js";
+import surveyFunctions from "./survey.js"
 
+export const surveyFunc = surveyFunctions;
 export const assignmentFunc = assignmentFunctions;
 export const submissionFunc = submissionFunctions;
 export const gradeFunc = gradeFunctions;
