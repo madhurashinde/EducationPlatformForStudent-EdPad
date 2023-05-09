@@ -30,8 +30,10 @@ for (let i = 0; i < $(".form").length; i++) {
         };
 
         $.ajax(requestConfig).then(function (responseMessage) {
-          $(".content").eq(i).html(`Comment: ${responseMessage.comment}`);
-          $(".content").show();
+          $(".contentcomment")
+            .eq(i)
+            .html(`Comment: ${responseMessage.comment}`);
+          $(".contentcomment").show();
           $(".form :input").eq(i).prop("disabled", true);
           $(".form").eq(i).hide();
           $(".error").eq(i).hide();

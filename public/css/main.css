@@ -1,4 +1,4 @@
-/* body{
+/* /* body{
     background-color:cornflowerblue;
 } */
 
@@ -214,15 +214,23 @@ h3 {
 
 /* Style for divs containing faculty info */
 div {
-    text-align: center;
+    text-align: center; 
     /* display: block; */
     border-radius: 5px;
     padding: 10px;
-    margin: 10px;
+    margin: 10px; 
 }
 
 /* Style for p tags inside divs */
 p {
     text-align: center;
     margin: 7px;
+} 
+
+.clean {
+    all: initial;
+  }
+
+[hidden]{
+display:none;
 }
