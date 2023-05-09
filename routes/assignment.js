@@ -17,7 +17,7 @@ router.get("/:id", async (req, res) => {
         break;
       }
       if (i === currentCourse.length - 1) {
-        return res.render("notallowed", { redirectTo: "/course" });
+        return res.status(403).render("notallowed", { redirectTo: "/course" });
       }
     }
   } catch (e) {
@@ -61,7 +61,7 @@ router
     try {
       const professor = await coursesFunc.getFaculty(id);
       if (req.session.user._id !== professor) {
-        return res.redener("notallowed", { redirectTo: `/assignment/${id}` });
+        return res.status(403).render("notallowed", { redirectTo: `/assignment/${id}` });
       }
       return res.render("assignment/newAssignment", { courseId: id });
     } catch (e) {
