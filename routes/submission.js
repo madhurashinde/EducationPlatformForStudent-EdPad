@@ -1,5 +1,5 @@
 import { Router } from "express";
-import xss from 'xss';
+import xss from "xss";
 const router = Router();
 import { assignmentFunc, coursesFunc, submissionFunc } from "../data/index.js";
 import { validStr, validId } from "../helper.js";
@@ -14,7 +14,9 @@ router.route("/:id").post(async (req, res) => {
       break;
     }
     if (i === studentList.length - 1) {
-      return res.redirect(`/assignment/detail/${id}`);
+      return res.render("notallowed", {
+        redirectTo: `/assignment/detail/${id}`,
+      });
     }
   }
 
@@ -43,7 +45,9 @@ router.route("/:id/newcomment").post(async (req, res) => {
       break;
     }
     if (i === studentList.length - 1) {
-      return res.redirect(`/assignment/detail/${id}`);
+      return res.render("notallowed", {
+        redirectTo: `/assignment/detail/${id}`,
+      });
     }
   }
 

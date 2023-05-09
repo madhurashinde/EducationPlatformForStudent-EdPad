@@ -1,5 +1,5 @@
 import { Router } from "express";
-import xss from 'xss';
+import xss from "xss";
 const router = Router();
 import { coursesFunc } from "../data/index.js";
 
@@ -19,7 +19,7 @@ router.get("/:id", async (req, res) => {
         break;
       }
       if (i === currentCourse.length - 1) {
-        return res.redirect("/course");
+        return res.render("notallowed", { redirectTo: "/course" });
       }
     }
   }

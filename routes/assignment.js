@@ -17,7 +17,7 @@ router.get("/:id", async (req, res) => {
         break;
       }
       if (i === currentCourse.length - 1) {
-        return res.redirect("/course");
+        return res.render("notallowed", { redirectTo: "/course" });
       }
     }
   } catch (e) {
@@ -55,17 +55,17 @@ router
     try {
       id = validId(id);
     } catch (e) {
-      return res.redirect("/course");
+      return res.render("error", { error: "Page Not Found" });
     }
     // authorization
     try {
       const professor = await coursesFunc.getFaculty(id);
       if (req.session.user._id !== professor) {
-        return res.redirect(`/assignment/${id}`);
+        return res.redener("notallowed", { redirectTo: `/assignment/${id}` });
       }
       return res.render("assignment/newAssignment", { courseId: id });
     } catch (e) {
-      return res.status(500).redirect("/course");
+      return res.status(500).render("error", { error: "Service Error" });
     }
   });
 
@@ -77,7 +77,7 @@ router
     try {
       id = validId(id);
     } catch (e) {
-      return res.status(400).redirect("/course");
+      return res.status(400).render("error", { error: "Page Not Found" });
     }
     //authorization
     try {

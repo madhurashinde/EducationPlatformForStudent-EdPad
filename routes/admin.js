@@ -9,6 +9,8 @@ import {
   validPassword,
   checkBirthDateFormat,
   validGender,
+  validStr,
+  validId,
 } from "../helper.js";
 import { user } from "../config/mongoCollections.js";
 
@@ -21,7 +23,7 @@ router.route("/faculty").get(async (req, res) => {
     const faculties = await userFunc.allFaculty();
     return res.render("admin/faculty", { faculties: faculties });
   } catch (e) {
-    return res.status(500).render("error", { error: `${e}` });
+    return res.status(500).render("error", { error: e });
   }
 });
 
@@ -30,7 +32,7 @@ router.route("/student").get(async (req, res) => {
     const students = await userFunc.allStudent();
     return res.render("admin/student", { students: students });
   } catch (e) {
-    return res.status(500).render("error", { error: `${e}` });
+    return res.status(500).render("error", { error: e });
   }
 });
 
@@ -41,17 +43,20 @@ router.route("/course").get(async (req, res) => {
       allCourses: allCourses,
     });
   } catch (e) {
-    return res.status(500).render("error", { error: `${e}` });
+    return res.status(500).render("error", { error: e });
   }
 });
 
 router
   .route("/register")
   .get(async (req, res) => {
-    const allMajors = await adminFunc.getAllMajors();
-    return res.render("admin/register", { allMajors: allMajors });
+    try {
+      const allMajors = await adminFunc.getAllMajors();
+      return res.render("admin/register", { allMajors: allMajors });
+    } catch (e) {
+      return res.status(500).render("error", { error: e });
+    }
   })
-  // check
   .post(async (req, res) => {
     let result = {};
     try {
@@ -62,10 +67,25 @@ router
       checkBirthDateFormat(xss(req.body.birthDateInput));
       validPassword(xss(req.body.passwordInput));
       checkValidMajor(xss(req.body.majorInput));
+      if (
+        !xss(req.body.firstNameInput) ||
+        !xss(req.body.lastNameInput) ||
+        !xss(req.body.emailAddressInput) ||
+        !xss(req.body.genderInput) ||
+        !xss(req.body.birthDateInput) ||
+        !xss(req.body.passwordInput) ||
+        !xss(req.body.majorInput)
+      ) {
+        const allMajors = await adminFunc.getAllMajors();
+        return res.status(400).render("admin/register", {
+          allMajors: allMajors,
+          error: "Please fill in all fields",
+        });
+      }
       if (xss(req.body.passwordInput) !== xss(req.body.confirmPasswordInput)) {
         const allMajors = await adminFunc.getAllMajors();
 
-        res.status(400).render("admin/register", {
+        return res.status(400).render("admin/register", {
           allMajors: allMajors,
           error: "Passwords do not match",
         });
@@ -76,12 +96,7 @@ router
         emailAddress: xss(req.body.emailAddressInput),
       });
       if (fac) {
-        if (fac.role === "faculty")
-          throw `Error: Email address is registered as a faculty`;
-      }
-      if (fac) {
-        if (fac.role === "student")
-          throw `Error: Email address is already registered as student`;
+        throw "Error: Email address is already been registered";
       }
       result = await userFunc.createUser(
         xss(req.body.firstNameInput),
@@ -93,35 +108,33 @@ router
         xss(req.body.majorInput),
         "faculty"
       );
-      if (result) {
-        return res.redirect("/admin/faculty");
-      } else {
-        return res.status(500).send("Internal Server Error");
-      }
+      return res.redirect("/admin/faculty");
     } catch (e) {
-      res
-        .status(400)
-        .render("admin/register", { error: e, title: "Register Page" });
-      return;
+      return res.render("admin/register", { error: e });
     }
   });
 
 router
   .route("/createcourse")
   .get(async (req, res) => {
-    let allFacultyGot = await coursesFunc.getAllFaculty();
-    return res.render("admin/courseCreate", { allFaculty: allFacultyGot });
+    try {
+      let allFacultyGot = await coursesFunc.getAllFaculty();
+      return res.render("admin/courseCreate", { allFaculty: allFacultyGot });
+    } catch (e) {
+      return res.status(500).render("error", { error: e });
+    }
   })
-  //check
   .post(async (req, res) => {
     let courseTitle = xss(req.body.courseTitle);
     let courseId = xss(req.body.courseId);
     let description = xss(req.body.description);
     let professorObjectId = xss(req.body.facultyInput);
-
-    //validation for the same course
-
     try {
+      courseTitle = validStr(courseTitle);
+      courseId = validId(courseId);
+      description = validStr(description);
+      professorObjectId = validId(professorObjectId);
+
       let createdCourse = await coursesFunc.createCourse(
         courseTitle,
         courseId,
@@ -130,7 +143,11 @@ router
       );
       return res.redirect("/admin/course");
     } catch (e) {
-      res.status(400).json({ error: "having error" });
+      let allFacultyGot = await coursesFunc.getAllFaculty();
+      return res.render("admin/courseCreate", {
+        allFaculty: allFacultyGot,
+        error: e,
+      });
     }
   });
 
@@ -141,7 +158,7 @@ router
       const status = await adminFunc.registrationStatus();
       return res.render("admin/openRegister", { status: status });
     } catch (e) {
-      res.status(500).render("error", { error: `${e}` });
+      res.status(500).render("error", { error: e });
     }
   })
   .post(async (req, res) => {
@@ -149,7 +166,7 @@ router
       await adminFunc.changeStatus();
       return res.redirect("/admin/openregister");
     } catch (e) {
-      res.status(500).render("error", { error: `${e}` });
+      res.status(500).render("error", { error: e });
     }
   });
 
@@ -158,13 +175,12 @@ router
   .get((req, res) => {
     return res.render("admin/archive");
   })
-  //check
   .post(async (req, res) => {
     try {
       await adminFunc.archive();
       return res.redirect("/admin/archive");
     } catch (e) {
-      res.status(500).render("error", { error: `${e}` });
+      res.status(500).render("error", { error: e });
     }
   });
 

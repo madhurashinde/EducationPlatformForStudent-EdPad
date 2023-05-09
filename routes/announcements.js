@@ -15,10 +15,12 @@ router.route("/:courseId").get(async (req, res) => {
       if (currentCourse[i]._id.toString() === course) {
         break;
       }
-      if (i === currentCourse.length - 1) return res.redirect("/course");
+      if (i === currentCourse.length - 1) {
+        return res.render("notallowed", { redirectTo: "/course" });
+      }
     }
   } catch (e) {
-    return res.status(500).render("error", { error: `${e}` });
+    return res.status(500).render("error", { error: e });
   }
 
   try {
@@ -42,7 +44,7 @@ router.route("/:courseId").get(async (req, res) => {
       });
     }
   } catch (e) {
-    return res.status(500).render("error", { error: `${e}` });
+    return res.status(500).render("error", { error: e });
   }
 });
 
@@ -55,18 +57,22 @@ router
     try {
       courseId = validId(courseId);
     } catch (e) {
-      return res.status(400).render("error", { error: `${e}` });
+      return res.status(400).render("error", { error: e });
     }
 
     try {
       const professor = await coursesFunc.getFaculty(courseId);
       if (req.session.user._id !== professor) {
-        return res.render(`notallowed`);
+        return res.render(`notallowed`, {
+          redirectTo: `/announcement/${courseId}`,
+        });
       }
       return res.render(`announcements/newAnnouncement`, {
         course: courseId,
       });
-    } catch (e) {}
+    } catch (e) {
+      return res.status(500).render("error", { error: e });
+    }
   })
   // only the professor of this course is allowed
   .post(async (req, res) => {
@@ -79,7 +85,7 @@ router
         return res.render("notallowed");
       }
     } catch (e) {
-      return res.status(500).render("error", { error: `${e}` });
+      return res.status(500).render("error", { error: e });
     }
 
     try {
@@ -129,11 +135,11 @@ router
           break;
         }
         if (i === currentCourse.length - 1) {
-          return res.redirect("/course");
+          return res.render("notallowed", { redirectTo: "/course" });
         }
       }
     } catch (e) {
-      return res.status(500).redirect(`/course`);
+      return res.render("error");
     }
 
     try {
@@ -168,7 +174,7 @@ router
         return res.redirect(`/announcement/detail/${id}`);
       }
     } catch (e) {
-      return res.status(500).redirect(`/announcement/${courseId}`);
+      return res.status(500).render("error");
     }
 
     // operation

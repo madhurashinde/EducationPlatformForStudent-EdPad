@@ -1,6 +1,6 @@
 # EducationPlatformForStudent-EdPad
 
-Team Members
+**Team Members**
 
 - Luoyi Fu
 - Madhura Sanjay Shinde
@@ -11,28 +11,45 @@ Team Members
 
 **EdPad** is an online educational platform, like Canvas, that provides students with a user-friendly and efficient way of managing their learning experience with a few additional features like quizlets. The platform will serve as a centralized hub for students and teachers, facilitating communication, collaboration, and organization.
 
-## Instructions to run the application
+## To run the application
 
-seed data: npm run seed
-run project: npm start
+1. Install all required NPM packages
+
+```sh
+npm i
+```
+
+2. Seed data:
+
+```sh
+npm run seed
+```
+
+3. Run project:
+
+```sh
+npm start
+```
 
 ## Accounts can be used to run the program
 
 **Admin:**
+
 emailAddress: admin1@admin1.com
+
 Password: Password123!
 
 **Faculty:**
+
 emailAddress: emily@johnson.com
+
 Password: Password123!
 
-**Admin:**
+**Student:**
+
 emailAddress: michael@davis.com
+
 Password: Password123!
-
-## Github Repo
-
-https://github.com/madhurashinde/EducationPlatformForStudent-EdPad
 
 ## Feature Introduction
 
@@ -60,7 +77,7 @@ https://github.com/madhurashinde/EducationPlatformForStudent-EdPad
 **Student Features:**
 
 1. Create an account and log in
-2. Register for new courses 
+2. Register for new courses
 3. View their completed courses from previous semesters
 4. Access courses in the current semester
 5. After accessing a course, the student will be able to:
@@ -74,3 +91,7 @@ https://github.com/madhurashinde/EducationPlatformForStudent-EdPad
 
 1. School library with academic resources
 2. Quizlet section for studying and reviewing material.
+
+## Github Repo
+
+https://github.com/madhurashinde/EducationPlatformForStudent-EdPad

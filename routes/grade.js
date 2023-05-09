@@ -41,38 +41,6 @@ router.route("/:id").get(async (req, res) => {
     });
   } else {
     try {
-      //     const studentId = req.session.user._id;
-      //     const allGrade = await gradeFunc.getStudentScore(courseId, studentId);
-      //     const course = await coursesFunc.getCourseByObjectID(courseId);
-      //     let totalScoreGet = 0;
-      //     let totalScore = 0;
-      //     let afterCalTotalScoreGet = 0;
-      //     const assignment = Object.keys(allGrade);
-      //     let studentName = allGrade[assignment[0]][0];
-      //     for (let i = 0; i < assignment.length; i++) {
-      //       if (typeof allGrade[assignment[i]][3] === "number") {
-      //         totalScoreGet += allGrade[assignment[i]][3];
-      //         totalScore += allGrade[assignment[i]][2];
-      //       }
-      //     }
-      //     if (totalScore > 0) {
-      //       afterCalTotalScoreGet =
-      //         Math.round((totalScoreGet / totalScore) * 10000) / 100;
-      //     }
-      //     return res.render("grade/grade", {
-      //       courseId: course._id,
-      //       course: course.courseTitle,
-      //       student: studentName,
-      //       studentId: studentId,
-      //       allGrade: allGrade,
-      //       totalScore: afterCalTotalScoreGet,
-      //     });
-      //   } catch (e) {
-      //     return res.json({ error: e });
-      //   }
-      // }
-
-      // try {
       const studentId = req.session.user._id;
       const allGrade = await gradeFunc.getStudentScore(courseId, studentId);
       let studentName = await userFunc.getNameById(studentId);
@@ -93,7 +61,7 @@ router.route("/:id").get(async (req, res) => {
           Math.round((totalScoreGet / totalScore) * 10000) / 100;
       }
       return res.render("grade/grade", {
-        faculty: true,
+        faculty: false,
         courseId: courseId,
         course: course.courseTitle,
         student: studentName,
@@ -122,7 +90,7 @@ router.route("/detail/:id").post(async (req, res) => {
         break;
       }
       if (i === currentCourse.length - 1) {
-        return res.redirect(`grade/${course}`);
+        return res.render("notallowed", { redirectTo: `grade/${course}` });
       }
     }
   }

@@ -81,7 +81,7 @@ router.get("/:id", async (req, res) => {
   try {
     courseId = validId(courseId);
   } catch (e) {
-    return res.status(400).render("error", { error: `${e}` });
+    return res.status(400).render("error", { error: "Page Not Found" });
   }
   if (
     req.session.user.role == "student" ||
@@ -92,7 +92,7 @@ router.get("/:id", async (req, res) => {
     );
 
     if (!currentCourse.some((course) => course._id.toString() === courseId)) {
-      return res.render("not allowed");
+      return res.render("notallowed", { redirectTo: "/course" });
     }
     // this will not let user to see the completed course when they have no current course.
   }
@@ -116,15 +116,31 @@ router.get("/:id", async (req, res) => {
 router
   .route("/:id/survey")
   .get(async (req, res) => {
+    let courseId = xss(req.params.id);
     if (req.session.user.role !== "student") {
       return res.render("notallowed", { redirectTo: `/course/${courseId}` });
     }
-    let courseId = xss(req.params.id);
     //validation
     try {
       courseId = validId(courseId);
     } catch (e) {
-      return res.status(400).render("error", { error: `${e}` });
+      return res.status(400).render("error", { error: "Page Not Found" });
+    }
+
+    const studentList = await coursesFunc.getStudentList(courseId);
+    if (studentList.length === 0)
+      return res.render("notallowed", {
+        redirectTo: "/course",
+      });
+    for (let i = 0; i < studentList.length; i++) {
+      if (studentList[i]._id.toString() === req.session.user._id) {
+        break;
+      }
+      if (i === studentList.length - 1) {
+        return res.render("notallowed", {
+          redirectTo: "/course",
+        });
+      }
     }
     return res.render("courses/survey", {
       courseObjectID: courseId,

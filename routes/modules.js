@@ -1,5 +1,5 @@
 import { Router } from "express";
-import xss from 'xss';
+import xss from "xss";
 import express from "express";
 const router = Router();
 import { coursesFunc, modulesData } from "../data/index.js";
@@ -21,7 +21,7 @@ router.route("/:courseId").get(async (req, res) => {
         break;
       }
       if (i === currentCourse.length - 1) {
-        return res.redirect("/course");
+        return res.render("notallowed", { redirectTo: "/course" });
       }
     }
   }
@@ -67,17 +67,25 @@ router
       req.session.user.role == "student" ||
       req.session.user.role == "faculty"
     ) {
-      const courseId = await modulesData.getCourseId(id);
-      const currentCourse = await coursesFunc.getCurrentCourse(
-        req.session.user._id
-      );
-      for (let i = 0; i < currentCourse.length; i++) {
-        if (currentCourse[i]._id.toString() === courseId) {
-          break;
+      try {
+        const courseId = await modulesData.getCourseId(id);
+        const currentCourse = await coursesFunc.getCurrentCourse(
+          req.session.user._id
+        );
+        for (let i = 0; i < currentCourse.length; i++) {
+          if (currentCourse[i]._id.toString() === courseId) {
+            break;
+          }
+          if (i === currentCourse.length - 1) {
+            return res.render("notallowed", {
+              redirectTo: `/module/${courseId}`,
+            });
+          }
         }
-        if (i === currentCourse.length - 1) {
-          return res.redirect(`/module/${courseId}`);
-        }
+      } catch (e) {
+        return res.render("error", {
+          error: "Page Not Found",
+        });
       }
     }
 

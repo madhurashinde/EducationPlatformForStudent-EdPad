@@ -1,2 +1,7 @@
 <div>You are not allowed authorized to this page</div>
+{{#if redirectTo}}
 <a href="{{redirectTo}}">Click here to go back</a>
+{{else}}
+<a href="/course">Click here to go back</a>
+{{/if}}
+
