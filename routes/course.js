@@ -43,7 +43,7 @@ router
   .get(async (req, res) => {
     // only students allowed
     if (req.session.user.role !== "student") {
-      return res.redirect("/course");
+      return res.render("notallowed", { redirectTo: "/course" });
     }
     let getAllCourses = await coursesFunc.getAll();
     return res.render("courses/courseRegister", {
@@ -81,7 +81,7 @@ router.get("/:id", async (req, res) => {
   try {
     courseId = validId(courseId);
   } catch (e) {
-    return res.status(400).render("error", { error: "Page Not Found" });
+    return res.status(400).render("error", { error: `${e}` });
   }
   if (
     req.session.user.role == "student" ||
@@ -118,13 +118,15 @@ router
   .get(async (req, res) => {
     let courseId = xss(req.params.id);
     if (req.session.user.role !== "student") {
-      return res.status(403).render("notallowed", { redirectTo: `/course/${courseId}` });
+      return res
+        .status(403)
+        .render("notallowed", { redirectTo: `/course/${courseId}` });
     }
     //validation
     try {
       courseId = validId(courseId);
     } catch (e) {
-      return res.status(400).render("error", { error: "Page Not Found" });
+      return res.status(400).render("error", { error: `${e}` });
     }
 
     const studentList = await coursesFunc.getStudentList(courseId);
@@ -148,7 +150,9 @@ router
   })
   .post(async (req, res) => {
     if (req.session.user.role !== "student") {
-      return res.status(403).render("notallowed", { redirectTo: `/course/${courseId}` });
+      return res
+        .status(403)
+        .render("notallowed", { redirectTo: `/course/${courseId}` });
     }
     let courseId = xss(req.params.id);
     let user = req.session.user;
@@ -166,7 +170,9 @@ router
       const userWithSurvey = await createSurvey(courseId, user, survey);
 
       if (userWithSurvey.error) {
-        return res.status(403).render("notallowed", { redirectTo: `/course/${courseId}` });
+        return res
+          .status(403)
+          .render("notallowed", { redirectTo: `/course/${courseId}` });
       }
       return res.redirect(`/courses/${courseId}`);
     } catch (error) {

@@ -10,12 +10,17 @@ import {
   userFunc,
 } from "../data/index.js";
 import { validId, nonNegInt } from "../helper.js";
-import user from "../data/user.js";
 
 // id = courseId, to check student's grade
 router.route("/:id").get(async (req, res) => {
   // if the student/faculty is not in this course, do not let pass
   let courseId = xss(req.params.id);
+  try {
+    courseId = validId(courseId);
+  } catch (e) {
+    return res.render("error", { error: e });
+  }
+
   if (
     req.session.user.role == "student" ||
     req.session.user.role == "faculty"
@@ -32,16 +37,15 @@ router.route("/:id").get(async (req, res) => {
       }
     }
   }
-  const role = req.session.user.role;
-  if (role !== "student") {
-    const allStudent = await coursesFunc.getStudentList(courseId);
-    // console.log(allStudent);
-    return res.render("grade/courseGrade", {
-      courseId: courseId,
-      allStudent: allStudent,
-    });
-  } else {
-    try {
+  try {
+    const role = req.session.user.role;
+    if (role !== "student") {
+      const allStudent = await coursesFunc.getStudentList(courseId);
+      return res.render("grade/courseGrade", {
+        courseId: courseId,
+        allStudent: allStudent,
+      });
+    } else {
       const studentId = req.session.user._id;
       const allGrade = await gradeFunc.getStudentScore(courseId, studentId);
       let studentName = await userFunc.getNameById(studentId);
@@ -69,9 +73,9 @@ router.route("/:id").get(async (req, res) => {
         allGrade: allGrade,
         totalScore: afterCalTotalScoreGet,
       });
-    } catch (e) {
-      return res.json({ error: `${e}` });
     }
+  } catch (e) {
+    return res.render("error", { error: `${e}` });
   }
 });
 
@@ -91,7 +95,9 @@ router.route("/detail/:id").post(async (req, res) => {
         break;
       }
       if (i === currentCourse.length - 1) {
-        return res.status(403).render("notallowed", { redirectTo: `grade/${course}` });
+        return res
+          .status(403)
+          .render("notallowed", { redirectTo: `grade/${course}` });
       }
     }
   }
@@ -115,7 +121,7 @@ router.route("/detail/:id").post(async (req, res) => {
     await gradeFunc.grade(id, grade.toString());
     return res.redirect(`/assignment/${assignmentId}/allSubmission`);
   } catch (e) {
-    return res.json({ error: `${e}` });
+    return res.render("error", { error: `${e}` });
   }
 });
 
@@ -124,7 +130,9 @@ router.route("/:courseId/:studentId").get(async (req, res) => {
   let courseId = xss(req.params.courseId);
   const professor = await coursesFunc.getFaculty(courseId);
   if (req.session.user._id !== professor && req.session.user.role !== "admin") {
-    return res.status(403).render("notallowed", { redirectTo: `/grade/${courseId}` });
+    return res
+      .status(403)
+      .render("notallowed", { redirectTo: `/grade/${courseId}` });
   }
 
   try {
@@ -157,7 +165,7 @@ router.route("/:courseId/:studentId").get(async (req, res) => {
       totalScore: afterCalTotalScoreGet,
     });
   } catch (e) {
-    return res.json({ error: `${e}` });
+    return res.render("error", { error: `${e}` });
   }
 });
 

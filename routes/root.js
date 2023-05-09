@@ -12,7 +12,7 @@ import {
   validGender,
 } from "../helper.js";
 import { user } from "../config/mongoCollections.js";
-import { adminFunc } from "../data/index.js"
+import { adminFunc } from "../data/index.js";
 
 router
   .route("/register")
@@ -26,7 +26,7 @@ router
     let all_majors = await adminFunc.getAllMajors();
     return res.render("login/register", {
       title: "Register Page",
-      allMajors: all_majors
+      allMajors: all_majors,
     });
   })
   //check
@@ -46,7 +46,7 @@ router
       checkValidMajor(xss(req.body.majorInput));
       if (xss(req.body.passwordInput) !== xss(req.body.confirmPasswordInput)) {
         let all_majors = await adminFunc.getAllMajors();
-        res.status(400).render("login/register", {
+        return res.status(400).render("login/register", {
           allMajors: all_majors,
           error: "Passwords do not match",
           title: "Register Page",
@@ -57,11 +57,11 @@ router
         emailAddress: xss(req.body.emailAddressInput),
       });
       if (fac) {
-        if (fac.role === 'faculty')
+        if (fac.role === "faculty")
           throw `Error: Email address is registered as a faculty`;
       }
       if (fac) {
-        if (fac.role === 'student')
+        if (fac.role === "student")
           throw `Error: Email address is already registered as student`;
       }
       result = await userFunc.createUser(
@@ -77,11 +77,17 @@ router
       if (result) {
         return res.redirect("/login");
       } else {
-        res.status(500).send("Internal Server Error");
+        return res.status(500).send("Internal Server Error");
       }
     } catch (e) {
       let all_majors = await adminFunc.getAllMajors();
-      res.status(400).render("login/register", {title: "Register Page",allMajors: all_majors, error: e });
+      return res
+        .status(400)
+        .render("login/register", {
+          title: "Register Page",
+          allMajors: all_majors,
+          error: e,
+        });
       return;
     }
   });
@@ -142,7 +148,7 @@ router.route("/logout").get((req, res) => {
     return res.redirect("/login");
   }
   req.session.destroy();
-  res.render("login/logout", { title: "Logout Page" });
+  return res.render("login/logout", { title: "Logout Page" });
 });
 
 export default router;

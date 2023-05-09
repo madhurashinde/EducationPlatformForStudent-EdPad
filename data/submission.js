@@ -36,11 +36,25 @@ const createSubmission = async (assignmentId, studentId, submitFile) => {
     scoreGet: null,
   };
 
-  const insertInfo = await assignmentCollection.updateOne(
+  const ifSubmit = await assignmentCollection.findOne({
+    $and: [{ _id: newAssignmentId }, { "submission.studentId": newStudentId }],
+  });
+
+  if (ifSubmit) {
+    const deletionInfo = await assignmentCollection.updateOne(
+      { _id: newAssignmentId },
+      { $pull: { submission: { studentId: newStudentId } } }
+    );
+    if (!deletionInfo.acknowledged) {
+      throw "Can not delete current assignment";
+    }
+  }
+
+  const insertInfo = await assignmentCollection.findOneAndUpdate(
     { _id: newAssignmentId },
     { $addToSet: { submission: newSubmission } }
   );
-  if (!insertInfo.acknowledged) throw "Could not add submission";
+  if (!insertInfo.lastErrorObject.n === 0) throw "Could not add submission";
 
   const submission = await getSubmission(assignmentId, studentId);
   return submission;

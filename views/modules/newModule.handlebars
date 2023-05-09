@@ -1,7 +1,7 @@
 <button onclick="location.href='/module/{{course}}'">Cancel</button>
 
 
-<form id="new-mod" method="post" action="/module/new" enctype="multipart/form-data">
+<form id="new-mod" method="post" action="/module/${{course}}/new" enctype="multipart/form-data">
     <label for="courseId" hidden> CourseId</label>
     <input id="courseId" name="courseId" value="{{course}}" hidden>
     <label for="mod_title">Module title</label>
