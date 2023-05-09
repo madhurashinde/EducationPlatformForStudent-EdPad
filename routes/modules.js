@@ -1,9 +1,8 @@
 import { Router } from "express";
 import xss from "xss";
-import express from "express";
 const router = Router();
 import { coursesFunc, modulesData } from "../data/index.js";
-import { validId, validStr } from "../helper.js";
+import { validId } from "../helper.js";
 
 //ok
 router.route("/:courseId").get(async (req, res) => {
@@ -29,20 +28,20 @@ router.route("/:courseId").get(async (req, res) => {
   try {
     const moduleList = await modulesData.getAll(course);
     if (req.session.user.role == "faculty") {
-      res.render("modules/allModules", {
+      return res.render("modules/allModules", {
         moduleList: moduleList,
         faculty: true,
         courseId: course,
       });
     } else {
-      res.render("modules/allModules", {
+      return res.render("modules/allModules", {
         moduleList: moduleList,
         faculty: false,
         courseId: course,
       });
     }
   } catch (e) {
-    res.status(500).json({ error: e });
+    return res.status(500).json({ error: e });
   }
 });
 
@@ -83,22 +82,20 @@ router
           }
         }
       } catch (e) {
-        return res.status(404).render("error", {
-          error: "Page Not Found",
-        });
+        return res.status(404).render("error", { error: e });
       }
     }
 
     try {
       const mod = await modulesData.get(id);
-      res.render("modules/moduleDetail", {
+      return res.render("modules/moduleDetail", {
         title: mod.title,
         description: mod.description,
         fileURL: mod.fileURL,
         course: mod.courseId,
       });
     } catch (e) {
-      res.status(404).render("modules/allModules", { error: `${e}` });
+      return res.status(500).render("error", { error: e });
     }
   })
   .delete(async (req, res) => {
@@ -116,10 +113,10 @@ router
     try {
       let deletedMod = await modulesData.remove(id);
       if (deletedMod) {
-        res.redirect(`/module/${courseId}`);
+        return res.redirect(`/module/${courseId}`);
       }
     } catch (e) {
-      res.status(404).redirect(`/module/${courseId}`);
+      return res.status(404).redirect(`/module/${courseId}`);
     }
   });
 

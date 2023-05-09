@@ -155,12 +155,12 @@ function checkFileType(file, cb) {
   } else {
     cb("Error: File type not supported!");
   }
-  console.log("check file type:" + file.name, file);
 }
 
 //module
 // only the professor of this course is allowed
-app.post("/module/new", (req, res) => {
+app.post("/module/:id/new", (req, res) => {
+  const courseId = xss(req.params.id);
   const storage = multer.diskStorage({
     destination: "./public/uploads/module",
     filename: function (req, file, cb) {
@@ -185,14 +185,16 @@ app.post("/module/new", (req, res) => {
       var description = validStr(xss(req.body.mod_description));
       var mod_file = validStr(xss(req.file.filename));
       var courseId = validId(xss(req.body.courseId));
-      if (!title || !description || !courseId || !mod_file)
-        throw "All fields need to have valid values";
-    } catch (e) {}
+    } catch (e) {
+      // return res.status(400).json({ msg: err });
+      return res.redirect(`/module/${courseId}/newModule`);
+    }
     if (err) {
-      return res.status(400).json({ msg: err });
+      // return res.status(400).json({ msg: "Error: No file selected!" });
+      return res.redirect(`/module/${courseId}/newModule`);
     } else {
       if (req.file == undefined) {
-        return res.status(400).json({ msg: "Error: No file selected!" });
+        return res.redirect(`/module/${courseId}/newModule`);
       } else {
         try {
           const professor = await coursesFunc.getFaculty(courseId);
@@ -201,7 +203,9 @@ app.post("/module/new", (req, res) => {
           }
           await modulesData.create(title, description, mod_file, courseId);
           return res.redirect(`/module/${courseId}`);
-        } catch (e) {}
+        } catch (e) {
+          return res.render("error");
+        }
       }
     }
   });
@@ -218,14 +222,15 @@ app.get("/module/download/:filename", (req, res) => {
   );
   res.download(filePath, fileName, (err) => {
     if (err) {
-      res.status(404).json({ message: "File not found" });
+      res.status(404).render("error", { error: "File not found" });
     }
   });
 });
 
 // assignment
 // only the professor of this course is allowed
-app.post("/assignment/new", (req, res) => {
+app.post("/assignment/:id/new", (req, res) => {
+  const courseId = xss(req.params.id);
   const storage = multer.diskStorage({
     destination: "./public/uploads/assignment",
     filename: function (req, file, cb) {
@@ -246,10 +251,16 @@ app.post("/assignment/new", (req, res) => {
 
   upload(req, res, async (err) => {
     if (err) {
-      return res.status(400).json({ msg: err });
+      // return res.status(400).json({ msg: err });
+      return res.render("error", { error: err });
+
+      // return res.redirect(`/assignment/${courseId}/newAssignment`);
     } else {
       if (req.file == undefined) {
-        return res.status(400).json({ msg: "Error: No file selected!" });
+        return res.render("error", { error: err });
+
+        // return res.status(400).json({ msg: "Error: No file selected!" });
+        // return res.redirect(`/assignment/${courseId}/newAssignment`);
       } else {
         try {
           const id = validId(xss(req.body.courseId));
@@ -262,7 +273,6 @@ app.post("/assignment/new", (req, res) => {
             throw "must provide instruction of the assignment by text or file";
           const score = nonNegInt(xss(req.body.score));
           const professor = await coursesFunc.getFaculty(id);
-          console.log(professor, req.session.user._id);
           if (professor !== req.session.user._id) {
             return res.redirect(`/assignment/${id}`);
           }
@@ -277,7 +287,11 @@ app.post("/assignment/new", (req, res) => {
             score.toString()
           );
           return res.redirect(`/assignment/${id}`);
-        } catch (e) {}
+        } catch (e) {
+          return res.render("error", { error: err });
+
+          // return res.redirect(`/assignment/${courseId}/newAssignment`);
+        }
       }
     }
   });
@@ -294,7 +308,8 @@ app.get("/assignment/download/:filename", (req, res) => {
   );
   res.download(filePath, fileName, (err) => {
     if (err) {
-      res.status(404).json({ message: "File not found" });
+      return res.render("error", { error: err });
+      // res.status(404).json({ message: "File not found" });
     }
   });
 });
@@ -323,11 +338,13 @@ app.post("/submission/:id/new", (req, res) => {
 
   upload(req, res, async (err) => {
     if (err) {
-      return res.status(400).json({ msg: err });
+      // return res.status(400).json({ msg: err });
+      return res.render("error", { error: err });
     } else {
       if (req.file == undefined) {
-        console.log("file undefined...");
-        return res.status(400).json({ msg: "Error: No file selected!" });
+        return res.render("error", { error: err });
+
+        // return res.status(400).json({ msg: "Error: No file selected!" });
       } else {
         const submitFile = req.file.filename;
         const studentId = req.session.user._id;
@@ -353,7 +370,9 @@ app.get("/submission/download/:filename", (req, res) => {
   );
   res.download(filePath, fileName, (err) => {
     if (err) {
-      res.status(404).json({ message: "File not found" });
+      return res.render("error", { error: err });
+
+      // res.status(404).json({ message: "File not found" });
     }
   });
 });

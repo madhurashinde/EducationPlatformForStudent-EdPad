@@ -53,10 +53,11 @@ if (startSubmission) {
         };
 
         $.ajax(requestConfig).then(function (responseMessage) {
+          console.log(responseMessage);
           let element = $(`<div id="start-submission-container">
                 <p>Submitted</p>
                 <p>Your File Link:</p>
-                <a target="_blank" href="/${responseMessage.submission.submitFile}"> DownLoad File</a>
+                <a target="_blank" href="/submission/download/${responseMessage.submission.submitFile}"> DownLoad File</a>
             </div>`);
           $("#form-container").empty();
           $("#error-container").empty();

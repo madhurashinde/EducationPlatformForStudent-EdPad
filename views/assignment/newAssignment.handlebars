@@ -1,5 +1,5 @@
 <button onClick="location.href='/assignment/{{courseId}}';">Back</button>
-<form id="form" onsubmit="return confirm('Confirm?');" action="/assignment/new" method="post" enctype="multipart/form-data">
+<form id="form" onsubmit="return confirm('Confirm?');" action="/assignment/{{courseId}}/new" method="post" enctype="multipart/form-data">
     <label for="courseId" hidden>CourseId:</label>
     <input type="text" name="courseId" value="{{courseId}}" hidden><br>
     <label for="title">Title:</label>

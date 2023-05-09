@@ -43,7 +43,7 @@ router.get("/:id", async (req, res) => {
       faculty: faculty,
     });
   } catch (e) {
-    return res.status(500).redirect("/course");
+    return res.status(500).render("error", { error: e });
   }
 });
 
@@ -55,17 +55,19 @@ router
     try {
       id = validId(id);
     } catch (e) {
-      return res.status(404).render("error", { error: "Page Not Found" });
+      return res.status(404).render("error", { error: e });
     }
     // authorization
     try {
       const professor = await coursesFunc.getFaculty(id);
       if (req.session.user._id !== professor) {
-        return res.status(403).render("notallowed", { redirectTo: `/assignment/${id}` });
+        return res
+          .status(403)
+          .render("notallowed", { redirectTo: `/assignment/${id}` });
       }
       return res.render("assignment/newAssignment", { courseId: id });
     } catch (e) {
-      return res.status(500).render("error", { error: "Service Error" });
+      return res.status(500).render("error", { error: e });
     }
   });
 
@@ -77,7 +79,7 @@ router
     try {
       id = validId(id);
     } catch (e) {
-      return res.status(400).render("error", { error: "Page Not Found" });
+      return res.status(400).render("error", { error: e });
     }
     //authorization
     try {
@@ -126,19 +128,19 @@ router
     try {
       id = validId(id);
     } catch (e) {
-      return res.status(400).redirect("/course");
+      return res.status(400).render("error", { error: e });
     }
     try {
       const course = await assignmentFunc.getCourseId(id);
       const professor = await coursesFunc.getFaculty(course);
       if (req.session.user._id !== professor) {
-        return res.redirect(`/assignment/${id}`);
+        return res.render("notallowed", { redirectTo: `/assignment/${id}` });
       }
       const courseId = (await assignmentFunc.getAssignment(id)).courseId;
       await assignmentFunc.removeAssignment(id);
       return res.redirect(`/assignment/${courseId}`);
     } catch (e) {
-      return res.status(500).redirect("/course");
+      return res.status(500).render("error", { error: e });
     }
   });
 
@@ -147,13 +149,15 @@ router.route("/:id/allSubmission").get(async (req, res) => {
   try {
     id = validId(id);
   } catch (e) {
-    res.status(400).redirect("/course");
+    return res.status(400).render("error", { error: e });
   }
   try {
     const course = await assignmentFunc.getCourseId(id);
     const professor = await coursesFunc.getFaculty(course);
     if (req.session.user._id !== professor) {
-      return res.redirect(`/assignment/detail/${id}`);
+      return res.render("notallowed", {
+        redirectTo: `/assignment/detail/${id}`,
+      });
     }
     const submissionAll = await submissionFunc.getAllSubmission(id);
     const totalScore = submissionAll[0];
@@ -164,7 +168,9 @@ router.route("/:id/allSubmission").get(async (req, res) => {
       allSubmission: allSubmission,
     });
   } catch (e) {
-    res.status(500).redirect(`/assignment/detail/${id}`);
+    return res
+      .status(500)
+      .render("error", { redirectTo: `/assignment/detail/${id}` });
   }
 });
 
