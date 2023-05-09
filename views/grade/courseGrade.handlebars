@@ -1,7 +1,19 @@
 <button onclick="location.href='/course/{{courseId}}'"> Back</button>
 
-{{#each allGrades}}
+
+{{!-- {{#if allGrades.length}} --}}
+<div>
+    {{#each allGrades}}
+
     <p>Student: {{this.[1]}}</p>
     <p>Score: {{this.[0]}}/100</p>
     <button onclick="location.href='/grade/{{../courseId}}/{{@key}}';"> Detail</button>
-{{/each}}
+
+    {{/each}}
+</div>
+
+{{!-- {{else}}
+<div>
+    <p>No grade exists yet</p>
+</div>
+{{/if}} --}}

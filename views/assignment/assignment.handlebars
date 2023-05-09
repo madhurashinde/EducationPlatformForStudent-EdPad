@@ -12,8 +12,13 @@
         <h2>{{title}}</h2>
         <p>Due Date: {{dueDate}} at {{dueTime}}</p>
         <p>Total score: {{score}}</p>
-        <button  onclick="location.href='/assignment/detail/{{_id}}';">Details</button>
+        <button onclick="location.href='/assignment/detail/{{_id}}';">Details</button>
     </div>
     {{/each}}
+</div>
+
+{{else}}
+<div>
+    <p>No assignment yet</p>
 </div>
 {{/if}}

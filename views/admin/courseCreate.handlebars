@@ -2,7 +2,7 @@
 
 <h1>Create New Course</h1>
 <div>{{error}}</div>
-<div id="error" class="error" hidden>I'm an error. I will change through Client-Side JS</div>
+<div id="error" class="error" hidden> </div>
 <form id="course-registration-form" method="POST" action="/admin/createcourse">
     <label for="courseTitle">Course title:</label>
     <input type="text" id="courseTitle" name="courseTitle" required>
@@ -24,8 +24,13 @@
 </form>
 
 
-{{#if error}}
+{{!-- {{#if error}}
 <p class="error">{{error}}</p>
-{{/if}}
+{{/if}} --}}
+
+<div class="form-group hidden" id="error-container">
+    <div class="alert alert-danger text-goes-here">
+    </div>
+</div>
 
 <script src="../../public/js/createCourseCheck.js"></script>

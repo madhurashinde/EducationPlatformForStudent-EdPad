@@ -3,8 +3,8 @@
 } */
 
 .inputClass {
-    border: 3.8px solid red
-}   
+    border: 3.8px solid rgb(228, 0, 0)
+}
 
 
 /* https://www.youtube.com/watch?v=6OLYaQ7AUXA&t=13s */
@@ -13,21 +13,25 @@
     justify-content: center;
     flex-direction: row;
     flex-wrap: wrap;
-  }
+}
+
 .box.animate .content {
     transform: rotateY(180deg);
 }
+
 .box,
-.front, 
+.front,
 .back {
-	width: 345px;
-	height: 400px;
+    width: 345px;
+    height: 400px;
 }
+
 .content {
     transition: 0.8s;
     transform-style: preserve-3d;
     position: relative;
 }
+
 .front,
 .back {
     backface-visibility: hidden;
@@ -35,59 +39,64 @@
     top: 0;
     left: 0;
 }
+
 .front {
     z-index: 2;
     transform: rotateY(0deg);
     display: flex;
-	justify-content: center;
-	align-items: center;
-	text-align: center;
-	/* padding: 15px; */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    /* padding: 15px; */
     background-color: beige;
 }
+
 .back {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	text-align: center;
-	/* padding: 15px; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    /* padding: 15px; */
     transform: rotateY(180deg);
     background-color: beige;
 }
 
 .back-content {
-	/* border: 10px inset #ddd; */
-	padding: 120px 5px;
+    /* border: 10px inset #ddd; */
+    padding: 120px 5px;
 }
+
 .back-content h2 {
-	/* font-family: 'Arizonia'; */
-	font-size: 30px;
+    /* font-family: 'Arizonia'; */
+    font-size: 30px;
 }
 
 header {
     margin-top: 20px;
     margin-bottom: 20px;
-  }
+}
+
 /* Style the heading */
 h1 {
     text-align: center;
     font-size: 2rem;
     margin-bottom: 1rem;
-  }
-  h2 {
+}
+
+h2 {
     text-align: center;
     font-size: 2rem;
     margin-bottom: 1rem;
-  }
-  
-  /* Style the error message */
-  #error {
-    color: red;
+}
+
+/* Style the error message */
+#error {
+    color: rgb(238, 0, 0);
     margin-bottom: 1rem;
-  }
-  
-  /* Style the form container */
-  main {
+}
+
+/* Style the form container */
+main {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -97,40 +106,40 @@ h1 {
     padding: 2rem;
     background-color: #f2f2f2;
     border-radius: 5px;
-  }
-  
-  /* Style the form labels and inputs */
-  label {
+}
+
+/* Style the form labels and inputs */
+label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: bold;
-  }
-  
-  input[type="email"],
-  input[type="password"] {
+}
+
+input[type="email"],
+input[type="password"] {
     padding: 0.5rem;
     border-radius: 3px;
     border: 1px solid #ccc;
     width: 100%;
     margin-bottom: 1rem;
-  }
-
-  input[type="text"],
-  input[type="email"],
-  input[type="password"],
-  input[type="date"],
-select {
-  padding: 0.5rem;
-  border-radius: 3px;
-  border: 1px solid #ccc;
-  width: 100%;
-  margin-bottom: 1rem;
 }
 
-  
-  /* Style the submit button */
-  button[type="submit"] {
-    background-color: #4CAF50;
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+select {
+    padding: 0.5rem;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+
+/* Style the submit button */
+button[type="submit"] {
+    background-color: #005f00;
     color: white;
     padding: 0.5rem 1rem;
     border: none;
@@ -139,17 +148,18 @@ select {
     margin-top: 1rem;
     font-size: 1.2rem;
     transition: background-color 0.3s ease-in-out;
-  }
-  
+}
 
-  /* Style the register link */
-  a {
+
+/* Style the register link */
+a {
     display: block;
     text-align: center;
     margin-top: 1rem;
     color: blue;
-  }
-  form {
+}
+
+form {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -159,14 +169,15 @@ select {
     padding: 2rem;
     background-color: #f2f2f2;
     border-radius: 5px;
-  }
+}
 
 select {
-  height: rem;
+    height: rem;
 }
 
 button {
-    background-color: #4CAF50; /* Green */
+    background-color: #005f03;
+    /* Green */
     border: none;
     color: white;
     padding: 10px 20px;
@@ -177,39 +188,42 @@ button {
     margin: 10px 0;
     cursor: pointer;
     border-radius: 5px;
-  }
-  
-  button:hover {
-    background-color: #3e8e41; /* Darker green */
-  }
-  button.detail {
-    background-color: #008CBA; /* Blue */
-  }
-  
-  button.detail:hover {
-    background-color: #006080; /* Darker blue */
-  }
-  /* Style for h3 heading */
-  h3 {
+}
+
+button:hover {
+    background-color: #296c2b;
+    /* Darker green */
+}
+
+button.detail {
+    background-color: #008CBA;
+    /* Blue */
+}
+
+button.detail:hover {
+    background-color: #006080;
+    /* Darker blue */
+}
+
+/* Style for h3 heading */
+h3 {
     text-align: center;
     font-size: 24px;
     margin: 10px;
-  }
-  
-  /* Style for divs containing faculty info */
-  div {
+}
+
+/* Style for divs containing faculty info */
+div {
     text-align: center;
-    
+
     display: block;
     border-radius: 5px;
     padding: 10px;
     margin: 10px;
-  }
-  
-  /* Style for p tags inside divs */
-  p {
+}
+
+/* Style for p tags inside divs */
+p {
     text-align: center;
     margin: 7px;
-  }
-  
- 
+}
