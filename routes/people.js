@@ -25,9 +25,13 @@ router.get("/:id", async (req, res) => {
   }
   const courseId = xss(req.params.id);
   const students = await coursesFunc.getStudentList(courseId);
+  const facultO = await coursesFunc.getFacultyObj(courseId);
+  let w = facultO.professorName
+
   return res.render("courses/people", {
     courseId: courseId,
     students: students,
+    facultyName: facultO.professorName,
   });
 });
 
