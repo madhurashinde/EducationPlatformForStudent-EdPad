@@ -1,4 +1,8 @@
 <button onclick="location.href='/course/{{courseId}}'"> Back</button>
+</br>
+{{#if faculty}}
+<button onclick="location.href='/announcement/{{courseId}}/newAnnouncement'"> New Announcement</button>
+{{/if}}
 
 {{#if annList.length}}
 {{#each  annList}}
@@ -6,7 +10,7 @@
   
 <div>{{createdAt}}</div>
 <div>{{user}}</div>
-<div>{{description}}</div>
+{{!-- <div>{{description}}</div> --}}
 {{#if ../faculty}}
 <form onsubmit="return confirm('Confirm?');" action="/announcement/detail/{{_id}}" method="post">
     <input name="method" value="delete" hidden>
@@ -19,6 +23,3 @@
 <p>No announcement yet</p>
 {{/if}}
 
-{{#if faculty}}
-<button onclick="location.href='/announcement/{{courseId}}/newAnnouncement'"> New Announcement</button>
-{{/if}}
