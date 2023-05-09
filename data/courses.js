@@ -75,6 +75,9 @@ const getStudentList = async (courseId) => {
   const courseInfo = await courseCollection
     .find({ _id: new ObjectId(courseId) }, { projection: { studentlist: 1 } })
     .toArray();
+  if (courseInfo.length === 0) {
+    return [];
+  }
   const student = courseInfo[0].studentlist;
   const userCollection = await user();
   let studentInfo = [];

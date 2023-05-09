@@ -101,6 +101,20 @@ app.use("/people", async (req, res, next) => {
   next();
 });
 
+app.use("/library", async (req, res, next) => {
+  if (!req.session.user || req.session.user.role !== "admin") {
+    return res.redirect("/");
+  }
+  next();
+});
+
+app.use("/quizlet", async (req, res, next) => {
+  if (!req.session.user || req.session.user.role !== "admin") {
+    return res.redirect("/");
+  }
+  next();
+});
+
 app.use("/assignment/:id", async (req, res, next) => {
   if (req.method == "POST") {
     if (req.body.method == "delete") {
