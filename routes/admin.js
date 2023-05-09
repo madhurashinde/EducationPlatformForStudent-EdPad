@@ -158,7 +158,7 @@ router
       const status = await adminFunc.registrationStatus();
       return res.render("admin/openRegister", { status: status });
     } catch (e) {
-      res.status(500).render("error", { error: e });
+      return res.status(500).render("error", { error: e });
     }
   })
   .post(async (req, res) => {
@@ -166,7 +166,7 @@ router
       await adminFunc.changeStatus();
       return res.redirect("/admin/openregister");
     } catch (e) {
-      res.status(500).render("error", { error: e });
+      return res.status(500).render("error", { error: e });
     }
   });
 
@@ -180,7 +180,7 @@ router
       await adminFunc.archive();
       return res.redirect("/admin/archive");
     } catch (e) {
-      res.status(500).render("error", { error: e });
+      return res.status(500).render("error", { error: e });
     }
   });
 

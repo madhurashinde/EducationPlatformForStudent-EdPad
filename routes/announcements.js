@@ -139,7 +139,7 @@ router
         }
       }
     } catch (e) {
-      return res.render("error");
+      return res.status(400).render("error", { error: e });
     }
 
     try {
