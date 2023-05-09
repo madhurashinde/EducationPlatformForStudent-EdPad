@@ -157,7 +157,7 @@ router
     try {
       survey = validStr(survey);
     } catch (e) {
-      res.render("courses/survey", {
+      return res.render("courses/survey", {
         courseObjectID: courseId,
         error: e,
       });
