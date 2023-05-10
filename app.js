@@ -60,56 +60,56 @@ app.use("/admin", async (req, res, next) => {
 });
 
 app.use("/course", async (req, res, next) => {
-  if (!req.session.user || !req.session.user.role) {
+  if (!req.session.user) {
     return res.redirect("/login");
   }
   next();
 });
 
 app.use("/announcement", async (req, res, next) => {
-  if (!req.session.user || !req.session.user.role) {
+  if (!req.session.user) {
     return res.redirect("/login");
   }
   next();
 });
 
 app.use("/module", async (req, res, next) => {
-  if (!req.session.user || !req.session.user.role) {
+  if (!req.session.user) {
     return res.redirect("/login");
   }
   next();
 });
 
 app.use("/assignment", async (req, res, next) => {
-  if (!req.session.user || !req.session.user.role) {
+  if (!req.session.user) {
     return res.redirect("/login");
   }
   next();
 });
 
 app.use("/grade", async (req, res, next) => {
-  if (!req.session.user || !req.session.user.role) {
+  if (!req.session.user) {
     return res.redirect("/login");
   }
   next();
 });
 
 app.use("/people", async (req, res, next) => {
-  if (!req.session.user || !req.session.user.role) {
+  if (!req.session.user) {
     return res.redirect("/login");
   }
   next();
 });
 
 app.use("/library", async (req, res, next) => {
-  if (!req.session.user || req.session.user.role !== "admin") {
+  if (!req.session.user) {
     return res.redirect("/");
   }
   next();
 });
 
 app.use("/quizlet", async (req, res, next) => {
-  if (!req.session.user || req.session.user.role !== "admin") {
+  if (!req.session.user) {
     return res.redirect("/");
   }
   next();
