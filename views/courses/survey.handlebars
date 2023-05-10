@@ -1,5 +1,9 @@
 <button onclick="location.href='/course/{{courseObjectId}}'"> Back</button>
 
+{{#if survey}}
+<p>You have already submitted survey for this course</p>
+<p>{{surveyContent.surveys.0.studentSurvey}}</p>
+{{else}}
 <main>
   <h2>Survey Form</h2>
   <div>{{error}}</div>
@@ -14,3 +18,4 @@
   </form>
 </main>
 <script src="../../public/js/surveyCheck.js"></script>
+{{/if}}
