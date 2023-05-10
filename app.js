@@ -263,15 +263,22 @@ app.post("/assignment/:id/new", (req, res) => {
         // return res.redirect(`/assignment/${courseId}/newAssignment`);
       } else {
         try {
-          const id = validId(xss(req.body.courseId));
-          const title = validStr(xss(req.body.title));
-          const dueDate = validDate(xss(req.body.dueDate));
-          const dueTime = validTime(xss(req.body.dueTime));
-          const content = xss(req.body.content).trim();
-          const file = req.file.filename;
-          if (!validStr(content) && !validStr(file))
+          var id = validId(xss(req.body.courseId));
+          var title = validStr(xss(req.body.title));
+          var dueDate = validDate(xss(req.body.dueDate));
+          var dueTime = validTime(xss(req.body.dueTime));
+          var content = xss(req.body.content).trim();
+          var file = req.file.filename;
+          var score = nonNegInt(xss(req.body.score));
+          if (!validStr(content) || !validStr(file))
             throw "must provide instruction of the assignment by text or file";
-          const score = nonNegInt(xss(req.body.score));
+        } catch (e) {
+          return res.render("assignment/newAssignment", {
+            courseId: id,
+            error: "Please provide valid input",
+          });
+        }
+        try {
           const professor = await coursesFunc.getFaculty(id);
           if (professor !== req.session.user._id) {
             return res.redirect(`/assignment/${id}`);

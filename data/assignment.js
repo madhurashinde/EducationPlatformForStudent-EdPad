@@ -27,10 +27,8 @@ const createAssignment = async (
   if (!validDueTime(dueDate, dueTime)) {
     throw "invalid dueDate";
   }
-  content = content.trim();
-  file = file.trim();
-  if (!validStr(content) && !validStr(file))
-    throw "must provide instruction of the assignment by text or file";
+  content = validStr(content);
+  file = validStr(file);
   score = nonNegInt(score);
 
   const newAssignment = {

@@ -18,7 +18,22 @@ await adminFunc.initRegistrationStatus();
 await adminFunc.changeStatus();
 
 // create major
-const major = ["Computer Science", "Business Analysis", "Chemistry", "Physics", "Psychology", "English", "Mathematics", "Biology", "Environmental Science", "Sociology", "History", "Political Science", "Philosophy", "Art History"];
+const major = [
+  "Computer Science",
+  "Business Analysis",
+  "Chemistry",
+  "Physics",
+  "Psychology",
+  "English",
+  "Mathematics",
+  "Biology",
+  "Environmental Science",
+  "Sociology",
+  "History",
+  "Political Science",
+  "Philosophy",
+  "Art History",
+];
 for (let i = 0; i < major.length; i++) {
   await adminFunc.addMajor(major[i]);
 }
@@ -210,7 +225,7 @@ for (let i = 12; i < 13; i++) {
     `2023-05-${i}`,
     "00:00:00",
     "please list all you hobbies",
-    "",
+    "assignmentsample10.txt",
     Number(`${i * 10}`).toString()
   );
   assignment.push(a);
