@@ -10,7 +10,7 @@
 <li>
     <p>Student Id: {{studentId}}</p>
     <p>File address:</p>
-    <a href="{{submitFile}}" target="_blank"> {{submitFile}}</a>
+    <a href="/submission/download/{{submitFile}}" target="_blank"> {{submitFile}}</a>
     {{#if scoreGet}}
      <p>Score: {{scoreGet}}</p>
      <form class="grade" onsubmit="return confirm('Confirm?');" action="/grade/detail/{{_id}}" method="post">

@@ -60,56 +60,56 @@ app.use("/admin", async (req, res, next) => {
 });
 
 app.use("/course", async (req, res, next) => {
-  if (!req.session.user || !req.session.user.role) {
+  if (!req.session.user) {
     return res.redirect("/login");
   }
   next();
 });
 
 app.use("/announcement", async (req, res, next) => {
-  if (!req.session.user || !req.session.user.role) {
+  if (!req.session.user) {
     return res.redirect("/login");
   }
   next();
 });
 
 app.use("/module", async (req, res, next) => {
-  if (!req.session.user || !req.session.user.role) {
+  if (!req.session.user) {
     return res.redirect("/login");
   }
   next();
 });
 
 app.use("/assignment", async (req, res, next) => {
-  if (!req.session.user || !req.session.user.role) {
+  if (!req.session.user) {
     return res.redirect("/login");
   }
   next();
 });
 
 app.use("/grade", async (req, res, next) => {
-  if (!req.session.user || !req.session.user.role) {
+  if (!req.session.user) {
     return res.redirect("/login");
   }
   next();
 });
 
 app.use("/people", async (req, res, next) => {
-  if (!req.session.user || !req.session.user.role) {
+  if (!req.session.user) {
     return res.redirect("/login");
   }
   next();
 });
 
 app.use("/library", async (req, res, next) => {
-  if (!req.session.user || req.session.user.role !== "admin") {
+  if (!req.session.user) {
     return res.redirect("/");
   }
   next();
 });
 
 app.use("/quizlet", async (req, res, next) => {
-  if (!req.session.user || req.session.user.role !== "admin") {
+  if (!req.session.user) {
     return res.redirect("/");
   }
   next();
@@ -145,7 +145,7 @@ app.use("/module/detail/:id", async (req, res, next) => {
 // upload and download file
 function checkFileType(file, cb) {
   // Allowed extensions
-  const filetypes = /jpeg|jpg|png|gif|pdf|txt|doc/;
+  const filetypes = /jpeg|jpg|png|gif|pdf|doc|zip/;
   // Check extension
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
   // Check MIME type
@@ -263,15 +263,22 @@ app.post("/assignment/:id/new", (req, res) => {
         // return res.redirect(`/assignment/${courseId}/newAssignment`);
       } else {
         try {
-          const id = validId(xss(req.body.courseId));
-          const title = validStr(xss(req.body.title));
-          const dueDate = validDate(xss(req.body.dueDate));
-          const dueTime = validTime(xss(req.body.dueTime));
-          const content = xss(req.body.content).trim();
-          const file = req.file.filename;
-          if (!validStr(content) && !validStr(file))
+          var id = validId(xss(req.body.courseId));
+          var title = validStr(xss(req.body.title));
+          var dueDate = validDate(xss(req.body.dueDate));
+          var dueTime = validTime(xss(req.body.dueTime));
+          var content = xss(req.body.content).trim();
+          var file = req.file.filename;
+          var score = nonNegInt(xss(req.body.score));
+          if (!validStr(content) || !validStr(file))
             throw "must provide instruction of the assignment by text or file";
-          const score = nonNegInt(xss(req.body.score));
+        } catch (e) {
+          return res.render("assignment/newAssignment", {
+            courseId: id,
+            error: "Please provide valid input",
+          });
+        }
+        try {
           const professor = await coursesFunc.getFaculty(id);
           if (professor !== req.session.user._id) {
             return res.redirect(`/assignment/${id}`);

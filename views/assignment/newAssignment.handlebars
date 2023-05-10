@@ -11,7 +11,7 @@
     <label for="content">Assignment Instruction:</label>
     <input type="text" id="content" name="content"><br>
     <label for="file">Instruction File:</label>
-    <input type="file" id="file" name="file"><br>
+    <input type="file" id="file" name="file" accept=".jpg, .jpeg, .png, .pdf, .zip, .doc"><br>
     <label for="score">Total Score:</label>
     <input type="number" id="score" name="score"><br>
     <button type="submit">Submit</button>
@@ -21,9 +21,11 @@
     <ul>
         <li>Title is required</li>
         <li>Due Time can not be earlier than current time</li>
-        <li>You must provide either Assignment Instruction or an Instruction File</li>
-        <li>Instruction File should be a web link to your uploaded file: www.example.com</li>
+        <li>You must provide either Assignment Instruction and an Instruction File</li>
         <li>Total Score shoule be a non-negative integer</li>
     </ul>
 </div>
+{{#if error}}
+<p>{{error}}</p>
+{{/if}}
 <script src="../../public/js/createCheck.js"></script>

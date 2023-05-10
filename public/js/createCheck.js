@@ -21,7 +21,8 @@ if (form) {
       !title.value.trim() ||
       !dueDate.value.trim() ||
       !dueTime.value.trim() ||
-      (!content.value.trim() && !file.value.trim()) ||
+      !content.value.trim() ||
+      !file.value.trim() ||
       !score.value.trim()
     ) {
       event.preventDefault();
@@ -35,8 +36,10 @@ if (form) {
       if (!dueTime.value.trim()) {
         dueTime.classList.add("inputClass");
       }
-      if (!content.value.trim() && !file.value.trim()) {
+      if (!content.value.trim()) {
         content.classList.add("inputClass");
+      }
+      if (!file.value.trim()) {
         file.classList.add("inputClass");
       }
       if (!score.value.trim()) {
