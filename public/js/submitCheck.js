@@ -15,6 +15,7 @@ if (startSubmission) {
     fileLabel.attr("for", "submitFile");
     const fileInput = $("<input></input>");
     fileInput.attr("type", "file");
+    fileInput.attr("accpet", ".jpg, .jpeg, .png, .pdf, .zip, .doc");
     fileInput.attr("id", "submitFile");
     fileInput.attr("name", "submitFile");
     const submitButton = $("<button></button>");
